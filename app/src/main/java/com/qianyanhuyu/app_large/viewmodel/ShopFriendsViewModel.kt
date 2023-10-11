@@ -1,6 +1,7 @@
 package com.qianyanhuyu.app_large.viewmodel
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,6 +44,7 @@ class ShopFriendsViewModel @Inject constructor(
             is ShopFriendsViewAction.InitPageData -> initPageData()
             is ShopFriendsViewAction.UpdateImageData -> updateImageData()
             is ShopFriendsViewAction.UpdateOnlinePerson -> updateOnlinePerson()
+            else -> {}
         }
     }
 
@@ -52,8 +54,7 @@ class ShopFriendsViewModel @Inject constructor(
     private fun initPageData() {
 
         viewModelScope.launch {
-            // 角度封装
-            val randomInts = mutableListOf<List<Int>>()
+
             val imageDataList = mutableListOf<ShopFriendsImageData>()
 
             val imageBitmap = context.getImageBitmapByUrl("https://img.js.design/assets/img/64c238082cf109c42e7591f8.png#57e917dbec79af945fed36c3a700c86e")
@@ -72,12 +73,6 @@ class ShopFriendsViewModel @Inject constructor(
                 .take(circleImageCount)
                 .toList()
 
-                randomInts.add(randomInt)
-
-                // 5 个一组随机拿角度
-                /*if (i != 0) {
-                    continue
-                }*/
                 for(index in 0 .. 4) {
                     imageDataList.add(
                         ShopFriendsImageData(
@@ -96,7 +91,6 @@ class ShopFriendsViewModel @Inject constructor(
                     image = imageBitmap,
                     imageSize = smallCircleRadius.shuffled().take(1)[0],
                     name = "名称",
-                    angle = 50,
                     offsetIndex = -1,
                 ),
             )
@@ -105,7 +99,6 @@ class ShopFriendsViewModel @Inject constructor(
                     image = imageBitmap,
                     imageSize = smallCircleRadius.shuffled().take(1)[0],
                     name = "名称",
-                    angle = 50,
                     offsetIndex = -2,
                 ),
             )
@@ -113,9 +106,14 @@ class ShopFriendsViewModel @Inject constructor(
             viewStates = viewStates.copy(
                 onlinePersonCount = 59116,
                 imageData = viewStates.imageData.ifEmpty {
-                    imageDataList
+                    imageDataList.dropWhile {
+                        it.isShow.value == ShopFriendsAnimation.Hide && it.isShowed
+                    }.mapIndexed { _, shopFriendsImageData ->
+                        shopFriendsImageData.copy(
+                            imageDelay = 1000
+                        )
+                    }
                 },
-                randomInts = randomInts,
                 isLoading = false,
             )
 
@@ -136,16 +134,55 @@ class ShopFriendsViewModel @Inject constructor(
 
     /**
      * 更改照片的状态
-     * 消失一个或两个,再显示其它一个或两个
+     * 先显示所有照片
+     * 再消失,再显示
      */
     private fun updateImageData() {
+
+        if(viewStates.imageIsShowed) {
+            val isHideCount = viewStates.imageData.count {
+                it.isShow.value == ShopFriendsAnimation.Hide && !it.isShowed
+            }
+
+            if(isHideCount > 0) {
+                addOnlinePerson()
+            } else {
+                deleteOnlinePerson()
+            }
+        } else {
+            var flag = true
+            viewStates = viewStates.copy(
+                imageIsShowed = viewStates.imageData.count {
+                    it.isShow.value == ShopFriendsAnimation.Display
+                } == viewStates.imageData.size,
+                imageData = viewStates.imageData.mapIndexed { _, shopFriendsImageData ->
+                    if (flag && shopFriendsImageData.isShow.value == ShopFriendsAnimation.Hide) {
+                        flag = false
+                        shopFriendsImageData.apply {
+                            isShow.value = ShopFriendsAnimation.Display
+                        }
+                    } else {
+                        shopFriendsImageData
+                    }
+                }
+            )
+        }
+
+
+    }
+
+    private fun deleteOnlinePerson() {
+        // 是否更改了元素的状态,每次执行只更改一条数据
+        var flag = true
         viewStates = viewStates.copy(
-            imageData = viewStates.imageData.mapIndexed { index, shopFriendsImageData ->
-                if (shopFriendsImageData.isShow.value == ShopFriendsAnimation.Display) {
+            imageData = viewStates.imageData.mapIndexed { _, shopFriendsImageData ->
+                if (flag && shopFriendsImageData.isShow.value == ShopFriendsAnimation.Display) {
+                    flag = false
+
                     shopFriendsImageData.apply {
                         isShow.value = ShopFriendsAnimation.Hide
                     }.copy(
-                        imageDelay = 1000
+                        imageDelay = 0
                     )
                 } else {
                     shopFriendsImageData
@@ -154,11 +191,82 @@ class ShopFriendsViewModel @Inject constructor(
         )
     }
 
+    private fun addOnlinePerson() {
+        viewModelScope.launch {
+            val imageBitmap = context.getImageBitmapByUrl("https://img.js.design/assets/img/64c7570e3fca9249265fbbe7.jpg#5ba3efbd60cdede3bd88763ee164a24a")
+
+            var angle: Int = -1
+
+            // 增加概率
+            val circleIndex = listOf(
+                0,1,2,
+                -6,-5,-4,-3,-2,-1,
+                0,1,2,
+                0,1,2,
+                0,1,2,
+                0,1,2,
+            ).shuffled().take(1)[0]
+
+            // 获取 0-360 度之间的随机度数
+            val randomInt = generateSequence {
+                Random.nextInt(0, 360)
+            }.filter { randomNum ->
+                return@filter randomNum % listOf(
+                    50,
+                    30,
+                    70
+                ).shuffled().take(1)[0] == 0
+            }
+                .distinct()
+                .take(circleImageCount + 2)
+                .toList()
+
+            randomInt.forEach { randomAngle ->
+                val count = viewStates.imageData.count {
+                    it.isShow.value == ShopFriendsAnimation.Display &&
+                    ((circleIndex > 0 && it.offsetIndex == circleIndex && it.angle == randomAngle) ||
+                    (circleIndex < 0 && it.offsetIndex == circleIndex ))
+                }
+
+                if(count == 0) {
+                    angle = randomAngle
+                    return@forEach
+                }
+            }
+
+            val newImageData = viewStates.imageData.map {
+                if(it.isShow.value == ShopFriendsAnimation.Hide) {
+                    it.copy(
+                        isShowed = true
+                    )
+                } else {
+                    it
+                }
+            }.plus(
+                ShopFriendsImageData(
+                    image = imageBitmap,
+                    imageSize = smallCircleRadius.shuffled().take(1)[0],
+                    name = "名称",
+                    angle = angle,
+                    imageDelay = 2000,
+                    offsetIndex = circleIndex,
+                    isShow = mutableStateOf(ShopFriendsAnimation.Display)
+                )
+            )
+
+            if(angle > -1) {
+                viewStates = viewStates.copy(
+                    imageData = newImageData
+                )
+            }
+        }
+    }
+
 }
 
 data class ShopFriendsViewState(
     val imageData: List<ShopFriendsImageData> = mutableListOf(),
-    val randomInts: MutableList<List<Int>> = mutableListOf(),
+    val imageIsShowed: Boolean = false,
     val isLoading: Boolean = false,
     val onlinePersonCount: Int = 0,
 )
@@ -180,19 +288,18 @@ sealed class ShopFriendsViewEvent {
  * @param name 用户名称
  * @param image 头像 bitmap
  * @param imageSize 头像大小
- * @param offset 位置
  * @param isShow 是否显示, 默认 Hide
- * @param changeFirst 是否第一次更改状态
  * @param angle 角度
  * @param offsetIndex 位置在哪个圆上
+ * @param isShowed 是否已经显示过了
  */
 data class ShopFriendsImageData(
     val name: String = "",
     val image: Bitmap? = null,
     val imageSize: Dp = 0.cdp,
     val imageDelay: Int = 0,
-    val offset: IntOffset = IntOffset.Zero,
     val isShow: MutableState<ShopFriendsAnimation> = mutableStateOf(ShopFriendsAnimation.Hide),
     val angle: Int = 0,
     val offsetIndex: Int = 0,
+    val isShowed:Boolean = false,
 )

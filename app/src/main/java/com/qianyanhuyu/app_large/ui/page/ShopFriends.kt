@@ -2,6 +2,7 @@ package com.qianyanhuyu.app_large.ui.page
 
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -118,8 +119,8 @@ fun ShopFriendsScreen(
                                 viewModel.dispatch(ShopFriendsViewAction.UpdateImageData)
                             }
                         },
-                        16 * 500 + 10000,
-                        10000
+                        3000,
+                        3000
                     )
                     // 人数
                     timerOnlinePerson.schedule(
@@ -315,12 +316,13 @@ private fun RadarView(
         )
 
         viewStates.imageData.forEachIndexed { index, imageData ->
-
+            // val ddd = if(imageData.imageDelay == 0) { index * 500 } else { imageData.imageDelay }
+            // Log.d("ImageData Delay: ", "delay: ${ddd} index: $index")
             imageData.image?.let { bitmap ->
                 ImageCircle(
                     name = imageData.name,
                     imgSrc = bitmap,
-                    delay = if(imageData.imageDelay == 0) { index * 500 } else { imageData.imageDelay },
+                    delay = imageData.imageDelay,
                     circleImageState = imageData.isShow,
                     circleSize = imageData.imageSize,
                     circleAngle = imageData.angle,
