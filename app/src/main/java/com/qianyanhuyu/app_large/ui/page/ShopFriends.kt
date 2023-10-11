@@ -1,39 +1,27 @@
 package com.qianyanhuyu.app_large.ui.page
 
-
-import android.annotation.SuppressLint
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.with
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -43,34 +31,23 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.toOffset
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.ui.page.common.ImageCircle
 import com.qianyanhuyu.app_large.ui.page.common.ShopFriendsAnimation
 import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
-import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
-import com.qianyanhuyu.app_large.util.BitmapUtil
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
-import com.qianyanhuyu.app_large.util.inCircleOffset
-import com.qianyanhuyu.app_large.util.toPx
 import com.qianyanhuyu.app_large.util.units
 import com.qianyanhuyu.app_large.viewmodel.ShopFriendsViewAction
 import com.qianyanhuyu.app_large.viewmodel.ShopFriendsViewEvent
@@ -79,17 +56,12 @@ import com.qianyanhuyu.app_large.viewmodel.ShopFriendsViewState
 import kotlinx.coroutines.launch
 import java.util.Timer
 import java.util.TimerTask
-import kotlin.random.Random
 
 /***
  * @Author : Cheng
  * @CreateDate : 2023/9/25 9:19
  * @Description : 店友圈
  */
-
-private val imageRadius = 15.cdp
-val circleImageCount = 6
-
 private lateinit var timerImage: Timer
 private lateinit var timerOnlinePerson: Timer
 
@@ -315,9 +287,7 @@ private fun RadarView(
                 .zIndex(9F)
         )
 
-        viewStates.imageData.forEachIndexed { index, imageData ->
-            // val ddd = if(imageData.imageDelay == 0) { index * 500 } else { imageData.imageDelay }
-            // Log.d("ImageData Delay: ", "delay: ${ddd} index: $index")
+        viewStates.imageData.forEachIndexed { _, imageData ->
             imageData.image?.let { bitmap ->
                 ImageCircle(
                     name = imageData.name,

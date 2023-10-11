@@ -1,7 +1,6 @@
 package com.qianyanhuyu.app_large.ui.page.common
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -85,7 +84,7 @@ fun ShopFriendsAnimation(
         }
 
         layout(constraints.maxWidth, constraints.maxHeight) {
-            placeables.forEachIndexed { index, placeable ->
+            placeables.forEachIndexed { _, placeable ->
                 placeable.place(x = 0, y = 0)
             }
         }
