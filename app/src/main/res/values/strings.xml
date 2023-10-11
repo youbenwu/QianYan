@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">迁眼互娱</string>
+
+    <string name="display_name">This display is: %s</string>
+    <string name="display_color">Background color: #%X</string>
+
+    <!-- 验证员工信息模块 -->
+    <string name="check_person_page_title">. 注册认证信息 .</string>
+    <string name="check_person_num">员工编号</string>
+    <string name="check_person_phone">手机号码</string>
+    <string name="check_person_verification_code">验证码</string>
+    <string name="check_person_confirm_btn">确认认证</string>
+
+    <!-- 激活模块 -->
+    <string name="activation_msg_title">人工免费激活系统</string>
+    <string name="activation_msg_1">10+行业的数据转型及智慧运营解决方案</string>
+    <string name="activation_msg_2">超过500小时的工具应用、业务分析等视频学习资源</string>
+    <string name="activation_msg_3">10+行业的数据转型及智慧运营解决方案</string>
+
+    <string name="activation_info_title">HI.欢迎您激活系统</string>
+    <string name="activation_device_id">设备编号</string>
+    <string name="activation_location">酒店投放定位</string>
+    <string name="activation_person_name">维护人姓名</string>
+    <string name="activation_room_num">投放房间号</string>
+    <string name="activation_confirm_text">马上激活 →</string>
+    <string name="activation_confirm_tips">迁眼互娱在任何场合下都不会泄露您的任何信息/如果遇到问题</string>
+</resources>

@@ -13,3 +13,17 @@
 .externalNativeBuild
 .cxx
 local.properties
+keystore.properties
+# Generated 文件夹
+/app/release
+#built application files
+*.apk
+*.ap_
+# Java class files
+*.class
+# files for the dex VM
+*.dex
+# Keystore files
+*.jks
+# 日志文件
+*.log
