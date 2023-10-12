@@ -126,7 +126,7 @@ fun SmartTourismContent(
 
             // 顶部提示栏布局
             CustomTopTrips(
-                text = "温馨提示: 请选择您需要的菜单功能",
+                text = "最新通知! 即日起恢复全国旅行社及在线旅游企业经营外国人入境团队旅游",
                 modifier = Modifier
                     .constrainAs(tipsView) {
                         top.linkTo(parent.top)

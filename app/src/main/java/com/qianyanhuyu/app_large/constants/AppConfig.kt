@@ -259,10 +259,12 @@ object AppConfig {
 
     val CustomOrigin = Color(255, 87, 51)
     val CustomYellowish = Color(205, 113, 65)
+    val CustomYellow = Color(255, 195, 0)
     val CustomPurple = Color(108, 93, 211)
     val CustomLavender = Color(154, 137, 189)
     val CustomGreen = Color(67, 207, 124)
     val CustomGreen9 = Color(68, 227, 64)
+    val CustomGreen165 = Color(165, 214, 63)
     val CustomBlue = Color(32, 169, 232)
     val CustomRed = Color(229, 9, 20)
     val CustomBlue9 = Color(56, 69, 171)

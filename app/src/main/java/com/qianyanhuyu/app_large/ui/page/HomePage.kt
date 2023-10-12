@@ -6,11 +6,13 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -68,6 +70,7 @@ import com.qianyanhuyu.app_large.constants.AppConfig.brush247
 import com.qianyanhuyu.app_large.ui.widgets.BaseMsgDialog
 import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
+import com.qianyanhuyu.app_large.ui.widgets.CommonLocalImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
 import com.qianyanhuyu.app_large.ui.widgets.MultiFabItem
 import com.qianyanhuyu.app_large.ui.widgets.MultiFloatingActionButton
@@ -180,6 +183,7 @@ fun HomePageScreen(
             snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
                 HomeTopBar(
+                    selectState = selectState,
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 30.cdp)
@@ -187,7 +191,6 @@ fun HomePageScreen(
             },
             floatingActionButton = {
                 MultiFloatingActionButton(
-                    srcIcon = Icons.Outlined.Add,
                     items = expandFbItemList,
                     selectState = selectState,
                 ) { item ->
@@ -215,6 +218,7 @@ fun HomePageScreen(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun HomeTopBar(
+    selectState: MutableState<Int>,
     modifier: Modifier
 ) {
     ConstraintLayout(
@@ -223,7 +227,10 @@ fun HomeTopBar(
 
         val currentTime = TimeUtil.parse(Date().time, FormatterEnum.YYYY_DOT_MM_DOT_DD)
 
+        val coroutineState = rememberCoroutineScope()
+
         val (
+            homeButtonView,
             centerView,
             centerTitleTextView,
             lineLeftView,
@@ -294,6 +301,27 @@ fun HomeTopBar(
                 .constrainAs(lineLeftStartView) {
                     start.linkTo(lineLeftView.start)
                     bottom.linkTo(lineLeftView.bottom)
+                }
+        )
+
+        CommonLocalImage(
+            resId = R.drawable.ic_home_button,
+            modifier = Modifier
+                .constrainAs(homeButtonView) {
+                    start.linkTo(lineLeftStartView.start)
+                    end.linkTo(lineLeftStartView.end)
+                    bottom.linkTo(lineLeftStartView.top)
+                    top.linkTo(parent.top)
+                }
+                .padding(horizontal = 5.cdp)
+                .size(30.cdp)
+                .clickable {
+                    val homeIndex = expandFbItemList.size + 1
+                    coroutineState.launch {
+                        selectState.value = homeIndex
+                        pagerState.scrollToPage(homeIndex)
+                        selectedHomeTabIndex = homeIndex
+                    }
                 }
         )
 
@@ -709,13 +737,13 @@ fun testAA(
         }
 
         if(openDialog.value) {
-            BaseMsgDialog(
+            /*BaseMsgDialog(
                 title = "连接到设备",
                 message = listData.value,
                 confirmText="Ok"
             ) {
                 openDialog.value = false
-            }
+            }*/
         }
     }
 }

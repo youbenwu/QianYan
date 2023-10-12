@@ -1,7 +1,6 @@
 package com.qianyanhuyu.app_large.ui.widgets
 
 import androidx.annotation.DrawableRes
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
@@ -12,20 +11,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -39,9 +30,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.util.cdp
@@ -56,9 +44,6 @@ import com.qianyanhuyu.app_large.util.toPx
 @Composable
 fun MultiFloatingActionButton(
     modifier: Modifier = Modifier,
-    srcIcon: ImageVector,
-    srcIconColor: Color = Color.White,
-    fabBackgroundColor: Color = Color.Unspecified,
     selectState: MutableState<Int>,
     items: List<MultiFabItem>,
     onFabItemClicked: (item: MultiFabItem) -> Unit
@@ -205,7 +190,7 @@ fun MultiFloatingActionButton(
             }
         }
         CommonComposeImage(
-            resId = R.drawable.ic_home,
+            resId = if(currentState.value == MultiFabState.Collapsed) { R.drawable.ic_home } else {R.drawable.ic_home_bak},
             modifier = Modifier
                 .width(centerContentWidth)
                 .height(centerContentHeight)
@@ -230,10 +215,8 @@ class MultiFabItem(
     val index: Int,
     @DrawableRes val icon: Int,
     val label: String,
-    val srcIconColor: Color = Color.White,
     val labelTextColor: Color = Color.White,
     val labelBackgroundColor: Color = Color.Transparent,
-    val fabBackgroundColor: Color = Color.Unspecified,
 )
 
 /**

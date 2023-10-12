@@ -31,8 +31,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -176,9 +180,16 @@ fun ShopFriendsContent(
             ) = createRefs()
 
             /*Text("test")*/
+            val colorPurple = Color(141, 128, 255).copy(alpha = 1f)
+            val colorBlue = Color(158, 255, 255).copy(alpha = 1f)
+
 
             ShopFriendsButton(
                 "妙音匹配",
+                textColors = listOf(
+                    colorPurple,
+                    colorBlue
+                ),
                 iconId = R.drawable.icon_group_match,
                 textStartPadding = 25.cdp,
                 iconStartPadding = 25.cdp,
@@ -187,7 +198,7 @@ fun ShopFriendsContent(
                         start.linkTo(parent.start, margin = 30.cdp)
                         bottom.linkTo(groupChatButton.top, margin = 100.cdp)
                     }
-                    .width(360.cdp)
+                    .width(380.cdp)
                     .height(145.cdp)
                     .background(Color(27, 126, 242).copy(alpha = 0.2f))
                     .border(
@@ -201,13 +212,17 @@ fun ShopFriendsContent(
 
             ShopFriendsButton(
                 "建立群聊",
+                textColors = listOf(
+                    colorBlue,
+                    colorPurple
+                ),
                 iconId = R.drawable.icon_group_chat,
                 modifier = Modifier
                     .constrainAs(groupChatButton) {
                         start.linkTo(parent.start, margin = 30.cdp)
                         bottom.linkTo(parent.bottom, margin = 125.cdp)
                     }
-                    .width(360.cdp)
+                    .width(380.cdp)
                     .height(145.cdp)
                     .background(Color(24, 254, 254).copy(alpha = 0.2f))
                     .border(
@@ -305,12 +320,14 @@ private fun RadarView(
     }
 }
 
+@OptIn(ExperimentalTextApi::class)
 @Composable
 private fun ShopFriendsButton(
     text: String,
     @DrawableRes iconId: Int,
     textStartPadding: Dp = 0.cdp,
     iconStartPadding: Dp = 0.cdp,
+    textColors: List<Color>? = null,
     modifier: Modifier
 ) {
     Box(
@@ -331,11 +348,16 @@ private fun ShopFriendsButton(
 
             Text(
                 text,
-                fontSize = 35.csp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                letterSpacing = 1.csp,
-                color = Color.White,
+                style = TextStyle(
+                    brush = Brush.linearGradient(
+                        colors = textColors ?: listOf(Color.White),
+                        tileMode = TileMode.Mirror
+                    ),
+                    fontSize = 35.csp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    letterSpacing = 1.csp
+                ),
                 modifier = Modifier
                     .padding(
                         start = textStartPadding
