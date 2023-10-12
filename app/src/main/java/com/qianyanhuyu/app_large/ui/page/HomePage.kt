@@ -249,6 +249,7 @@ fun HomeTopBar(
         )
 
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.constrainAs(centerTitleTextView) {
                 linkTo(start = centerView.start, end = centerView.end)
                 top.linkTo(centerView.top)
@@ -264,7 +265,7 @@ fun HomeTopBar(
                 color = Color.White
             )
             Text(
-                text = "HUAN YING SHI YONG QIAN YAN HU YU PING TAI",
+                text = "WELCOME TO EYE ENTERTAINMENT",
                 fontWeight = FontWeight.Bold,
                 fontSize = 12.csp,
                 textAlign = TextAlign.Center,

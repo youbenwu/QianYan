@@ -91,7 +91,7 @@ fun ShopFriendsScreen(
                                 viewModel.dispatch(ShopFriendsViewAction.UpdateImageData)
                             }
                         },
-                        3000,
+                        2000,
                         3000
                     )
                     // 人数

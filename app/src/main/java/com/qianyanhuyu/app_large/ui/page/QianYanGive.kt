@@ -157,8 +157,8 @@ fun QianYanGiveContent(
             // 右边布局
             FillHeightContent(
                 src = "https://img.js.design/assets/img/617fd7537e06ae29ef55e3e8.png",
-                title = "免费送餐",
-                subTitle = "免费领取酒店早餐",
+                title = "免费门票",
+                subTitle = "赠送附近酒店门票",
                 buttonText = "去领取",
                 modifier = Modifier
                     .constrainAs(rightContentView) {
@@ -175,8 +175,8 @@ fun QianYanGiveContent(
             FillHeightContent(
                 src = "https://img.js.design/assets/img/6184ce18d97511650cd34cfd.png",
                 buttonText = "去领取",
-                title = "免费门票",
-                subTitle = "赠送附近酒店门票",
+                title = "免费住房",
+                subTitle = "酒店免费提供住房",
                 modifier = Modifier
                     .constrainAs(centerContentView) {
                         start.linkTo(leftContentView.end)

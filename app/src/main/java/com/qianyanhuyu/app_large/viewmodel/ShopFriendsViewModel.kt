@@ -9,8 +9,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.qianyanhuyu.app_large.App.Companion.context
+import com.qianyanhuyu.app_large.constants.AppConfig.CIRCLE_NUMBER_IMAGE
 import com.qianyanhuyu.app_large.constants.AppConfig.smallCircleRadius
-import com.qianyanhuyu.app_large.ui.page.circleImageCount
 import com.qianyanhuyu.app_large.ui.page.common.ShopFriendsAnimation
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.getImageBitmapByUrl
@@ -55,7 +55,7 @@ class ShopFriendsViewModel @Inject constructor(
 
             val imageDataList = mutableListOf<ShopFriendsImageData>()
 
-            val imageBitmap = context.getImageBitmapByUrl("https://img.js.design/assets/img/64c238082cf109c42e7591f8.png#57e917dbec79af945fed36c3a700c86e")
+            val imageBitmap = context.getImageBitmapByUrl("https://img.js.design/assets/img/64c37ff60705af14a94fcad7.png#3a6702d289bd7f47bd984a6b91f14125")
             for (i in 0..2) {
                 // 获取 0-360 度之间的随机度数
                 val randomInt = generateSequence {
@@ -68,7 +68,7 @@ class ShopFriendsViewModel @Inject constructor(
                     ).shuffled().take(1)[0] == 0
                 }
                 .distinct()
-                .take(circleImageCount)
+                .take(CIRCLE_NUMBER_IMAGE + 1)
                 .toList()
 
                 for(index in 0 .. 4) {
@@ -106,9 +106,9 @@ class ShopFriendsViewModel @Inject constructor(
                 imageData = viewStates.imageData.ifEmpty {
                     imageDataList.dropWhile {
                         it.isShow.value == ShopFriendsAnimation.Hide && it.isShowed
-                    }.mapIndexed { _, shopFriendsImageData ->
+                    }.mapIndexed { index, shopFriendsImageData ->
                         shopFriendsImageData.copy(
-                            imageDelay = 1000
+                            imageDelay = index * 500
                         )
                     }
                 },
@@ -216,7 +216,7 @@ class ShopFriendsViewModel @Inject constructor(
                 ).shuffled().take(1)[0] == 0
             }
                 .distinct()
-                .take(circleImageCount + 2)
+                .take(CIRCLE_NUMBER_IMAGE + 3)
                 .toList()
 
             randomInt.forEach { randomAngle ->
