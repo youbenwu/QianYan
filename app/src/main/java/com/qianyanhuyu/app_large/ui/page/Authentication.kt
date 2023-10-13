@@ -355,7 +355,7 @@ fun ConfirmAuth(
     ) {
         Button(
             onClick = onClick,
-            shape = Shapes.large,
+            shape = Shapes.extraLarge,
             colors = ButtonDefaults.buttonColors(
                 containerColor = ButtonColor,
                 contentColor = AuthButtonTextColor

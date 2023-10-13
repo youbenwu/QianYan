@@ -47,6 +47,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.qianyanhuyu.app_large.R
+import com.qianyanhuyu.app_large.ui.page.common.CommonText
 import com.qianyanhuyu.app_large.ui.page.common.ImageCircle
 import com.qianyanhuyu.app_large.ui.page.common.ShopFriendsAnimation
 import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
@@ -255,18 +256,19 @@ fun ShopFriendsContent(
                 }
             }
 
-            Text(
+            CommonText(
                 "今日在线人数",
                 fontSize = 30.csp,
-                textAlign = TextAlign.Center,
-                letterSpacing = 18.csp,
-                color = Color.White,
+                textAlign = TextAlign.Right,
+                letterSpacing = 5.csp,
                 modifier = Modifier
                     .constrainAs(numberCountTripText) {
-                        start.linkTo(numberCountView.start)
                         end.linkTo(numberCountView.end)
                         bottom.linkTo(numberCountView.top, margin = 10.cdp)
                     }
+                    .padding(
+                        end = 15.cdp
+                    )
             )
 
             RadarView(

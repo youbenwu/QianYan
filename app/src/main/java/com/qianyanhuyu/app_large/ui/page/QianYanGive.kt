@@ -33,6 +33,7 @@ import com.qianyanhuyu.app_large.ui.page.common.CustomButton
 import com.qianyanhuyu.app_large.ui.page.common.CustomTopTrips
 import com.qianyanhuyu.app_large.constants.AppConfig.CustomBlue
 import com.qianyanhuyu.app_large.constants.AppConfig.CustomBlue9
+import com.qianyanhuyu.app_large.ui.page.common.CommonText
 import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
@@ -222,17 +223,17 @@ fun FillHeightContent(
                 .fillMaxSize()
         )
 
-
         Box(
             modifier = Modifier
                 .constrainAs(contentBgView) {
                     bottom.linkTo(parent.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
+                    top.linkTo(titleView.top)
 
                     width = Dimension.fillToConstraints
+                    height = Dimension.fillToConstraints
                 }
-                .fillMaxHeight(0.25f)
                 .background(Color.White)
         )
 
@@ -262,7 +263,7 @@ fun FillHeightContent(
         )
 
         // title
-        Text(
+        CommonText(
             text = title,
             fontWeight = FontWeight.Bold,
             fontSize = 50.csp,
@@ -301,7 +302,7 @@ fun FillHeightContent(
         )
 
         // subtitle
-        Text(
+        CommonText(
             text = subTitle,
             fontSize = 30.csp,
             textAlign = TextAlign.Left,

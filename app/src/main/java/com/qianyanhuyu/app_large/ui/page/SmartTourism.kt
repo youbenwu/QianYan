@@ -2,9 +2,13 @@ package com.qianyanhuyu.app_large.ui.page
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,14 +16,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,15 +36,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
-import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.constants.AppConfig
+import com.qianyanhuyu.app_large.ui.page.common.CommonText
 import com.qianyanhuyu.app_large.ui.page.common.CustomTopTrips
 import com.qianyanhuyu.app_large.ui.page.common.SimpleLazyGrid
 import com.qianyanhuyu.app_large.ui.page.common.TextBackground
-import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
+import com.qianyanhuyu.app_large.ui.widgets.CommonLocalImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
@@ -212,9 +213,12 @@ fun ContentList(
         val guideLine4fH = createGuidelineFromStart(0.4f)
 
         val (
+            adView,
             bannerView,
+            bannerBgView,
             rightListView,
             titleView,
+            tagView,
             subTitleView
         ) = createRefs()
 
@@ -237,19 +241,52 @@ fun ContentList(
                 .clip(RoundedCornerShape(imageRadius))
         )
 
+        Box(
+            modifier = Modifier
+                .constrainAs(bannerBgView) {
+                    bottom.linkTo(bannerView.bottom)
+                    start.linkTo(bannerView.start)
+                    end.linkTo(bannerView.end)
+                    top.linkTo(bannerView.top)
+
+                    width = Dimension.fillToConstraints
+                    height = Dimension.fillToConstraints
+                }
+                .fillMaxHeight()
+                .background(
+                    AppConfig.blackToWhite
+                )
+        )
+
+        ContentListLeftAdView(
+            modifier = Modifier
+                .constrainAs(adView) {
+                    top.linkTo(bannerView.top)
+                    bottom.linkTo(titleView.top)
+                    start.linkTo(bannerView.start)
+                    end.linkTo(bannerView.end)
+
+                    width = Dimension.fillToConstraints
+                    height = Dimension.fillToConstraints
+                }
+                .padding(
+                    end = 30.cdp
+                )
+        )
+
         createVerticalChain(
             titleView,
+            tagView,
             subTitleView,
             chainStyle = ChainStyle.Packed(0.96f)
         )
 
-        // title
-        Text(
+        CommonText(
             text = "打卡经典地标，厦门海滨风情4日游",
             fontSize = 40.csp,
             textAlign = TextAlign.Left,
+            maxLines = 2,
             letterSpacing = 1.csp,
-            color = Color.White,
             modifier = Modifier
                 .constrainAs(titleView) {
                     start.linkTo(parent.start)
@@ -265,18 +302,53 @@ fun ContentList(
                 )
         )
 
-        // subtitle
-        Text(
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(30.cdp),
+            modifier = Modifier
+                .constrainAs(tagView) {
+                    start.linkTo(parent.start)
+                    top.linkTo(titleView.top)
+                    end.linkTo(guideLine4fH)
+
+                    width = Dimension.fillToConstraints
+                }
+                .padding(
+                    start = 40.cdp,
+                    end = 67.cdp,
+                    top = 30.cdp,
+                    bottom = 30.cdp
+                )
+        ) {
+            listOf(
+                "温泉",
+                "经典"
+            ).forEach {
+                    TextBackground(
+                        text = it,
+                        textBackground = Color.Transparent,
+                        fontSize = 28.csp,
+                        textHorizontalPadding = 5.cdp,
+                        modifier = Modifier
+                            .border(
+                                1.cdp,
+                                Color.White
+                            )
+                    )
+                }
+        }
+
+        CommonText(
             text = "打卡厦门经典地标，悠闲享受海滨风情,去厦大感受人文氛围,花一天的时间慢慢逛江鼓浪屿。",
             fontSize = 20.csp,
             textAlign = TextAlign.Left,
+            maxLines = 3,
             letterSpacing = 1.csp,
             color = Color.White,
             lineHeight = 25.csp,
             modifier = Modifier
                 .constrainAs(subTitleView) {
                     start.linkTo(parent.start)
-                    top.linkTo(titleView.bottom)
+                    top.linkTo(tagView.bottom)
                     end.linkTo(guideLine4fH)
 
                     width = Dimension.fillToConstraints
@@ -304,7 +376,66 @@ fun ContentList(
     }
 }
 
-// 右边列表
+@Composable
+fun ContentListLeftAdView(
+    modifier: Modifier
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(20.cdp, Alignment.CenterVertically),
+        modifier = modifier.fillMaxSize().padding(40.cdp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(30.cdp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            CommonLocalImage(
+                resId = R.drawable.ic_image_placeholder,
+                modifier = Modifier
+                    .width(75.cdp)
+                    .height(48.cdp)
+            )
+
+            CommonText(
+                "世界那么大我想去看看",
+                textAlign = TextAlign.Left,
+                modifier = Modifier
+                    .weight(1f)
+            )
+
+            CommonLocalImage(
+                resId = R.drawable.ic_collect_true,
+                modifier = Modifier
+                    .width(55.cdp)
+                    .aspectRatio(1f)
+            )
+        }
+
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(3f)
+        ) {
+            CommonNetworkImage(
+                url = "https://img.js.design/assets/img/64c712d13835e991fb17fa0f.png#f752b9346890182b879946913c89a6b5",
+                modifier = Modifier
+                    .fillMaxWidth(0.75f)
+                    .aspectRatio(2f)
+                    .border(
+                        3.cdp,
+                        Color.Black
+                    )
+            )
+        }
+    }
+}
+
+/**
+ * 右边列表
+ */
 @Composable
 fun ContentListRight(
     modifier: Modifier
@@ -413,13 +544,12 @@ fun ContentListRightItem(
         )
 
         // title
-        Text(
+        CommonText(
             text = "旅游圣地",
             fontWeight = FontWeight.Bold,
             fontSize = 25.csp,
             textAlign = TextAlign.Left,
             letterSpacing = 1.csp,
-            color = Color.White,
             modifier = Modifier
                 .constrainAs(titleView) {
                     start.linkTo(parent.start)
@@ -435,13 +565,13 @@ fun ContentListRightItem(
         )
 
         // subtitle
-        Text(
+        CommonText(
             text = "饮佐茶味正宗港式餐厅(建发JFC品尚店)",
             fontSize = 18.csp,
             textAlign = TextAlign.Left,
+            maxLines = 3,
             letterSpacing = 1.csp,
             lineHeight = 23.csp,
-            color = Color.White,
             modifier = Modifier
                 .constrainAs(subTitleView) {
                     start.linkTo(parent.start)
@@ -476,12 +606,11 @@ fun ContentListRightItem(
 
         )
 
-        Text(
+        CommonText(
             text = "1.2公里",
             fontSize = 15.csp,
             textAlign = TextAlign.Left,
             letterSpacing = 1.csp,
-            color = Color.White,
             modifier = Modifier
                 .constrainAs(locationTextView) {
                     start.linkTo(locationIconView.end)

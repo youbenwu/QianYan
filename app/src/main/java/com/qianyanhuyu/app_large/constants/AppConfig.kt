@@ -46,15 +46,6 @@ object AppConfig {
         )
     )
 
-    val brushBlack = Brush.horizontalGradient(
-        listOf(
-            Color(58, 62, 69, 0),
-            Color(27, 29, 33).copy(
-                alpha = 0.9f
-            )
-        )
-    )
-
     val topTripsColor = Brush.horizontalGradient(
         listOf(
             Color(27, 78, 160),
@@ -68,6 +59,13 @@ object AppConfig {
         listOf(
             Color(36, 39, 49),
             Color(36, 39, 49),
+        )
+    )
+
+    val blackToWhite = Brush.horizontalGradient(
+        listOf(
+            Color(0, 0, 0).copy(alpha = 0.7f),
+            Color(0, 0, 0).copy(alpha = 0f),
         )
     )
 
