@@ -15,8 +15,8 @@ interface HotelApi {
 
     /**
      * /api/hotel/device/getByDeviceNo
-     * 获取设备
-     * 激活后可获取到设备信息
+     *
+     * 激活设备信息
      * */
     @POST("/api/hotel/device/register")
     suspend fun registerDevice(
