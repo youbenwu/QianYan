@@ -8,6 +8,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.qianyanhuyu.app_large.App
+import com.qianyanhuyu.app_large.data.advert.AdvertApi
+import com.qianyanhuyu.app_large.data.advert.model.Advert
 import com.qianyanhuyu.app_large.data.hotel.HotelApi
 import com.qianyanhuyu.app_large.data.hotel.model.Device
 import com.qianyanhuyu.app_large.data.hotel.model.RegisterDeviceDTO
@@ -27,6 +29,7 @@ import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import okhttp3.internal.wait
+import java.util.UUID
 import javax.inject.Inject
 
 /***
@@ -37,7 +40,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ActivationViewModel @Inject constructor(
     private val hotelApi: HotelApi,
-    private val userApi: UserApi
+    private val userApi: UserApi,
+    private val advertApi: AdvertApi
 ) : ViewModel() {
     var viewStates by mutableStateOf(ActivationViewState())
         private set
@@ -67,21 +71,27 @@ class ActivationViewModel @Inject constructor(
      * 做一些进入页面初始化的操作
      */
     private fun initPageData() {
-        viewStates = viewStates.copy(
-            deviceId = getDeviceId()
-        )
+        viewModelScope.launch {
+            viewStates = viewStates.copy(
+                deviceId = getDeviceId()
+            )
+        }
     }
 
-    fun getDeviceId(): String {
-        val telephonyManager = App.context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-        return telephonyManager.deviceId;
+    suspend  fun  getDeviceId(): String {
+        var deviceId:String? =DataStoreUtils.getSyncData(DataKey.deviceNo,"");
+        if(deviceId==null||deviceId.isEmpty()){
+            deviceId=UUID.randomUUID().toString();
+            DataStoreUtils.putData(DataKey.deviceNo,deviceId);
+        }
+        return deviceId;
     }
 
     /**
      * 提交按钮事件
      */
     private fun confirmActivationInfo() {
-        viewModelScope.launch {
+
             viewModelScope.launch {
                 try {
                     if(viewStates.deviceId.trim().isEmpty()){
@@ -100,8 +110,9 @@ class ActivationViewModel @Inject constructor(
                         _viewEvents.send(ActivationViewEvent.ShowMessage("请输入管理员姓名"))
                         return@launch
                     }
-                    var userId:Int=DataStoreUtils.getData(DataKey.userId,0).last();
-                    var phone:String?=DataStoreUtils.getData(DataKey.username,"").last();
+                    //App.context.getSharedPreferences()
+                    var userId:Int=DataStoreUtils.getSyncData(DataKey.userId,0);
+                    var phone:String?=DataStoreUtils.getSyncData(DataKey.username,"");
 
                     var request:RegisterDeviceDTO=RegisterDeviceDTO(
                         userId=userId,
@@ -120,7 +131,6 @@ class ActivationViewModel @Inject constructor(
                             details = null,
                             fullAddress = null),
                     );
-
 
 
 
@@ -147,8 +157,9 @@ class ActivationViewModel @Inject constructor(
                 }
 
             }
-        }
+
     }
+
 
     private suspend fun loginDevice(deviceNo:String):Boolean{
         val response = userApi.login(deviceNo,"123456")

@@ -2,15 +2,21 @@ package com.qianyanhuyu.app_large.data
 
 import com.qianyanhuyu.app_large.BuildConfig
 import com.qianyanhuyu.app_large.constants.Net
+import com.qianyanhuyu.app_large.data.advert.AdvertApi
 import com.qianyanhuyu.app_large.data.hotel.HotelApi
 import com.qianyanhuyu.app_large.data.user.UserApi
+import com.qianyanhuyu.app_large.util.datastore.DataKey
+import com.qianyanhuyu.app_large.util.datastore.DataStoreUtils
 //import com.qianyanhuyu.app_large.data.auth.OAuthApi
 //import com.qianyanhuyu.app_large.data.user.UserApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -31,15 +37,27 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideOkHttpClient() = run {
+
         val logging = HttpLoggingInterceptor()
         logging.level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.BASIC
         OkHttpClient.Builder()
             .addInterceptor(logging)
+            .addInterceptor(MyInterceptor())
             .connectTimeout(Net.CONNECTION_TIME_OUT, TimeUnit.SECONDS)
             .readTimeout(Net.READ_TIME_OUT, TimeUnit.SECONDS)
             .proxy(Proxy.NO_PROXY)
             .build()
     }
+
+    class MyInterceptor :Interceptor{
+        override fun intercept(chain: Interceptor.Chain): Response {
+            var token:String =DataStoreUtils.getSyncData(DataKey.token,"");
+            var request=chain.request().newBuilder().addHeader(DataKey.token,token).build();
+            // 开始请求
+            return chain.proceed(request);
+        }
+    }
+
 
     @Singleton
     @Provides
@@ -58,5 +76,8 @@ object NetworkModule {
     @Provides
     fun provideHotelApiService(retrofit: Retrofit): HotelApi = retrofit.create(HotelApi::class.java)
 
+    @Singleton
+    @Provides
+    fun provideAdvertApiService(retrofit: Retrofit): AdvertApi = retrofit.create(AdvertApi::class.java)
 
 }

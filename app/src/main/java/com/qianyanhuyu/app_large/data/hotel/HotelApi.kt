@@ -30,7 +30,7 @@ interface HotelApi {
      * 激活后可获取到设备信息
      * */
     @FormUrlEncoded
-    @GET("/api/hotel/device/getByDeviceNo")
+    @POST("/api/hotel/device/getByDeviceNo")
     suspend fun getDevice(
         @Field("deviceNo") deviceNo: String
     ): Response<ApiResult<Device>>
