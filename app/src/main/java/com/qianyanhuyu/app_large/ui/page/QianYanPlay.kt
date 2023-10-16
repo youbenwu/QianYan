@@ -2,24 +2,19 @@ package com.qianyanhuyu.app_large.ui.page
 
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -30,14 +25,12 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.qianyanhuyu.app_large.R
-import com.qianyanhuyu.app_large.constants.AppConfig
 import com.qianyanhuyu.app_large.ui.page.common.CustomButton
 import com.qianyanhuyu.app_large.ui.page.common.CustomTopTrips
 import com.qianyanhuyu.app_large.ui.page.common.TextBackground
 import com.qianyanhuyu.app_large.constants.AppConfig.CustomBlue
 import com.qianyanhuyu.app_large.constants.AppConfig.CustomGreen9
 import com.qianyanhuyu.app_large.constants.AppConfig.CustomRed
-import com.qianyanhuyu.app_large.constants.AppConfig.originToBlueHorizontal
 import com.qianyanhuyu.app_large.constants.AppConfig.whiteToBlack
 import com.qianyanhuyu.app_large.constants.AppConfig.whiteToBlackHorizontal
 import com.qianyanhuyu.app_large.constants.AppConfig.whiteToGreenHorizontal
@@ -45,10 +38,12 @@ import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.ui.widgets.BaseMsgDialog
 import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
+import com.qianyanhuyu.app_large.ui.widgets.MessageDialog
 import com.qianyanhuyu.app_large.util.cdp
-import com.qianyanhuyu.app_large.util.csp
+import com.qianyanhuyu.app_large.viewmodel.QianYanPlayViewAction
 import com.qianyanhuyu.app_large.viewmodel.QianYanPlayViewEvent
 import com.qianyanhuyu.app_large.viewmodel.QianYanPlayViewModel
+import com.qianyanhuyu.app_large.viewmodel.QianYanPlayViewState
 import kotlinx.coroutines.launch
 
 /***
@@ -59,7 +54,6 @@ import kotlinx.coroutines.launch
 
 private val imageRadius = 15.cdp
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QianYanPlayScreen(
     snackbarHostState: SnackbarHostState,
@@ -93,6 +87,9 @@ fun QianYanPlayScreen(
             .fillMaxSize()
     ) {
         QianYanPlayContent(
+            playButtonOnClick = {
+
+            },
             modifier = Modifier
                 .fillMaxSize()
         )
@@ -104,6 +101,7 @@ fun QianYanPlayScreen(
  */
 @Composable
 fun QianYanPlayContent(
+    playButtonOnClick: () -> Unit,
     modifier: Modifier
 ) {
     // 主体内容
@@ -153,6 +151,7 @@ fun QianYanPlayContent(
                 iconSrc = "https://img.js.design/assets/img/64747616d18b309f6e7d8594.png#d1e4aa5e2fccfeb1b9eba374eabad772",
                 buttonText = "腾讯视频",
                 isTripsVisible = true,
+                onClick = playButtonOnClick,
                 modifier = Modifier
                     .constrainAs(leftContentView) {
                         start.linkTo(parent.start)
@@ -205,7 +204,7 @@ fun QianYanPlayContent(
 }
 
 @Composable
-fun CenterContent(
+private fun CenterContent(
     src: String,
     bottomLeftSrc: String,
     bottomRightSrc: String,
@@ -227,10 +226,6 @@ fun CenterContent(
 
         // 底部中线
         val guideLine5fV = createGuidelineFromStart(0.5f)
-
-        val bgColorsBrush = remember {
-            whiteToBlackHorizontal
-        }
 
         CommonNetworkImage(
             url = src,
@@ -324,13 +319,25 @@ fun CenterContent(
 }
 
 @Composable
-fun FillHeightImageContent(
+private fun OpenTripsDialog() {
+    BaseMsgDialog(
+        title = "连接到设备",
+        confirmText="Ok",
+        onRequestDismiss = {}
+    ) {
+
+    }
+}
+
+@Composable
+private fun FillHeightImageContent(
     src: String,
     iconSrc: String,
     buttonText: String,
     buttonColor: Color = CustomBlue,
     isTripsVisible: Boolean = false,
-    modifier: Modifier
+    modifier: Modifier,
+    onClick: () -> Unit = {}
 ) {
     ConstraintLayout(
         modifier = modifier
@@ -422,7 +429,8 @@ fun FillHeightImageContent(
                 }
                 .padding(
                     bottom = 25.cdp
-                )
+                ),
+            onClick = onClick
         )
     }
 }

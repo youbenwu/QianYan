@@ -6,11 +6,14 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -68,6 +71,7 @@ import com.qianyanhuyu.app_large.constants.AppConfig.brush247
 import com.qianyanhuyu.app_large.ui.widgets.BaseMsgDialog
 import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
+import com.qianyanhuyu.app_large.ui.widgets.CommonLocalImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
 import com.qianyanhuyu.app_large.ui.widgets.MultiFabItem
 import com.qianyanhuyu.app_large.ui.widgets.MultiFloatingActionButton
@@ -104,8 +108,8 @@ private val expandFbItemList: MutableList<MultiFabItem> = mutableListOf(
     ),
     MultiFabItem(
         index = 1,
-        icon = R.drawable.ic_nav_qianyan_play,
-        label = "迁眼互娱"
+        icon = R.drawable.ic_ip_put_in,
+        label = "IP投放"
     ),
     MultiFabItem(
         index = 2,
@@ -114,13 +118,18 @@ private val expandFbItemList: MutableList<MultiFabItem> = mutableListOf(
     ),
     MultiFabItem(
         index = 3,
-        icon = R.drawable.ic_nav_qianyan_give,
-        label = "迁眼送"
+        icon = R.drawable.ic_nav_qianyan_play,
+        label = "迁眼互娱",
     ),
     MultiFabItem(
         index = 4,
         icon = R.drawable.ic_nav_store,
         label = "店友圈"
+    ),
+    MultiFabItem(
+        index = 5,
+        icon = R.drawable.ic_nav_qianyan_give,
+        label = "迁眼送",
     ),
 )
 
@@ -180,6 +189,7 @@ fun HomePageScreen(
             snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
                 HomeTopBar(
+                    selectState = selectState,
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 30.cdp)
@@ -187,7 +197,6 @@ fun HomePageScreen(
             },
             floatingActionButton = {
                 MultiFloatingActionButton(
-                    srcIcon = Icons.Outlined.Add,
                     items = expandFbItemList,
                     selectState = selectState,
                 ) { item ->
@@ -215,6 +224,7 @@ fun HomePageScreen(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun HomeTopBar(
+    selectState: MutableState<Int>,
     modifier: Modifier
 ) {
     ConstraintLayout(
@@ -249,6 +259,7 @@ fun HomeTopBar(
         )
 
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.constrainAs(centerTitleTextView) {
                 linkTo(start = centerView.start, end = centerView.end)
                 top.linkTo(centerView.top)
@@ -264,7 +275,7 @@ fun HomeTopBar(
                 color = Color.White
             )
             Text(
-                text = "HUAN YING SHI YONG QIAN YAN HU YU PING TAI",
+                text = "WELCOME TO EYE ENTERTAINMENT",
                 fontWeight = FontWeight.Bold,
                 fontSize = 12.csp,
                 textAlign = TextAlign.Center,
@@ -296,14 +307,14 @@ fun HomeTopBar(
                 }
         )
 
-        // 左边内容
+        // 右边内容
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .constrainAs(contentLeftView) {
-                    end.linkTo(centerView.start)
-                    start.linkTo(lineLeftStartView.end)
-                    linkTo(top = parent.top, bottom = lineLeftView.top)
+                .constrainAs(contentRightView) {
+                    start.linkTo(centerView.end)
+                    end.linkTo(lineRightEndView.start)
+                    linkTo(top = parent.top, bottom = lineRightView.top)
 
                     width = Dimension.preferredWrapContent
                 }
@@ -311,28 +322,11 @@ fun HomeTopBar(
                     top = 12.cdp
                 )
         ) {
-            CommonIcon(
-                resId = R.drawable.ic_location,
-                tint = Color.White,
-                modifier = Modifier
-                    .padding(
-                        start = 30.cdp,
-                        end = 10.cdp
-                    )
-                    .size(30.cdp)
-            )
-            Text(
-                text = "广州",
-                fontSize = 24.csp,
-                textAlign = TextAlign.Center,
-                letterSpacing = 1.csp,
-                color = Color.White
-            )
             CommonComposeImage(
                 resId = R.drawable.ic_xiaoyu,
                 modifier = Modifier
                     .padding(
-                        start = 38.cdp,
+                        start = 20.cdp,
                         end = 10.cdp
                     )
             )
@@ -354,7 +348,26 @@ fun HomeTopBar(
                 modifier = Modifier
                     .padding(
                         start = 20.cdp,
-                        end = 10.cdp
+                        end = 20.cdp
+                    )
+            )
+
+            CommonIcon(
+                resId = R.drawable.ic_location,
+                tint = Color.White,
+                modifier = Modifier
+                    .size(30.cdp)
+            )
+            Text(
+                text = "广州",
+                fontSize = 24.csp,
+                textAlign = TextAlign.Center,
+                letterSpacing = 1.csp,
+                color = Color.White,
+                modifier = Modifier
+                    .padding(
+                        start = 10.cdp,
+                        end = 20.cdp
                     )
             )
         }
@@ -382,46 +395,81 @@ fun HomeTopBar(
                 }
         )
 
-        // 右边内容
+        // 左边内容
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .constrainAs(contentRightView) {
-                    start.linkTo(centerView.end)
-                    end.linkTo(lineRightEndView.start)
-                    linkTo(top = parent.top, bottom = lineRightView.top)
+                .constrainAs(contentLeftView) {
+                    end.linkTo(centerView.start)
+                    start.linkTo(lineLeftStartView.end)
+                    linkTo(top = parent.top, bottom = lineLeftView.top)
 
                     width = Dimension.preferredWrapContent
                 }
                 .padding(
-                    top = 10.cdp
+                    top = 10.cdp,
+                    start = 20.cdp,
+                    end = 20.cdp
                 )
         ) {
             val ipCoroutineState = rememberCoroutineScope()
 
             CommonComposeImage(
-                R.drawable.ic_computer,
+                R.drawable.ic_home_button,
                 modifier = Modifier
-                    .size(59.cdp)
+                    .width(41.cdp)
+                    .height(37.cdp)
                     .clickable {
                         ipCoroutineState.launch {
-                            pagerState.scrollToPage(expandFbItemList.size + 2)
-                            selectedHomeTabIndex = expandFbItemList.size + 2
+                            val homeIndex = expandFbItemList.size + 1
+                            selectState.value = homeIndex
+                            pagerState.scrollToPage(homeIndex)
+                            selectedHomeTabIndex = homeIndex
                         }
                     }
             )
             Text(
-                text = "IP投放",
+                text = "返回主页",
                 fontSize = 24.csp,
                 textAlign = TextAlign.Center,
                 letterSpacing = 1.csp,
                 color = Color.White,
                 modifier = Modifier
+                    .padding(
+                        start = 10.cdp,
+                        end = 20.cdp
+                    )
                     .clickable {
                         ipCoroutineState.launch {
-                            pagerState.scrollToPage(expandFbItemList.size + 2)
-                            selectedHomeTabIndex = expandFbItemList.size + 2
+                            val homeIndex = expandFbItemList.size + 1
+                            selectState.value = homeIndex
+                            pagerState.scrollToPage(homeIndex)
+                            selectedHomeTabIndex = homeIndex
                         }
+                    }
+            )
+
+            CommonComposeImage(
+                R.drawable.ic_projection_screen,
+                modifier = Modifier
+                    .width(44.cdp)
+                    .height(33.cdp)
+                    .clickable {
+
+                    }
+            )
+            Text(
+                text = "互动投屏",
+                fontSize = 24.csp,
+                textAlign = TextAlign.Center,
+                letterSpacing = 1.csp,
+                color = Color.White,
+                modifier = Modifier
+                    .padding(
+                        start = 10.cdp
+                    )
+                    .clickable {
+
                     }
             )
         }
@@ -444,7 +492,7 @@ fun HomePageBody(
     )
 
     HorizontalPager(
-        count = expandFbItemList.size + 3,
+        count = expandFbItemList.size + 2,
         state = pagerState,
         userScrollEnabled = false,
         modifier = modifier
@@ -454,11 +502,11 @@ fun HomePageBody(
 
         when (pagePosition) {
             0 -> CustomerServiceScreen(snackbarHostState = snackbarHostState)
-            1 -> QianYanPlayScreen(snackbarHostState = snackbarHostState)
+            1 -> IpPutInScreen(snackbarHostState = snackbarHostState)
             2 -> SmartTourismScreen(snackbarHostState = snackbarHostState)
-            3 -> QianYanGiveScreen(snackbarHostState = snackbarHostState)
+            3 -> QianYanPlayScreen(snackbarHostState = snackbarHostState)
             4 -> ShopFriendsScreen(snackbarHostState = snackbarHostState)
-            (expandFbItemList.size + 2) -> IpPutInScreen(snackbarHostState = snackbarHostState)
+            5 -> QianYanGiveScreen(snackbarHostState = snackbarHostState)
             else -> HomePageContent(
                 snackbarHostState = snackbarHostState
             )
@@ -708,13 +756,13 @@ fun testAA(
         }
 
         if(openDialog.value) {
-            BaseMsgDialog(
+            /*BaseMsgDialog(
                 title = "连接到设备",
                 message = listData.value,
                 confirmText="Ok"
             ) {
                 openDialog.value = false
-            }
+            }*/
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.qianyanhuyu.app_large.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -28,11 +29,17 @@ class QianYanPlayViewModel @Inject constructor(
 
     fun dispatch(action: QianYanPlayViewAction) {
         when (action) {
-
+            is QianYanPlayViewAction.CheckIsVip -> checkIsVip(action.isShowTripsDialog)
             else -> {
 
             }
         }
+    }
+
+    private fun checkIsVip(isShow: Boolean) {
+        viewStates = viewStates.copy(
+            isShowTripsDialog = isShow
+        )
     }
 
 
@@ -43,11 +50,15 @@ data class QianYanPlayViewState(
     val mediaData: MediaData = MediaData(
         bannerSrc = "https://img.js.design/assets/img/64b4d729b23f2cad3d25ff2e.png"
     ),
+    val isShowTripsDialog: Boolean = false,
     val isLogging: Boolean = true,
 )
 
 sealed class QianYanPlayViewAction {
     object QianYanPlay : QianYanPlayViewAction()
+    data class CheckIsVip(
+        val isShowTripsDialog: Boolean = false
+    ) : QianYanPlayViewAction()
 }
 
 sealed class QianYanPlayViewEvent {

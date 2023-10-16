@@ -43,12 +43,10 @@ fun TextBackground(
                 textBackground
             )
     ) {
-        Text(
+        CommonText(
             text,
             fontSize = fontSize,
-            textAlign = TextAlign.Center,
             letterSpacing = letterSpacing,
-            color = Color.White,
             lineHeight = lineHeight,
             modifier = Modifier
                 .padding(

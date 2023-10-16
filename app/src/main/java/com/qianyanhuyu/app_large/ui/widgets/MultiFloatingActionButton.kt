@@ -1,7 +1,6 @@
 package com.qianyanhuyu.app_large.ui.widgets
 
 import androidx.annotation.DrawableRes
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
@@ -12,20 +11,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Shapes
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -39,9 +32,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.util.cdp
@@ -56,9 +46,6 @@ import com.qianyanhuyu.app_large.util.toPx
 @Composable
 fun MultiFloatingActionButton(
     modifier: Modifier = Modifier,
-    srcIcon: ImageVector,
-    srcIconColor: Color = Color.White,
-    fabBackgroundColor: Color = Color.Unspecified,
     selectState: MutableState<Int>,
     items: List<MultiFabItem>,
     onFabItemClicked: (item: MultiFabItem) -> Unit
@@ -72,7 +59,7 @@ fun MultiFloatingActionButton(
     val centerContentWidth = 203.cdp
     val centerContentHeight = 150.cdp
     val itemImageSize = 139.cdp
-    val mediumWidth = 223.cdp   // 283
+    val mediumWidth = 50.cdp
 
     //用于+号按钮的旋转动画
     val rotateAnim: Float by transition.animateFloat(
@@ -107,11 +94,9 @@ fun MultiFloatingActionButton(
                     //根据位置，递增每个item的位置高度
                     MultiFabState.Expanded ->
                         when(index) {
-                            0 -> (mediumWidth * 2).toPx
-                            1 -> mediumWidth.toPx
-                            2 -> 5F
-                            3 -> mediumWidth.toPx
-                            4 -> (mediumWidth * 2).toPx
+                            0, 5 -> (mediumWidth * 9).toPx
+                            1, 4 -> (mediumWidth * 6).toPx
+                            2, 3 -> (mediumWidth * 2).toPx
                             else -> 5F
                         }
                 }
@@ -151,11 +136,18 @@ fun MultiFloatingActionButton(
             // 设置偏移量
             val modifierItem = Modifier
                 .graphicsLayer {
-                    this.translationX = if(index < 2) -shrinkListAnim[index] else shrinkListAnim[index]
-                    this.translationY = if(index == 1 || index == 3) {
-                        -(shrinkListAnim[index] - 60.cdp.toPx)
-                    } else if(index == 2) {
-                        if(currentState.value == MultiFabState.Collapsed) shrinkListAnim[index] else -(shrinkListAnim[index] + mediumWidth.toPx + 40.cdp.toPx)
+                    this.translationX = if(index < 3) {
+                        -shrinkListAnim[index]
+                    } else {
+                        shrinkListAnim[index]
+                    }
+                    this.translationY = if(index == 1 || index == 4) {
+                        -(shrinkListAnim[index] - (mediumWidth * 3).toPx)
+                    } else if(index == 2 || index == 3) {
+                        if(currentState.value == MultiFabState.Collapsed)
+                            shrinkListAnim[index]
+                        else
+                            -(shrinkListAnim[index] + (mediumWidth * 3).toPx)
 
                     } else {
                         20.cdp.toPx
@@ -168,7 +160,7 @@ fun MultiFloatingActionButton(
                     resId = R.drawable.nav_item_bg,
                     modifier = modifierItem
                         .width(283.cdp)
-                        .height(224.cdp)
+                        .height(200.cdp)
                 )
             }
 
@@ -204,22 +196,43 @@ fun MultiFloatingActionButton(
                 )
             }
         }
-        CommonComposeImage(
-            resId = R.drawable.ic_home,
+
+        Box(
+            contentAlignment = Alignment.Center,
             modifier = Modifier
-                .width(centerContentWidth)
-                .height(centerContentHeight)
-                .clip(CircleShape)
+                .size(195.cdp)
                 .graphicsLayer {
-                    this.translationY = 20.cdp.toPx
+                    this.translationY = 70.cdp.toPx
                 }
+                .clip(CircleShape)
                 .clickable {
                     //更新状态执行：收缩动画
                     currentState.value =
                         if (currentState.value == MultiFabState.Collapsed) MultiFabState.Expanded else MultiFabState.Collapsed
                 }
-                .rotate(rotateAnim)
-        )
+        ) {
+
+            if(currentState.value == MultiFabState.Collapsed) {
+                CommonComposeImage(
+                    resId = R.drawable.ic_home_bg,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .aspectRatio(1f)
+                        .padding(top = 20.cdp)
+                )
+            }
+
+            CommonComposeImage(
+                resId = R.drawable.ic_home,
+                modifier = Modifier
+                    .width(centerContentWidth)
+                    .height(centerContentHeight)
+                    .rotate(rotateAnim)
+                    .padding(
+                        end = 11.cdp
+                    )
+            )
+        }
     }
 }
 
@@ -230,10 +243,8 @@ class MultiFabItem(
     val index: Int,
     @DrawableRes val icon: Int,
     val label: String,
-    val srcIconColor: Color = Color.White,
     val labelTextColor: Color = Color.White,
     val labelBackgroundColor: Color = Color.Transparent,
-    val fabBackgroundColor: Color = Color.Unspecified,
 )
 
 /**

@@ -84,7 +84,7 @@ fun ShopFriendsAnimation(
         }
 
         layout(constraints.maxWidth, constraints.maxHeight) {
-            placeables.forEachIndexed { index, placeable ->
+            placeables.forEachIndexed { _, placeable ->
                 placeable.place(x = 0, y = 0)
             }
         }
@@ -177,16 +177,20 @@ fun ImageCircle(
         modifier = modifier
             .onGloballyPositioned {
                 enable.value = it.boundsInRoot().top >= 0 && it.boundsInRoot().right > 0
-
-                circleImageState.value = if(it.boundsInRoot().top >= 0 && it.boundsInRoot().right > 0) {
-                    ShopFriendsAnimation.Display
-                } else {
-                    ShopFriendsAnimation.Hide
-                }
             }
     ) {
         val canvasWidth = size.width
         val canvasHeight = size.height
+
+        // 圆外位置, 添加几个固定位置
+        val outerCircles = listOf(
+            IntOffset((canvasWidth * 0.1f).toInt(), (canvasHeight * 0.35f).toInt()),
+            IntOffset(canvasWidth.toInt() - (canvasWidth * 0.12f).toInt(), (canvasHeight * 0.66f).toInt()),
+            IntOffset(canvasWidth.toInt() - (canvasWidth * 0.14f).toInt(), (canvasHeight * 0.2f).toInt()),
+            IntOffset(canvasWidth.toInt() - (canvasWidth * 0.18f).toInt(), (canvasHeight * 0.1f).toInt()),
+            IntOffset((canvasWidth * 0.15f).toInt(), (canvasHeight * 0.2f).toInt()),
+            IntOffset((canvasWidth * 0.2f).toInt(), (canvasHeight * 0.1f).toInt()),
+        )
 
         val center = Offset(x = canvasWidth / 2, y = canvasHeight / 2)
 
@@ -201,16 +205,14 @@ fun ImageCircle(
 
         imgSrc?.let { bitmap ->
 
-            var offset = inCircleOffset(center, radius, circleAngle)
+            val offset = if(circleOffsetIndex >= 0) {
+                inCircleOffset(center, radius, circleAngle)
+            } else {
+                outerCircles[0 - circleOffsetIndex - 1].toOffset()
+            }
 
+            //圆外画线
             if(circleOffsetIndex < 0 && circleImageState.value == ShopFriendsAnimation.Display) {
-                val outerCircles = listOf(
-                    IntOffset(150, 200),
-                    IntOffset(canvasWidth.toInt() - 150, 150)
-                )
-
-                offset = outerCircles[0 - circleOffsetIndex - 1].toOffset()
-
                 drawLine(
                     color = Color(44, 71, 126),
                     start = Offset(
