@@ -108,6 +108,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-swiperefresh:$accompanist_version")
     implementation("com.google.accompanist:accompanist-placeholder-material:$accompanist_version")
     implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanist_version")
+    implementation("com.google.accompanist:accompanist-drawablepainter:$accompanist_version")
 
     // ConstraintLayout 布局
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
@@ -119,6 +120,12 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.2.2")
     // lottie 动画
     implementation("com.airbnb.android:lottie-compose:5.0.3")
+
+    // paging
+    val paging_version = "3.1.1"
+    implementation("androidx.paging:paging-compose:1.0.0-alpha18")
+    implementation("androidx.paging:paging-runtime-ktx:${paging_version}")
+    implementation("androidx.paging:paging-common:${paging_version}")
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 }

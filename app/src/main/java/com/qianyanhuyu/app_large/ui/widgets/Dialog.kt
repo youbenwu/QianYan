@@ -103,14 +103,12 @@ fun BaseMsgDialog(
  *      }
  * )
  */
-@OptIn(ExperimentalTextApi::class)
 @Composable
-fun MessageDialog(
-    title: String = "",
-    confirmText: String = "Confirm",
+fun BaseMessageDialog(
     isShow: Boolean = false,
-    onConfirmClick: () -> Unit = {},
-    onCancelClick: () -> Unit = {}
+    dialogBackground: Color = Color(27, 47, 120),
+    dialogHeight: Float = 0.65f,
+    content: @Composable () -> Unit
 ) {
     val alertDialog = remember {
         mutableStateOf(false)
@@ -128,264 +126,280 @@ fun MessageDialog(
             ),
         ) {
             Card(
-                backgroundColor = Color(27, 47, 120),
+                backgroundColor = dialogBackground,
                 elevation = 8.dp,
                 modifier = Modifier
                     .fillMaxWidth(0.5f)
-                    .fillMaxHeight(0.65f)
-                    .clip(RoundedCornerShape(30.cdp))
+                    .fillMaxHeight(dialogHeight)
+                    .clip(RoundedCornerShape(50.cdp))
             ) {
-                ConstraintLayout(
-                    modifier = Modifier.fillMaxSize()
-                ) {
+                content()
+            }
+        }
+    }
+}
 
-                    val (
-                        cancelView,
-                        titleTextView,
-                        titleView,
-                        contentView1,
-                        contentView2,
-                        contentView21,
-                        contentView31,
-                        contentView32,
-                        contentView33,
-                        contentView34,
-                        confirmTripsView,
-                        confirmView,
-                        bottomView,
-                    ) = createRefs()
+@OptIn(ExperimentalTextApi::class)
+@Composable
+fun VipCheckDialog(
+    title: String = "",
+    confirmText: String = "Confirm",
+    isShow: Boolean = false,
+    onConfirmClick: () -> Unit = {},
+    onCancelClick: () -> Unit = {},
+) {
+    BaseMessageDialog(
+        isShow = isShow,
+    ) {
+        ConstraintLayout(
+            modifier = Modifier.fillMaxSize()
+        ) {
 
-                    CommonLocalImage(
-                        resId = R.drawable.trips_dialog_top_bg,
-                        modifier = Modifier
-                            .constrainAs(titleView) {
-                                top.linkTo(parent.top)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
+            val (
+                cancelView,
+                titleTextView,
+                titleView,
+                contentView1,
+                contentView2,
+                contentView21,
+                contentView31,
+                contentView32,
+                contentView33,
+                contentView34,
+                confirmTripsView,
+                confirmView,
+                bottomView,
+            ) = createRefs()
 
-                                width = Dimension.fillToConstraints
-                            }
-                    )
+            CommonLocalImage(
+                resId = R.drawable.trips_dialog_top_bg,
+                modifier = Modifier
+                    .constrainAs(titleView) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
 
-                    CommonLocalImage(
-                        resId = R.drawable.trips_dialog_bottom_bg,
-                        modifier = Modifier
-                            .constrainAs(bottomView) {
-                                bottom.linkTo(parent.bottom)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
+                        width = Dimension.fillToConstraints
+                    }
+            )
 
-                                width = Dimension.fillToConstraints
-                            }
-                    )
+            CommonLocalImage(
+                resId = R.drawable.trips_dialog_bottom_bg,
+                modifier = Modifier
+                    .constrainAs(bottomView) {
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
 
-                    Text(
-                        title,
-                        textAlign = TextAlign.Center,
-                        fontSize = 50.csp,
-                        color = Color.White,
-                        modifier = Modifier
-                            .constrainAs(titleTextView) {
-                                start.linkTo(parent.start)
-                                top.linkTo(titleView.top)
-                                end.linkTo(parent.end)
-                                bottom.linkTo(titleView.bottom)
-                                width = Dimension.fillToConstraints
-                            }
-                    )
+                        width = Dimension.fillToConstraints
+                    }
+            )
 
-                    CommonLocalImage(
-                        resId = R.drawable.ic_dialog_cancel,
-                        modifier = Modifier
-                            .constrainAs(cancelView) {
-                                end.linkTo(parent.end)
-                                top.linkTo(titleView.top)
-                                bottom.linkTo(titleView.bottom)
-                            }
-                            .size(114.cdp)
-                            .clickable {
-                                onCancelClick.invoke()
-                            }
-                    )
+            Text(
+                title,
+                textAlign = TextAlign.Center,
+                fontSize = 50.csp,
+                color = Color.White,
+                modifier = Modifier
+                    .constrainAs(titleTextView) {
+                        start.linkTo(parent.start)
+                        top.linkTo(titleView.top)
+                        end.linkTo(parent.end)
+                        bottom.linkTo(titleView.bottom)
+                        width = Dimension.fillToConstraints
+                    }
+            )
 
-                    Text(
-                        "观看VIP内容需要开通会员",
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold,
-                        style = TextStyle(
-                            brush = Brush.linearGradient(
-                                colors = listOf(
-                                    Color(252, 229, 97).copy(alpha = 1f),
-                                    Color(210, 135, 45).copy(alpha = 1f)
-                                ),
-                                tileMode = TileMode.Mirror
-                            ),
-                            fontSize = 50.csp
+            CommonLocalImage(
+                resId = R.drawable.ic_dialog_cancel,
+                modifier = Modifier
+                    .constrainAs(cancelView) {
+                        end.linkTo(parent.end)
+                        top.linkTo(titleView.top)
+                        bottom.linkTo(titleView.bottom)
+                    }
+                    .size(114.cdp)
+                    .clickable {
+                        onCancelClick.invoke()
+                    }
+            )
+
+            Text(
+                "观看VIP内容需要开通会员",
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                style = TextStyle(
+                    brush = Brush.linearGradient(
+                        colors = listOf(
+                            Color(252, 229, 97).copy(alpha = 1f),
+                            Color(210, 135, 45).copy(alpha = 1f)
                         ),
-                        modifier = Modifier
-                            .constrainAs(contentView1) {
-                                top.linkTo(titleView.bottom)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                            }
-                            .padding(
-                                30.cdp
-                            )
-                    )
-
-                    Text(
-                        "您暂未开通会员",
-                        textAlign = TextAlign.Center,
-                        fontSize = 35.csp,
-                        color = Color.White,
-                        modifier = Modifier
-                            .constrainAs(contentView2) {
-                                top.linkTo(contentView21.top)
-                                bottom.linkTo(contentView21.bottom)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                            }
-                    )
-
-                    CommonLocalImage(
-                        resId = R.drawable.ic_emojo_cry,
-                        modifier = Modifier
-                            .constrainAs(contentView21) {
-                                top.linkTo(contentView1.bottom)
-                                start.linkTo(contentView2.end, 15.cdp)
-                            }
-                            .size(74.cdp)
-                            .clickable {
-                                onCancelClick.invoke()
-                            }
-                    )
-
-                    createHorizontalChain(
-                        contentView31,
-                        contentView32,
-                        contentView33,
-                        contentView34,
-                        chainStyle = ChainStyle.Spread
-                    )
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .constrainAs(contentView31) {
-                                top.linkTo(contentView21.bottom, 30.cdp)
-                                bottom.linkTo(confirmView.top, 30.cdp)
-                                start.linkTo(parent.start)
-                            }
-                    ){
-                        CommonIcon(
-                            resId = R.drawable.ic_dialog_download,
-                            tint = Color.White,
-                            modifier = Modifier
-                                .size(24.cdp)
-                        )
-                        Text(
-                            "下载加速",
-                            fontSize = 25.csp,
-                            color = Color.White,
-                        )
+                        tileMode = TileMode.Mirror
+                    ),
+                    fontSize = 50.csp
+                ),
+                modifier = Modifier
+                    .constrainAs(contentView1) {
+                        top.linkTo(titleView.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
                     }
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .constrainAs(contentView32) {
-                                start.linkTo(contentView31.end)
-                                top.linkTo(contentView31.top)
-                            }
-                    ){
-                        CommonIcon(
-                            resId = R.drawable.ic_dialog_download,
-                            tint = CustomOrigin,
-                            modifier = Modifier
-                                .size(24.cdp)
-                        )
-                        Text(
-                            "下载加速",
-                            fontSize = 25.csp,
-                            color = Color.White,
-                        )
-                    }
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .constrainAs(contentView33) {
-                                start.linkTo(contentView32.end)
-                                top.linkTo(contentView31.top)
-                            }
-                    ){
-                        CommonIcon(
-                            resId = R.drawable.ic_dialog_download,
-                            tint = CustomYellow,
-                            modifier = Modifier
-                                .size(24.cdp)
-                        )
-                        Text(
-                            "下载加速",
-                            fontSize = 25.csp,
-                            color = Color.White,
-                        )
-                    }
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .constrainAs(contentView34) {
-                                start.linkTo(contentView33.end)
-                                top.linkTo(contentView31.top)
-                                end.linkTo(parent.end)
-                            }
-                    ){
-                        CommonIcon(
-                            resId = R.drawable.ic_dialog_download,
-                            tint = CustomGreen165,
-                            modifier = Modifier
-                                .size(24.cdp)
-                        )
-                        Text(
-                            "下载加速",
-                            fontSize = 25.csp,
-                            color = Color.White,
-                        )
-                    }
-
-                    TextBackground(
-                        text = "首月特惠",
-                        textBackground = AppConfig.CustomGreen,
-                        modifier = Modifier
-                            .constrainAs(confirmTripsView) {
-
-                            }
+                    .padding(
+                        30.cdp
                     )
+            )
 
-                    Button(
-                        onClick = onConfirmClick,
-                        shape = Shapes.large,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = ButtonColor,
-                            contentColor = AuthButtonTextColor
-                        ),
-                        modifier = Modifier
-                            .constrainAs(confirmView) {
-                                top.linkTo(contentView31.bottom)
-                                bottom.linkTo(bottomView.top)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                            }
-                            .fillMaxWidth(0.6f)
-                    ) {
-                        Text(
-                            text = confirmText,
-                            fontSize = 30.csp,
-                            fontWeight = FontWeight.Bold
-                        )
+            Text(
+                "您暂未开通会员",
+                textAlign = TextAlign.Center,
+                fontSize = 35.csp,
+                color = Color.White,
+                modifier = Modifier
+                    .constrainAs(contentView2) {
+                        top.linkTo(contentView21.top)
+                        bottom.linkTo(contentView21.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
                     }
-                }
+            )
+
+            CommonLocalImage(
+                resId = R.drawable.ic_emojo_cry,
+                modifier = Modifier
+                    .constrainAs(contentView21) {
+                        top.linkTo(contentView1.bottom)
+                        start.linkTo(contentView2.end, 15.cdp)
+                    }
+                    .size(74.cdp)
+                    .clickable {
+                        onCancelClick.invoke()
+                    }
+            )
+
+            createHorizontalChain(
+                contentView31,
+                contentView32,
+                contentView33,
+                contentView34,
+                chainStyle = ChainStyle.Spread
+            )
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .constrainAs(contentView31) {
+                        top.linkTo(contentView21.bottom, 30.cdp)
+                        bottom.linkTo(confirmView.top, 30.cdp)
+                        start.linkTo(parent.start)
+                    }
+            ){
+                CommonIcon(
+                    resId = R.drawable.ic_dialog_download,
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(24.cdp)
+                )
+                Text(
+                    "下载加速",
+                    fontSize = 25.csp,
+                    color = Color.White,
+                )
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .constrainAs(contentView32) {
+                        start.linkTo(contentView31.end)
+                        top.linkTo(contentView31.top)
+                    }
+            ){
+                CommonIcon(
+                    resId = R.drawable.ic_dialog_download,
+                    tint = CustomOrigin,
+                    modifier = Modifier
+                        .size(24.cdp)
+                )
+                Text(
+                    "下载加速",
+                    fontSize = 25.csp,
+                    color = Color.White,
+                )
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .constrainAs(contentView33) {
+                        start.linkTo(contentView32.end)
+                        top.linkTo(contentView31.top)
+                    }
+            ){
+                CommonIcon(
+                    resId = R.drawable.ic_dialog_download,
+                    tint = CustomYellow,
+                    modifier = Modifier
+                        .size(24.cdp)
+                )
+                Text(
+                    "下载加速",
+                    fontSize = 25.csp,
+                    color = Color.White,
+                )
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .constrainAs(contentView34) {
+                        start.linkTo(contentView33.end)
+                        top.linkTo(contentView31.top)
+                        end.linkTo(parent.end)
+                    }
+            ){
+                CommonIcon(
+                    resId = R.drawable.ic_dialog_download,
+                    tint = CustomGreen165,
+                    modifier = Modifier
+                        .size(24.cdp)
+                )
+                Text(
+                    "下载加速",
+                    fontSize = 25.csp,
+                    color = Color.White,
+                )
+            }
+
+            TextBackground(
+                text = "首月特惠",
+                textBackground = AppConfig.CustomGreen,
+                modifier = Modifier
+                    .constrainAs(confirmTripsView) {
+
+                    }
+            )
+
+            Button(
+                onClick = onConfirmClick,
+                shape = Shapes.large,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = ButtonColor,
+                    contentColor = AuthButtonTextColor
+                ),
+                modifier = Modifier
+                    .constrainAs(confirmView) {
+                        top.linkTo(contentView31.bottom)
+                        bottom.linkTo(bottomView.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }
+                    .fillMaxWidth(0.6f)
+            ) {
+                Text(
+                    text = confirmText,
+                    fontSize = 30.csp,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }

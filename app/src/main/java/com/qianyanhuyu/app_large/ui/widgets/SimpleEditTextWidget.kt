@@ -43,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.TextUnit
 import com.qianyanhuyu.app_large.ui.theme.EditTextBottomLineColor
 import com.qianyanhuyu.app_large.ui.theme.IconColor
 import com.qianyanhuyu.app_large.ui.theme.Shapes
@@ -59,7 +60,7 @@ import com.qianyanhuyu.app_large.viewmodel.AuthenticationViewAction
 @Composable
 fun SimpleEditTextWidget(
     value: String,
-    @StringRes valueLabel: Int,
+    @StringRes valueLabel: Int? = null,
     isReadOnly: Boolean = false,
     @DrawableRes leadingIcon: Int? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
@@ -69,6 +70,7 @@ fun SimpleEditTextWidget(
     onClick: () -> Unit = {},
     enabled: Boolean = true,
     readOnly: Boolean = false,
+    labelSize: TextUnit = LocalTextStyle.current.fontSize,
     textStyle: TextStyle = LocalTextStyle.current.copy(
         color = Color.White
     ),
@@ -131,12 +133,15 @@ fun SimpleEditTextWidget(
                 colors = colors,
                 interactionSource = interactionSource,
                 contentPadding = paddingValues,
-                label = {
-                    Text(
-                        text = stringResource(id = valueLabel),
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 2.csp,
-                    )
+                label = valueLabel?.let {
+                    {
+                        Text(
+                            text = stringResource(id = it),
+                            fontSize = labelSize,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 2.csp,
+                        )
+                    }
                 },
                 trailingIcon = if (value.isNotEmpty() && !isReadOnly ) {
                     {

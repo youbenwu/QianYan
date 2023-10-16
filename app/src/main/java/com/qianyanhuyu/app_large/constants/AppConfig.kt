@@ -252,6 +252,22 @@ object AppConfig {
         )
     )
 
+    val whiteToTransaction = Brush.verticalGradient(
+        listOf(
+            Color.White,
+            Color.White.copy(alpha = 0.3F)
+        )
+    )
+
+    val createGroupChatDialogBrush = Brush.verticalGradient(
+        listOf(
+            Color(42, 190, 228),
+            Color(42, 152, 228),
+            Color(42, 190, 228)
+
+        )
+    )
+
     // 36 开头的黑色
     val Black36 = Color(36, 39, 49, 1)
 
@@ -266,6 +282,8 @@ object AppConfig {
     val CustomBlue = Color(32, 169, 232)
     val CustomRed = Color(229, 9, 20)
     val CustomBlue9 = Color(56, 69, 171)
+    val CustomBlue84 = Color(84, 163, 246)
+    val CustomGrey = Color(255,255,255).copy(alpha = 0.30F)
 
 
     // 大圆数量

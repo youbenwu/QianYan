@@ -11,6 +11,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.TextUnit
 import com.qianyanhuyu.app_large.ui.theme.BlackColor21
 import com.qianyanhuyu.app_large.util.csp
 
@@ -23,13 +24,15 @@ import com.qianyanhuyu.app_large.util.csp
 fun ActivationClickText(
     @StringRes text: Int,
     clickText: String,
+    clickTextColor: Color = BlackColor21,
+    fontSize: TextUnit = 14.csp,
     modifier: Modifier,
     onClick: () -> Unit = {}
 ) {
     val annotatedText = buildAnnotatedString {
         withStyle(
             style = SpanStyle(
-                fontSize = 14.csp,
+                fontSize = fontSize,
                 letterSpacing = 2.csp,
                 color = Color.White,
             )
@@ -42,9 +45,9 @@ fun ActivationClickText(
         )
         withStyle(
             style = SpanStyle(
-                fontSize = 14.csp,
+                fontSize = fontSize,
                 fontWeight = FontWeight.Bold,
-                color = BlackColor21,
+                color = clickTextColor,
             )
         ) {
             append(clickText)

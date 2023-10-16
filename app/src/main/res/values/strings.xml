@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">迁眼互娱</string>
 
+    <string name="app_common_empty_text" />
     <string name="display_name">This display is: %s</string>
     <string name="display_color">Background color: #%X</string>
 
@@ -24,4 +25,11 @@
     <string name="activation_room_num">投放房间号</string>
     <string name="activation_confirm_text">马上激活 →</string>
     <string name="activation_confirm_tips">迁眼互娱在任何场合下都不会泄露您的任何信息/如果遇到问题</string>
+
+    <!-- 群聊资料 -->
+    <string name="group_chat_form_name">聊天室名称</string>
+    <string name="group_chat_form_name_placeholder">请输入群聊名称</string>
+    <string name="group_chat_form_type">聊天室类型</string>
+    <string name="group_chat_form_type_placeholder">最多输入六个字</string>
+    <string name="group_chat_form_term">我已阅读并同意迁眼互娱 </string>
 </resources>

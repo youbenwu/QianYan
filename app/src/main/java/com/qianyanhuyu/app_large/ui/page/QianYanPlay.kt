@@ -14,7 +14,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -32,15 +31,12 @@ import com.qianyanhuyu.app_large.constants.AppConfig.CustomBlue
 import com.qianyanhuyu.app_large.constants.AppConfig.CustomGreen9
 import com.qianyanhuyu.app_large.constants.AppConfig.CustomRed
 import com.qianyanhuyu.app_large.constants.AppConfig.whiteToBlack
-import com.qianyanhuyu.app_large.constants.AppConfig.whiteToBlackHorizontal
 import com.qianyanhuyu.app_large.constants.AppConfig.whiteToGreenHorizontal
 import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.ui.widgets.BaseMsgDialog
 import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
-import com.qianyanhuyu.app_large.ui.widgets.MessageDialog
 import com.qianyanhuyu.app_large.util.cdp
-import com.qianyanhuyu.app_large.viewmodel.QianYanPlayViewAction
 import com.qianyanhuyu.app_large.viewmodel.QianYanPlayViewEvent
 import com.qianyanhuyu.app_large.viewmodel.QianYanPlayViewModel
 import com.qianyanhuyu.app_large.viewmodel.QianYanPlayViewState
