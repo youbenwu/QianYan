@@ -5,6 +5,8 @@
     <!-- 网络权限 -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -15,6 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.App_large"
+        android:networkSecurityConfig="@xml/htttps_config"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"

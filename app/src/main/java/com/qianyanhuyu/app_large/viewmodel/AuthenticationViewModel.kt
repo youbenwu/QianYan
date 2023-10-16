@@ -1,14 +1,20 @@
 package com.qianyanhuyu.app_large.viewmodel
 
+import android.content.Context
+import android.content.SharedPreferences
+import android.telephony.TelephonyManager
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.qianyanhuyu.app_large.data.model.ApiResult
 import com.qianyanhuyu.app_large.data.user.UserApi
-import com.qianyanhuyu.app_large.data.user.model.response.BaseResponse
+import com.qianyanhuyu.app_large.data.user.model.SecurityUser
 import com.qianyanhuyu.app_large.data.user.model.User
 import com.qianyanhuyu.app_large.ui.common.Route
+import com.qianyanhuyu.app_large.util.datastore.DataKey
+import com.qianyanhuyu.app_large.util.datastore.DataStoreUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.channels.Channel
@@ -59,10 +65,10 @@ class AuthenticationViewModel @Inject constructor(
      */
     private fun initPageData() {
         viewModelScope.launch(exception) {
-            var userResponse: BaseResponse<User>?
+            var userResponse: ApiResult<User>?
 
             try {
-                val response = userApi.getUser("test")
+                val response = userApi.getUser("388")
                 if(response.isSuccessful && response.body() != null) {
                     userResponse = response.body()
                     // _viewEvents.send(AuthenticationViewEvent.ShowMessage("获取信息失败："+ userResponse?.data.toString()))
@@ -83,14 +89,45 @@ class AuthenticationViewModel @Inject constructor(
      * 提交验证信息
      */
     private fun confirmAuthInfo(a: String) {
-        /*viewStates = viewStates.copy(
-            isLoading = true
-        )*/
+
         viewModelScope.launch {
-            _viewEvents.send(AuthenticationViewEvent.NavTo(Route.ACTIVATION))
+            try {
+                if(viewStates.personPhone==null||viewStates.personPhone.trim().isEmpty()){
+                    _viewEvents.send(AuthenticationViewEvent.ShowMessage("请输入手机号码"))
+                    return@launch
+                }
+                if(viewStates.verificationCode==null||viewStates.verificationCode.trim().isEmpty()){
+                    _viewEvents.send(AuthenticationViewEvent.ShowMessage("请输入验证码"))
+                    return@launch
+                }
+                val response = userApi.login(viewStates.personPhone,viewStates.verificationCode)
+                if(response.isSuccessful && response.body() != null) {
+                    var result:ApiResult<SecurityUser>? = response.body()
+                    if(result?.status==0){
+
+                        DataStoreUtils.putData(DataKey.userId,result.data.id);
+                        DataStoreUtils.putData(DataKey.username,result.data.username);
+                        DataStoreUtils.putData(DataKey.token,result.data.session?.token);
+                        _viewEvents.send(AuthenticationViewEvent.NavTo(Route.ACTIVATION))
+                        _viewEvents.send(AuthenticationViewEvent.ShowMessage("登陆成功"))
+                    }else{
+                        _viewEvents.send(AuthenticationViewEvent.ShowMessage("登陆失败："+ result?.message))
+                    }
+                } else {
+                    _viewEvents.send(AuthenticationViewEvent.ShowMessage("请求失败"))
+                    return@launch
+                }
+
+            } catch(e: Exception) {
+                e.printStackTrace();
+                return@launch
+            }
+
         }
 
     }
+
+
 
     private fun updatePersonNum(personNum: String) {
         viewStates = viewStates.copy(

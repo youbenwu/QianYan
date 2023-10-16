@@ -3,6 +3,7 @@ package com.qianyanhuyu.app_large
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
+import android.telephony.TelephonyManager
 import com.qianyanhuyu.app_large.util.datastore.DataStoreUtils
 import dagger.hilt.android.HiltAndroidApp
 
@@ -13,6 +14,8 @@ import dagger.hilt.android.HiltAndroidApp
  */
 @HiltAndroidApp
 class App : Application(){
+
+
 
     companion object {
         @SuppressLint("StaticFieldLeak")
@@ -25,4 +28,7 @@ class App : Application(){
         // 初始化DataStore
         DataStoreUtils.init(this)
     }
+
+
+
 }
