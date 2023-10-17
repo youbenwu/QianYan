@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.foundation.text.BasicTextField
@@ -70,7 +71,6 @@ fun SimpleEditTextWidget(
     onClick: () -> Unit = {},
     enabled: Boolean = true,
     readOnly: Boolean = false,
-    labelSize: TextUnit = LocalTextStyle.current.fontSize,
     textStyle: TextStyle = LocalTextStyle.current.copy(
         color = Color.White
     ),
@@ -137,9 +137,10 @@ fun SimpleEditTextWidget(
                     {
                         Text(
                             text = stringResource(id = it),
-                            fontSize = labelSize,
                             fontWeight = FontWeight.Bold,
                             letterSpacing = 2.csp,
+                            modifier = Modifier
+                                .padding(vertical = 8.cdp)
                         )
                     }
                 },

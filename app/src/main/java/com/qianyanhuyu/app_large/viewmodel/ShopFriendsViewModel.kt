@@ -3,7 +3,6 @@ package com.qianyanhuyu.app_large.viewmodel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.qianyanhuyu.app_large.App.Companion.context
@@ -291,12 +290,19 @@ class ShopFriendsViewModel @Inject constructor(
                 )
             }
             ShopFriendsEditTextType.GroupType -> {
+                // 在UTF-8下汉字占3个Byte
+                val lengthMax = 18
+                val isCheckLength = data.isNotEmpty() && data.toByteArray().size <= lengthMax
 
                 viewStates = viewStates.copy(
                     formList = viewStates.formList.map {
                         if(it.type == type) {
                             it.copy(
-                                data = data
+                                data = if(data.isEmpty() || isCheckLength) {
+                                    data
+                                } else {
+                                    it.data
+                                }
                             )
                         } else {
                             it

@@ -1,16 +1,21 @@
 package com.qianyanhuyu.app_large.ui.page.common
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
+import com.qianyanhuyu.app_large.ui.widgets.CommonLocalImage
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
 
@@ -42,6 +47,40 @@ fun LogoText(
                 .padding(
                     end = 4.cdp
                 )
+        )
+
+        CommonText(
+            text = text,
+            fontSize = fontSize,
+            letterSpacing = letterSpacing,
+            lineHeight = lineHeight
+        )
+    }
+}
+
+@Composable
+fun LogoImageText(
+    @DrawableRes iconDrawable: Int,
+    text: String = "",
+    iconWidth: Dp = 25.cdp,
+    iconHeight: Dp = 25.cdp,
+    rowSpacing: Dp = 10.cdp,
+    fontSize: TextUnit = 30.csp,
+    fontWeight: FontWeight = FontWeight.Normal,
+    lineHeight: TextUnit = 35.csp,
+    letterSpacing: TextUnit = 1.csp,
+    modifier: Modifier
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(rowSpacing),
+        modifier = modifier
+    ) {
+        CommonLocalImage(
+            resId = iconDrawable,
+            modifier = Modifier
+                .width(iconWidth)
+                .height(iconHeight)
         )
 
         CommonText(

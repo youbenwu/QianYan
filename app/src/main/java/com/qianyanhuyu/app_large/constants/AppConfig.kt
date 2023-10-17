@@ -268,6 +268,15 @@ object AppConfig {
         )
     )
 
+    val navDrawerBgBrush = Brush.verticalGradient(
+        listOf(
+            Color(13, 17, 32).copy(alpha = 1f),
+            Color(24, 19, 49).copy(alpha = 1f),
+            Color(11, 18, 32)
+
+        )
+    )
+
     // 36 开头的黑色
     val Black36 = Color(36, 39, 49, 1)
 

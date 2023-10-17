@@ -28,6 +28,8 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.Button
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
@@ -36,6 +38,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -68,6 +71,8 @@ import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.constants.AppConfig.brush121
 import com.qianyanhuyu.app_large.constants.AppConfig.brush121_192
 import com.qianyanhuyu.app_large.constants.AppConfig.brush247
+import com.qianyanhuyu.app_large.ui.page.common.NavigationDrawerSample
+import com.qianyanhuyu.app_large.ui.page.groupchat.GroupChats
 import com.qianyanhuyu.app_large.ui.widgets.BaseMsgDialog
 import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
@@ -148,6 +153,7 @@ fun HomePageScreen(
     val coroutineState = rememberCoroutineScope()
     val fragmentManager = (context as FragmentActivity).supportFragmentManager
 
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
     val selectState = remember { mutableStateOf(expandFbItemList.size + 1) }
 
     BackHandler {
@@ -185,35 +191,45 @@ fun HomePageScreen(
     }
 
     MaterialTheme {
-        Scaffold(
-            snackbarHost = { SnackbarHost(snackbarHostState) },
-            topBar = {
-                HomeTopBar(
-                    selectState = selectState,
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 30.cdp)
+        NavigationDrawerSample(
+            drawerState = drawerState,
+            sheetContent = {
+                GroupChats(
+                    modifier = Modifier.fillMaxSize()
                 )
-            },
-            floatingActionButton = {
-                MultiFloatingActionButton(
-                    items = expandFbItemList,
-                    selectState = selectState,
-                ) { item ->
-                    coroutineState.launch {
-                        pagerState.scrollToPage(item.index)
-                        selectedHomeTabIndex = item.index
+            }
+        ) {
+            Scaffold(
+                snackbarHost = { SnackbarHost(snackbarHostState) },
+                topBar = {
+                    HomeTopBar(
+                        selectState = selectState,
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 30.cdp)
+                    )
+                },
+                floatingActionButton = {
+                    MultiFloatingActionButton(
+                        items = expandFbItemList,
+                        selectState = selectState,
+                    ) { item ->
+                        coroutineState.launch {
+                            pagerState.scrollToPage(item.index)
+                            selectedHomeTabIndex = item.index
+                        }
                     }
-                }
-            },
-            floatingActionButtonPosition = FabPosition.Center
-        ) { innerPadding ->
-            HomePageBody(
-                snackbarHostState = snackbarHostState,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            )
+                },
+                floatingActionButtonPosition = FabPosition.Center
+            ) { innerPadding ->
+                HomePageBody(
+                    drawerState = drawerState,
+                    snackbarHostState = snackbarHostState,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                )
+            }
         }
     }
 }
@@ -476,9 +492,10 @@ fun HomeTopBar(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomePageBody(
+    drawerState: DrawerState,
     snackbarHostState: SnackbarHostState,
     modifier: Modifier
 ) {
@@ -505,7 +522,7 @@ fun HomePageBody(
             1 -> IpPutInScreen(snackbarHostState = snackbarHostState)
             2 -> SmartTourismScreen(snackbarHostState = snackbarHostState)
             3 -> QianYanPlayScreen(snackbarHostState = snackbarHostState)
-            4 -> ShopFriendsScreen(snackbarHostState = snackbarHostState)
+            4 -> ShopFriendsScreen(snackbarHostState = snackbarHostState, drawerState = drawerState)
             5 -> QianYanGiveScreen(snackbarHostState = snackbarHostState)
             else -> HomePageContent(
                 snackbarHostState = snackbarHostState
