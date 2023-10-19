@@ -149,11 +149,6 @@ fun AuthenticationContent(
             modifier = Modifier.fillMaxSize()
         ) {
 
-//            CommonLocalImage(
-//                R.drawable.common_bg,
-//                modifier = Modifier
-//                    .fillMaxSize()
-//            )
             CommonComposeImage(
                 R.drawable.common_bg,
                 modifier = Modifier.fillMaxSize()
@@ -369,12 +364,4 @@ fun ConfirmAuth(
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewContent() {
-    AuthInfoWidget(Modifier
-        .fillMaxWidth())
-
 }

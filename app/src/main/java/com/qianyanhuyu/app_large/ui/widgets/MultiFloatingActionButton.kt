@@ -1,6 +1,5 @@
 package com.qianyanhuyu.app_large.ui.widgets
 
-import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -30,9 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import com.qianyanhuyu.app_large.R
+import com.qianyanhuyu.app_large.model.MultiMenuItem
 import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
@@ -47,8 +45,8 @@ import com.qianyanhuyu.app_large.util.toPx
 fun MultiFloatingActionButton(
     modifier: Modifier = Modifier,
     selectState: MutableState<Int>,
-    items: List<MultiFabItem>,
-    onFabItemClicked: (item: MultiFabItem) -> Unit
+    items: List<MultiMenuItem>,
+    onFabItemClicked: (item: MultiMenuItem) -> Unit
 ) {
     //当前菜单默认状态处于：Collapsed
     val currentState = remember { mutableStateOf(MultiFabState.Collapsed) }
@@ -235,17 +233,6 @@ fun MultiFloatingActionButton(
         }
     }
 }
-
-/**
- * FloatingActionButton填充的数据
- */
-class MultiFabItem(
-    val index: Int,
-    @DrawableRes val icon: Int,
-    val label: String,
-    val labelTextColor: Color = Color.White,
-    val labelBackgroundColor: Color = Color.Transparent,
-)
 
 /**
  * 定义FloatingActionButton状态

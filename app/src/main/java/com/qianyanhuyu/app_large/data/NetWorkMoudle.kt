@@ -2,9 +2,6 @@ package com.qianyanhuyu.app_large.data
 
 import com.qianyanhuyu.app_large.BuildConfig
 import com.qianyanhuyu.app_large.constants.Net
-import com.qianyanhuyu.app_large.data.user.UserApi
-//import com.qianyanhuyu.app_large.data.auth.OAuthApi
-//import com.qianyanhuyu.app_large.data.user.UserApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -47,10 +44,9 @@ object NetworkModule {
         .baseUrl(Net.BASE_URL)
         .client(okHttpClient)
         .build()
-    
 
     @Singleton
     @Provides
-    fun provideUserApiService(retrofit: Retrofit): UserApi = retrofit.create(UserApi::class.java)
+    fun provideContentApiService(retrofit: Retrofit): ContentApi = retrofit.create(ContentApi::class.java)
 
 }

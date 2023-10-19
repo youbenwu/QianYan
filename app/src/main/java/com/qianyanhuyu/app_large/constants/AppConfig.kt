@@ -293,6 +293,13 @@ object AppConfig {
     val CustomBlue9 = Color(56, 69, 171)
     val CustomBlue84 = Color(84, 163, 246)
     val CustomGrey = Color(255,255,255).copy(alpha = 0.30F)
+    val CustomLogoImageTextBg = Color(9, 14, 41)
+    val voiceFalseBrush = Brush.verticalGradient(
+        listOf(
+            CustomLogoImageTextBg,
+            CustomLogoImageTextBg
+        )
+    )
 
 
     // 大圆数量

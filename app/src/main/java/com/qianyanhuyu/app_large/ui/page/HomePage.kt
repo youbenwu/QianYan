@@ -1,19 +1,13 @@
 package com.qianyanhuyu.app_large.ui.page
 
-
-import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,15 +18,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -71,14 +61,12 @@ import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.constants.AppConfig.brush121
 import com.qianyanhuyu.app_large.constants.AppConfig.brush121_192
 import com.qianyanhuyu.app_large.constants.AppConfig.brush247
+import com.qianyanhuyu.app_large.model.MultiMenuItem
 import com.qianyanhuyu.app_large.ui.page.common.NavigationDrawerSample
 import com.qianyanhuyu.app_large.ui.page.groupchat.GroupChats
-import com.qianyanhuyu.app_large.ui.widgets.BaseMsgDialog
 import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
-import com.qianyanhuyu.app_large.ui.widgets.CommonLocalImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
-import com.qianyanhuyu.app_large.ui.widgets.MultiFabItem
 import com.qianyanhuyu.app_large.ui.widgets.MultiFloatingActionButton
 import com.qianyanhuyu.app_large.util.FormatterEnum
 import com.qianyanhuyu.app_large.util.TimeUtil
@@ -105,33 +93,33 @@ private lateinit var listData: MutableState<List<String>>
 private lateinit var pagerState: PagerState
 
 // 首页导航内容
-private val expandFbItemList: MutableList<MultiFabItem> = mutableListOf(
-    MultiFabItem(
+private val expandFbItemList: MutableList<MultiMenuItem> = mutableListOf(
+    MultiMenuItem(
         index = 0,
         icon = R.drawable.ic_nav_customer_service,
         label = "客服服务"
     ),
-    MultiFabItem(
+    MultiMenuItem(
         index = 1,
         icon = R.drawable.ic_ip_put_in,
         label = "IP投放"
     ),
-    MultiFabItem(
+    MultiMenuItem(
         index = 2,
         icon = R.drawable.ic_nav_travel,
         label = "智慧旅游"
     ),
-    MultiFabItem(
+    MultiMenuItem(
         index = 3,
         icon = R.drawable.ic_nav_qianyan_play,
         label = "迁眼互娱",
     ),
-    MultiFabItem(
+    MultiMenuItem(
         index = 4,
         icon = R.drawable.ic_nav_store,
         label = "店友圈"
     ),
-    MultiFabItem(
+    MultiMenuItem(
         index = 5,
         icon = R.drawable.ic_nav_qianyan_give,
         label = "迁眼送",
@@ -157,16 +145,22 @@ fun HomePageScreen(
     val selectState = remember { mutableStateOf(expandFbItemList.size + 1) }
 
     BackHandler {
-        val homeIndex = expandFbItemList.size + 1
-        // 不是首页的时候调回首页,是首页的时候按两次退出
-        if(selectedHomeTabIndex != homeIndex) {
+        if(drawerState.isOpen) {
             coroutineState.launch {
-                selectState.value = homeIndex
-                pagerState.scrollToPage(homeIndex)
-                selectedHomeTabIndex = homeIndex
+                drawerState.close()
             }
         } else {
-            TwoBackFinish().execute(onFinish)
+            val homeIndex = expandFbItemList.size + 1
+            // 不是首页的时候调回首页,是首页的时候按两次退出
+            if(selectedHomeTabIndex != homeIndex) {
+                coroutineState.launch {
+                    selectState.value = homeIndex
+                    pagerState.scrollToPage(homeIndex)
+                    selectedHomeTabIndex = homeIndex
+                }
+            } else {
+                TwoBackFinish().execute(onFinish)
+            }
         }
     }
 

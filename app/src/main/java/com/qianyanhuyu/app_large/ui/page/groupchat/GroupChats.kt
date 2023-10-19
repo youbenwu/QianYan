@@ -1,6 +1,8 @@
 package com.qianyanhuyu.app_large.ui.page.groupchat
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -15,7 +17,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,9 +39,15 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.PagingData
+import androidx.paging.compose.itemsIndexed
 import com.qianyanhuyu.app_large.R
+import com.qianyanhuyu.app_large.constants.AppConfig
+import com.qianyanhuyu.app_large.model.GroupChatItem
 import com.qianyanhuyu.app_large.ui.page.common.CommonText
 import com.qianyanhuyu.app_large.ui.page.common.LogoImageText
+import com.qianyanhuyu.app_large.ui.page.common.paging.ViewStateListPagingComponent
 import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.ui.widgets.CommonLocalImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
@@ -43,6 +55,10 @@ import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
 import com.qianyanhuyu.app_large.util.onClick
 import com.qianyanhuyu.app_large.util.toPx
+import com.qianyanhuyu.app_large.viewmodel.groupchat.GroupChatsViewAction
+import com.qianyanhuyu.app_large.viewmodel.groupchat.GroupChatsViewModel
+import com.qianyanhuyu.app_large.viewmodel.groupchat.GroupChatsViewState
+import kotlinx.coroutines.flow.Flow
 
 /***
  * @Author : Cheng
@@ -52,23 +68,50 @@ import com.qianyanhuyu.app_large.util.toPx
 @Composable
 fun GroupChats(
     onAddGroupChat: (() -> Unit)? = null,
+    viewModel: GroupChatsViewModel = hiltViewModel(),
     modifier: Modifier
 ) {
+
+    val pageNav = remember { mutableStateOf(1) }
+    val channelId = remember { mutableStateOf("") }
+
+    DisposableEffect(Unit) {
+        // 初始化需要执行的内容
+        viewModel.dispatch(GroupChatsViewAction.InitPageData)
+        onDispose {  }
+    }
+
     Box(
         modifier = modifier
     ) {
-        GroupChasContent(
-            onAddGroupChat = onAddGroupChat,
-            modifier = Modifier
-                .fillMaxSize()
-        )
+        when(pageNav.value) {
+            1 -> GroupChasContent(
+                viewState = viewModel.viewStates,
+                onAddGroupChat = onAddGroupChat,
+                onNavTo = {
+                    channelId.value = it
+                    pageNav.value = 2
+                },
+                modifier = Modifier
+                    .fillMaxSize()
+            )
+            else -> {
+                GroupChat(
+                    channelId = channelId.value,
+                    onBack = {pageNav.value = 1}
+                )
+            }
+        }
+
     }
 }
 
-@OptIn(ExperimentalTextApi::class)
+@OptIn(ExperimentalTextApi::class, ExperimentalMaterialApi::class)
 @Composable
 private fun GroupChasContent(
+    viewState: GroupChatsViewState,
     onAddGroupChat: (() -> Unit)? = null,
+    onNavTo: (String) -> Unit = {},
     modifier: Modifier
 ) {
     ConstraintLayout(
@@ -118,7 +161,7 @@ private fun GroupChasContent(
                     shadow = Shadow(
                         color = Color.Blue,
                         offset = Offset(2f,5f),
-                        blurRadius = 7f
+                        blurRadius = 10f
                     )
                 ),
                 modifier = Modifier
@@ -133,32 +176,69 @@ private fun GroupChasContent(
                     }
             )
         }
-        Column(
-            modifier = Modifier
-                .constrainAs(contentView) {
-                    top.linkTo(topView.bottom, margin = 30.cdp)
-                    linkTo(
-                        start = parent.start,
-                        end = parent.end
-                    )
-                    bottom.linkTo(parent.bottom)
 
-                    width = Dimension.fillToConstraints
-                    height = Dimension.fillToConstraints
-                }
-        ) {
-            GroupChatItem(
+        viewState.chatsFlow?.let {
+            GroupChatList(
+                data = it,
+                onNavTo = onNavTo,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .constrainAs(contentView) {
+                        top.linkTo(topView.bottom, margin = 30.cdp)
+                        linkTo(
+                            start = parent.start,
+                            end = parent.end
+                        )
+                        bottom.linkTo(parent.bottom)
+
+                        width = Dimension.fillToConstraints
+                        height = Dimension.fillToConstraints
+                    }
             )
+        }
+
+
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun GroupChatList(
+    data: Flow<PagingData<GroupChatItem>>,
+    onNavTo: (String) -> Unit,
+    modifier: Modifier
+) {
+    Box(
+        modifier = modifier
+    ) {
+        ViewStateListPagingComponent(
+            modifier = Modifier.fillMaxSize(),
+            key = "group_chat_list",
+            loadDataBlock = {
+                data
+            },
+            enableRefresh = true,
+        ) {beanList ->
+            itemsIndexed(beanList) {_, data ->
+                data?.let {
+                    GroupChatItem(
+                        groupChatItem = it,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .onClick {
+                                onNavTo.invoke(
+                                    it.channelId ?: ""
+                                )
+                            }
+                    )
+                }
+            }
         }
     }
 }
 
-
-
 @Composable
 private fun GroupChatItem(
+    groupChatItem: GroupChatItem,
     modifier: Modifier
 ) {
     Box(
@@ -175,7 +255,7 @@ private fun GroupChatItem(
             .clip(Shapes.extraSmall)
     ) {
         AnimatedVisibility(
-            visible = true,
+            visible = groupChatItem.isHot,
             modifier = Modifier
                 .align(Alignment.TopEnd)
         ) {
@@ -199,7 +279,7 @@ private fun GroupChatItem(
                 )
         ) {
             LogoImageText(
-                text = "兴趣交流",
+                text = groupChatItem.type,
                 iconDrawable = R.drawable.ic_group_chat_type_logo,
                 iconWidth = 26.cdp,
                 iconHeight = 30.cdp,
@@ -208,7 +288,7 @@ private fun GroupChatItem(
                 modifier = Modifier
                     .clip(Shapes.extraLarge)
                     .background(
-                        Color(9, 14, 41).copy(alpha = 0.3f)
+                        AppConfig.CustomLogoImageTextBg.copy(alpha = 0.3f)
                     )
                     .padding(
                         vertical = 10.cdp,
@@ -216,7 +296,7 @@ private fun GroupChatItem(
                     )
             )
             CommonText(
-                "KTV70.80听听今典老歌",
+                groupChatItem.title,
                 fontSize = 25.csp,
                 modifier = Modifier
                     .padding(
@@ -233,12 +313,7 @@ private fun GroupChatItem(
                     modifier = Modifier
                         .weight(1f)
                 ) {
-                    listOf(
-                        "https://img.js.design/assets/img/6520d7c2c19c17d9efe72b05.png#eed47edb9fa79e889c2f564fa9e92c04",
-                        "https://img.js.design/assets/img/6520d7aac184a69b01838e25.png#7336e11e3000d93bbc5d91eac9543b38",
-                        "https://img.js.design/assets/img/6520d7c2c19c17d9efe72b05.png#eed47edb9fa79e889c2f564fa9e92c04",
-                        "https://img.js.design/assets/img/64460169ed05937640eb5146.png#a6d093d1a3b96c6b883e4d523c187606"
-                    ).forEachIndexed { index, it ->
+                    groupChatItem.onlinePersonImage.forEachIndexed { index, it ->
                         CommonNetworkImage(
                             url = it,
                             modifier = Modifier
@@ -261,7 +336,7 @@ private fun GroupChatItem(
                 }
 
                 CommonText(
-                    "200人在线",
+                    "${groupChatItem.onlinePerson}人在线",
                     fontSize = 20.csp,
                 )
             }

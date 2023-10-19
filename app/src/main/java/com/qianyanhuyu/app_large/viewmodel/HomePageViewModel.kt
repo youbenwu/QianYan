@@ -17,7 +17,6 @@ import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastState
 import com.google.android.gms.cast.framework.CastStateListener
 import com.qianyanhuyu.app_large.data.model.MediaData
-import com.qianyanhuyu.app_large.data.user.UserApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
@@ -33,7 +32,7 @@ import kotlin.coroutines.coroutineContext
 @HiltViewModel
 class HomePageViewModel @Inject constructor(
     @ApplicationContext context: Context,
-    private val userApi: UserApi
+
 ) : ViewModel(), CastStateListener {
 
     var viewStates by mutableStateOf(HomePageViewState())

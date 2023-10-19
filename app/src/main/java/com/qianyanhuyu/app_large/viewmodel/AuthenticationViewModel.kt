@@ -5,9 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.qianyanhuyu.app_large.data.user.UserApi
-import com.qianyanhuyu.app_large.data.user.model.response.BaseResponse
-import com.qianyanhuyu.app_large.data.user.model.User
+import com.qianyanhuyu.app_large.data.response.BaseResponse
 import com.qianyanhuyu.app_large.ui.common.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -23,7 +21,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class AuthenticationViewModel @Inject constructor(
-    private val userApi: UserApi
+
 ) : ViewModel() {
 
     var viewStates by mutableStateOf(AuthenticationViewState())
@@ -59,17 +57,17 @@ class AuthenticationViewModel @Inject constructor(
      */
     private fun initPageData() {
         viewModelScope.launch(exception) {
-            var userResponse: BaseResponse<User>?
+            // var userResponse: BaseResponse<User>?
 
             try {
-                val response = userApi.getUser("test")
+                /*val response = userApi.getUser("test")
                 if(response.isSuccessful && response.body() != null) {
                     userResponse = response.body()
                     // _viewEvents.send(AuthenticationViewEvent.ShowMessage("获取信息失败："+ userResponse?.data.toString()))
                 } else {
 
                     return@launch
-                }
+                }*/
             } catch(e: Exception) {
                 return@launch
             }
