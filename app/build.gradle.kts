@@ -13,8 +13,8 @@ android {
         applicationId = "com.qianyanhuyu.app_large"
         minSdk = 24
         targetSdk = 33
-        versionCode = 3
-        versionName = "1.0.03"
+        versionCode = 4
+        versionName = "1.0.04"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -26,6 +26,9 @@ android {
 
     buildTypes {
         release {
+            buildConfigField("String", "NE_APP_KEY", "\"ef14009133ab39fbfea8e783193d8445\"")
+            buildConfigField("String", "NE_APP_SECRET", "\"e1b68179435f\"")
+
             isMinifyEnabled = false
             isDebuggable = false
             proguardFiles(
@@ -35,6 +38,10 @@ android {
         }
 
         debug {
+            buildConfigField("String", "NE_APP_KEY", "\"ef14009133ab39fbfea8e783193d8445\"")
+            buildConfigField("String", "NE_APP_SECRET", "\"e1b68179435f\"")
+
+
             isDebuggable = true
             isMinifyEnabled = false
         }
@@ -93,7 +100,7 @@ dependencies {
     kapt("com.google.dagger:hilt-compiler:2.44")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
-// Retrofit2
+    // Retrofit2
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
@@ -101,14 +108,14 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.datastore:datastore-core:1.0.0")
     // accompanist
-    val accompanist_version = "0.25.1"
-    implementation("com.google.accompanist:accompanist-pager:$accompanist_version")
-    implementation("com.google.accompanist:accompanist-pager-indicators:$accompanist_version")
-    implementation("com.google.accompanist:accompanist-navigation-animation:$accompanist_version")
-    implementation("com.google.accompanist:accompanist-swiperefresh:$accompanist_version")
-    implementation("com.google.accompanist:accompanist-placeholder-material:$accompanist_version")
-    implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanist_version")
-    implementation("com.google.accompanist:accompanist-drawablepainter:$accompanist_version")
+    val accompanistVersion = "0.25.1"
+    implementation("com.google.accompanist:accompanist-pager:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-pager-indicators:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-navigation-animation:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-swiperefresh:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-placeholder-material:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion")
+    implementation("com.google.accompanist:accompanist-drawablepainter:$accompanistVersion")
 
     // ConstraintLayout 布局
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
@@ -122,10 +129,13 @@ dependencies {
     implementation("com.airbnb.android:lottie-compose:5.0.3")
 
     // paging
-    val paging_version = "3.1.1"
+    val pagingVersion = "3.1.1"
     implementation("androidx.paging:paging-compose:1.0.0-alpha18")
-    implementation("androidx.paging:paging-runtime-ktx:${paging_version}")
-    implementation("androidx.paging:paging-common:${paging_version}")
+    implementation("androidx.paging:paging-runtime-ktx:${pagingVersion}")
+    implementation("androidx.paging:paging-common:${pagingVersion}")
+
+    // ExoPlayer
+    // implementation("com.google.android.exoplayer:exoplayer:2.19.1")
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 }

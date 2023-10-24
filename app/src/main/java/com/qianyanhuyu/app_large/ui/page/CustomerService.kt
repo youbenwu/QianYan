@@ -41,11 +41,14 @@ import com.qianyanhuyu.app_large.constants.AppConfig.CustomYellowish
 import com.qianyanhuyu.app_large.constants.AppConfig.blackToBlack
 import com.qianyanhuyu.app_large.constants.AppConfig.whiteToBlackVertical7f
 import com.qianyanhuyu.app_large.constants.AppConfig.whiteToGreenHorizontal
+import com.qianyanhuyu.app_large.ui.AppNavController
+import com.qianyanhuyu.app_large.ui.common.Route
 import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
+import com.qianyanhuyu.app_large.util.onClick
 import com.qianyanhuyu.app_large.viewmodel.CustomerServiceViewEvent
 import com.qianyanhuyu.app_large.viewmodel.CustomerServiceViewModel
 import kotlinx.coroutines.launch
@@ -58,7 +61,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomerServiceScreen(
-    snackbarHostState: SnackbarHostState,
+    snackbarHostState: SnackbarHostState? = null,
     viewModel: CustomerServiceViewModel = hiltViewModel()
 ) {
 
@@ -78,7 +81,7 @@ fun CustomerServiceScreen(
             else if (it is CustomerServiceViewEvent.ShowMessage) {
                 println("收到错误消息：${it.message}")
                 coroutineState.launch {
-                    snackbarHostState.showSnackbar(message = it.message)
+                    snackbarHostState?.showSnackbar(message = it.message)
                 }
             }
         }
@@ -472,6 +475,8 @@ fun ImageContentView (
                 .padding(
                     top = 35.cdp
                 )
-        )
+        ) {
+            AppNavController.instance.navigate(Route.DRY_CLEAN)
+        }
     }
 }

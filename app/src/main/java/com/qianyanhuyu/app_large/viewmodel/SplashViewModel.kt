@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.qianyanhuyu.app_large.ui.common.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -29,13 +30,24 @@ class SplashViewModel @Inject constructor(
     private val _viewEvents = Channel<SplashViewEvent>(Channel.BUFFERED)
     val viewEvents = _viewEvents.receiveAsFlow()
 
+    private val exception = CoroutineExceptionHandler { _, throwable ->
+        viewModelScope.launch {
+            _viewEvents.send(SplashViewEvent.ShowMessage("错误："+throwable.message))
+        }
+    }
+
     fun dispatch(action: SplashViewAction) {
         when (action) {
+            is SplashViewAction.InitPageData -> initPageData()
             is SplashViewAction.CheckLoginState -> checkLoginState()
             else -> {
 
             }
         }
+    }
+
+    private fun initPageData() {
+
     }
 
     private fun checkLoginState() {
@@ -53,7 +65,7 @@ data class SplashViewState(
 )
 
 sealed class SplashViewAction {
-    object Splash : SplashViewAction()
+    object InitPageData : SplashViewAction()
 
     object CheckLoginState: SplashViewAction()
 }

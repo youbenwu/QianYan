@@ -177,6 +177,7 @@ private fun GroupChasContent(
             )
         }
 
+        // 聊天室列表
         viewState.chatsFlow?.let {
             GroupChatList(
                 data = it,
@@ -200,6 +201,9 @@ private fun GroupChasContent(
     }
 }
 
+/**
+ * 聊天室列表
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun GroupChatList(

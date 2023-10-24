@@ -64,11 +64,11 @@ private val imageRadius = 15.cdp
 
 @Composable
 fun IpPutInScreen(
-    snackbarHostState: SnackbarHostState,
     viewModel: IpPutInViewModel = hiltViewModel()
 ) {
 
     val coroutineState = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     DisposableEffect(Unit) {
         // 初始化需要执行的内容

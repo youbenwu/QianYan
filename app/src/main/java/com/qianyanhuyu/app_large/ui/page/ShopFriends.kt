@@ -27,20 +27,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -75,10 +68,7 @@ import com.qianyanhuyu.app_large.model.ShopFriendsEditTextType
 import com.qianyanhuyu.app_large.model.ShopFriendsForm
 import com.qianyanhuyu.app_large.ui.page.common.CommonText
 import com.qianyanhuyu.app_large.ui.page.common.ImageCircle
-import com.qianyanhuyu.app_large.ui.page.common.NavigationDrawerSample
 import com.qianyanhuyu.app_large.ui.page.common.ShopFriendsAnimation
-import com.qianyanhuyu.app_large.ui.theme.AuthButtonTextColor
-import com.qianyanhuyu.app_large.ui.theme.ButtonColor
 import com.qianyanhuyu.app_large.ui.theme.IconColor
 import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.ui.widgets.ActivationClickText
@@ -112,12 +102,13 @@ private lateinit var timerOnlinePerson: Timer
 @Composable
 fun ShopFriendsScreen(
     drawerState: DrawerState,
-    snackbarHostState: SnackbarHostState,
     viewModel: ShopFriendsViewModel = hiltViewModel()
 ) {
 
     val coroutineState = rememberCoroutineScope()
     val lifecycleOwner = LocalLifecycleOwner.current
+    val snackbarHostState = remember { SnackbarHostState() }
+
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -173,15 +164,6 @@ fun ShopFriendsScreen(
             }
         }
     }
-
-    /*NavigationDrawerSample(
-        drawerState = drawerState,
-        sheetContent = {
-            Text("test")
-        }
-    ) {
-
-    }*/
 
     Box(
         modifier = Modifier

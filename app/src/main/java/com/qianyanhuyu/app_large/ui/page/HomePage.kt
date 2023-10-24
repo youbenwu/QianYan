@@ -1,34 +1,26 @@
 package com.qianyanhuyu.app_large.ui.page
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.Button
-import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FabPosition
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -38,46 +30,32 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.rememberPagerState
+import androidx.navigation.NavHostController
 import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.constants.AppConfig.brush121
 import com.qianyanhuyu.app_large.constants.AppConfig.brush121_192
 import com.qianyanhuyu.app_large.constants.AppConfig.brush247
 import com.qianyanhuyu.app_large.model.MultiMenuItem
-import com.qianyanhuyu.app_large.ui.page.common.NavigationDrawerSample
-import com.qianyanhuyu.app_large.ui.page.groupchat.GroupChats
-import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
+import com.qianyanhuyu.app_large.ui.common.Route
 import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
-import com.qianyanhuyu.app_large.ui.widgets.MultiFloatingActionButton
-import com.qianyanhuyu.app_large.util.FormatterEnum
-import com.qianyanhuyu.app_large.util.TimeUtil
-import com.qianyanhuyu.app_large.util.TwoBackFinish
 import com.qianyanhuyu.app_large.util.cdp
-import com.qianyanhuyu.app_large.util.csp
 import com.qianyanhuyu.app_large.util.toPx
 import com.qianyanhuyu.app_large.viewmodel.HomePageViewEvent
 import com.qianyanhuyu.app_large.viewmodel.HomePageViewModel
 import kotlinx.coroutines.launch
-import java.util.Date
 
 /***
  * @Author : Cheng
@@ -89,49 +67,52 @@ private lateinit var openDialog: MutableState<Boolean>
 
 private lateinit var listData: MutableState<List<String>>
 
-@OptIn(ExperimentalPagerApi::class)
-private lateinit var pagerState: PagerState
-
 // 首页导航内容
-private val expandFbItemList: MutableList<MultiMenuItem> = mutableListOf(
+val expandFbItemList: MutableList<MultiMenuItem> = mutableListOf(
     MultiMenuItem(
         index = 0,
         icon = R.drawable.ic_nav_customer_service,
-        label = "客服服务"
+        label = "客服服务",
+        route = Route.CUSTOMER_SERVICE
     ),
     MultiMenuItem(
         index = 1,
         icon = R.drawable.ic_ip_put_in,
-        label = "IP投放"
+        label = "媒体投放",
+        route = Route.IP_PUT_IN
     ),
     MultiMenuItem(
         index = 2,
         icon = R.drawable.ic_nav_travel,
-        label = "智慧旅游"
+        label = "智慧旅游",
+        route = Route.SMART_TOURISM
     ),
     MultiMenuItem(
         index = 3,
         icon = R.drawable.ic_nav_qianyan_play,
         label = "迁眼互娱",
+        route = Route.QIAN_YAN_PLAY
     ),
     MultiMenuItem(
         index = 4,
         icon = R.drawable.ic_nav_store,
-        label = "店友圈"
+        label = "店友乐园",
+        route = Route.SHOP_FRIENDS
     ),
     MultiMenuItem(
         index = 5,
         icon = R.drawable.ic_nav_qianyan_give,
         label = "迁眼送",
+        route = Route.QIAN_YAN_GIVE
     ),
 )
 
 private var selectedHomeTabIndex by mutableStateOf(expandFbItemList.size + 1)
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class)
 @Composable
 fun HomePageScreen(
     viewModel: HomePageViewModel = hiltViewModel(),
+    navController: NavHostController,
     onFinish: () -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -140,29 +121,6 @@ fun HomePageScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineState = rememberCoroutineScope()
     val fragmentManager = (context as FragmentActivity).supportFragmentManager
-
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val selectState = remember { mutableStateOf(expandFbItemList.size + 1) }
-
-    BackHandler {
-        if(drawerState.isOpen) {
-            coroutineState.launch {
-                drawerState.close()
-            }
-        } else {
-            val homeIndex = expandFbItemList.size + 1
-            // 不是首页的时候调回首页,是首页的时候按两次退出
-            if(selectedHomeTabIndex != homeIndex) {
-                coroutineState.launch {
-                    selectState.value = homeIndex
-                    pagerState.scrollToPage(homeIndex)
-                    selectedHomeTabIndex = homeIndex
-                }
-            } else {
-                TwoBackFinish().execute(onFinish)
-            }
-        }
-    }
 
     DisposableEffect(Unit) {
         // 初始化需要执行的内容
@@ -184,345 +142,11 @@ fun HomePageScreen(
         }
     }
 
-    MaterialTheme {
-        NavigationDrawerSample(
-            drawerState = drawerState,
-            sheetContent = {
-                GroupChats(
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-        ) {
-            Scaffold(
-                snackbarHost = { SnackbarHost(snackbarHostState) },
-                topBar = {
-                    HomeTopBar(
-                        selectState = selectState,
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 30.cdp)
-                    )
-                },
-                floatingActionButton = {
-                    MultiFloatingActionButton(
-                        items = expandFbItemList,
-                        selectState = selectState,
-                    ) { item ->
-                        coroutineState.launch {
-                            pagerState.scrollToPage(item.index)
-                            selectedHomeTabIndex = item.index
-                        }
-                    }
-                },
-                floatingActionButtonPosition = FabPosition.Center
-            ) { innerPadding ->
-                HomePageBody(
-                    drawerState = drawerState,
-                    snackbarHostState = snackbarHostState,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                )
-            }
-        }
-    }
-}
-
-/**
- * 顶部TopBar 的布局
- */
-@OptIn(ExperimentalPagerApi::class)
-@Composable
-fun HomeTopBar(
-    selectState: MutableState<Int>,
-    modifier: Modifier
-) {
-    ConstraintLayout(
-        modifier = modifier
-    ) {
-
-        val currentTime = TimeUtil.parse(Date().time, FormatterEnum.YYYY_DOT_MM_DOT_DD)
-
-        val (
-            centerView,
-            centerTitleTextView,
-            lineLeftView,
-            lineLeftStartView,
-            lineRightView,
-            lineRightEndView,
-            contentLeftView,
-            contentRightView,
-        ) = createRefs()
-
-        CommonComposeImage(
-            resId = R.drawable.top_bar_center_bg,
-            modifier = Modifier
-                .constrainAs(centerView) {
-                    linkTo(start = parent.start, end = parent.end)
-                    top.linkTo(parent.top)
-                }
-                .padding(
-                    vertical = 17.cdp
-                )
-                .width(594.cdp)
-                .height(85.cdp)
-        )
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.constrainAs(centerTitleTextView) {
-                linkTo(start = centerView.start, end = centerView.end)
-                top.linkTo(centerView.top)
-                bottom.linkTo((centerView.bottom))
-            }
-        ) {
-            Text(
-                text = "欢迎使用迁眼互娱平台",
-                fontWeight = FontWeight.Bold,
-                fontSize = 32.csp,
-                textAlign = TextAlign.Center,
-                letterSpacing = 1.csp,
-                color = Color.White
-            )
-            Text(
-                text = "WELCOME TO EYE ENTERTAINMENT",
-                fontWeight = FontWeight.Bold,
-                fontSize = 12.csp,
-                textAlign = TextAlign.Center,
-                letterSpacing = 1.csp,
-                color = Color.White
-            )
-        }
-
-        CommonComposeImage(
-            resId = R.drawable.top_bar_line,
-            modifier = Modifier
-                .constrainAs(lineLeftView) {
-                    end.linkTo(centerView.start)
-                    start.linkTo(parent.start)
-                    linkTo(top = centerView.top, bottom = centerView.bottom)
-
-                    width = Dimension.fillToConstraints
-                }
-                .padding(top = 7.cdp)
-                .height(1.cdp)
-        )
-
-        CommonComposeImage(
-            resId = R.drawable.top_bar_left_,
-            modifier = Modifier
-                .constrainAs(lineLeftStartView) {
-                    start.linkTo(lineLeftView.start)
-                    bottom.linkTo(lineLeftView.bottom)
-                }
-        )
-
-        // 右边内容
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .constrainAs(contentRightView) {
-                    start.linkTo(centerView.end)
-                    end.linkTo(lineRightEndView.start)
-                    linkTo(top = parent.top, bottom = lineRightView.top)
-
-                    width = Dimension.preferredWrapContent
-                }
-                .padding(
-                    top = 12.cdp
-                )
-        ) {
-            CommonComposeImage(
-                resId = R.drawable.ic_xiaoyu,
-                modifier = Modifier
-                    .padding(
-                        start = 20.cdp,
-                        end = 10.cdp
-                    )
-            )
-            Text(
-                text = "17℃",
-                fontSize = 24.csp,
-                textAlign = TextAlign.Center,
-                letterSpacing = 1.csp,
-                color = Color.White
-            )
-
-            Text(
-                text = currentTime,
-                fontSize = 24.csp,
-                textAlign = TextAlign.Center,
-                letterSpacing = 1.csp,
-                color = Color.White,
-                maxLines = 1,
-                modifier = Modifier
-                    .padding(
-                        start = 20.cdp,
-                        end = 20.cdp
-                    )
-            )
-
-            CommonIcon(
-                resId = R.drawable.ic_location,
-                tint = Color.White,
-                modifier = Modifier
-                    .size(30.cdp)
-            )
-            Text(
-                text = "广州",
-                fontSize = 24.csp,
-                textAlign = TextAlign.Center,
-                letterSpacing = 1.csp,
-                color = Color.White,
-                modifier = Modifier
-                    .padding(
-                        start = 10.cdp,
-                        end = 20.cdp
-                    )
-            )
-        }
-
-        CommonComposeImage(
-            resId = R.drawable.top_bar_line,
-            modifier = Modifier
-                .constrainAs(lineRightView) {
-                    start.linkTo(centerView.end)
-                    end.linkTo(parent.end)
-                    linkTo(top = centerView.top, bottom = centerView.bottom)
-
-                    width = Dimension.fillToConstraints
-                }
-                .padding(top = 7.cdp)
-                .height(1.cdp)
-        )
-
-        CommonComposeImage(
-            resId = R.drawable.top_bar_right_,
-            modifier = Modifier
-                .constrainAs(lineRightEndView) {
-                    end.linkTo(lineRightView.end)
-                    bottom.linkTo(lineRightView.bottom)
-                }
-        )
-
-        // 左边内容
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .constrainAs(contentLeftView) {
-                    end.linkTo(centerView.start)
-                    start.linkTo(lineLeftStartView.end)
-                    linkTo(top = parent.top, bottom = lineLeftView.top)
-
-                    width = Dimension.preferredWrapContent
-                }
-                .padding(
-                    top = 10.cdp,
-                    start = 20.cdp,
-                    end = 20.cdp
-                )
-        ) {
-            val ipCoroutineState = rememberCoroutineScope()
-
-            CommonComposeImage(
-                R.drawable.ic_home_button,
-                modifier = Modifier
-                    .width(41.cdp)
-                    .height(37.cdp)
-                    .clickable {
-                        ipCoroutineState.launch {
-                            val homeIndex = expandFbItemList.size + 1
-                            selectState.value = homeIndex
-                            pagerState.scrollToPage(homeIndex)
-                            selectedHomeTabIndex = homeIndex
-                        }
-                    }
-            )
-            Text(
-                text = "返回主页",
-                fontSize = 24.csp,
-                textAlign = TextAlign.Center,
-                letterSpacing = 1.csp,
-                color = Color.White,
-                modifier = Modifier
-                    .padding(
-                        start = 10.cdp,
-                        end = 20.cdp
-                    )
-                    .clickable {
-                        ipCoroutineState.launch {
-                            val homeIndex = expandFbItemList.size + 1
-                            selectState.value = homeIndex
-                            pagerState.scrollToPage(homeIndex)
-                            selectedHomeTabIndex = homeIndex
-                        }
-                    }
-            )
-
-            CommonComposeImage(
-                R.drawable.ic_projection_screen,
-                modifier = Modifier
-                    .width(44.cdp)
-                    .height(33.cdp)
-                    .clickable {
-
-                    }
-            )
-            Text(
-                text = "互动投屏",
-                fontSize = 24.csp,
-                textAlign = TextAlign.Center,
-                letterSpacing = 1.csp,
-                color = Color.White,
-                modifier = Modifier
-                    .padding(
-                        start = 10.cdp
-                    )
-                    .clickable {
-
-                    }
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
-@Composable
-fun HomePageBody(
-    drawerState: DrawerState,
-    snackbarHostState: SnackbarHostState,
-    modifier: Modifier
-) {
-    pagerState = rememberPagerState(
-        initialPage = selectedHomeTabIndex,
-    )
-
-    CommonComposeImage(
-        R.drawable.home_bg,
-        modifier = Modifier.fillMaxSize()
-    )
-
-    HorizontalPager(
-        count = expandFbItemList.size + 2,
-        state = pagerState,
-        userScrollEnabled = false,
-        modifier = modifier
+    HomePageContent(
+        modifier = Modifier
             .fillMaxSize()
-    ) { pagePosition ->
-        selectedHomeTabIndex = pagerState.currentPage
+    )
 
-        when (pagePosition) {
-            0 -> CustomerServiceScreen(snackbarHostState = snackbarHostState)
-            1 -> IpPutInScreen(snackbarHostState = snackbarHostState)
-            2 -> SmartTourismScreen(snackbarHostState = snackbarHostState)
-            3 -> QianYanPlayScreen(snackbarHostState = snackbarHostState)
-            4 -> ShopFriendsScreen(snackbarHostState = snackbarHostState, drawerState = drawerState)
-            5 -> QianYanGiveScreen(snackbarHostState = snackbarHostState)
-            else -> HomePageContent(
-                snackbarHostState = snackbarHostState
-            )
-        }
-    }
 }
 
 /**
@@ -530,7 +154,6 @@ fun HomePageBody(
  */
 @Composable
 fun HomePageContent(
-    snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier
 ) {
 
@@ -708,6 +331,56 @@ fun HomePageContent(
             }
         }
     }
+}
+
+@Composable
+private fun VideoOrImageView(
+    url: String,
+    contentScale: ContentScale = ContentScale.Crop,
+    modifier: Modifier
+) {
+    // 透明度是否逐步增大
+    val alphaIncrease = remember {
+        mutableStateOf(false)
+    }
+
+    val animatorDuration = 1000
+    // 透明度动画，当showBigImageStatus为true也便是由小变大时，targetValue应该是1，反之则为0
+    // animationSpec设置的是2s的时长
+    val alpha = animateFloatAsState(
+        targetValue = if (alphaIncrease.value) 1F else 0F,
+        label = "",
+        animationSpec = tween(animatorDuration)
+    )
+    // 大图x轴的偏移量
+    val bigImageOffsetX = remember {
+        mutableStateOf(0F)
+    }
+    // 大图y轴的偏移量
+    val bigImageOffsetY = remember {
+        mutableStateOf(0F)
+    }
+    // 大图宽度
+    val bigImageSizeWidth = remember {
+        mutableStateOf(0)
+    }
+    // 大图高度
+    val bigImageSizeHeight = remember {
+        mutableStateOf(0)
+    }
+
+
+    CommonNetworkImage(
+        url = url,
+        contentScale = ContentScale.Crop,
+        modifier = modifier
+            /*.onGloballyPositioned {
+                val rect = it.boundsInRoot()
+                val offset = Offset(rect.left, rect.top)
+                BigImageManager.cellOffsetMap[index] = offset
+                cellSize.value = it.size
+            }*/
+    )
 }
 
 @Composable

@@ -21,6 +21,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,11 +63,11 @@ private val imageRadius = 15.cdp
 
 @Composable
 fun SmartTourismScreen(
-    snackbarHostState: SnackbarHostState,
     viewModel: SmartTourismViewModel = hiltViewModel()
 ) {
 
     val coroutineState = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     DisposableEffect(Unit) {
         // 初始化需要执行的内容

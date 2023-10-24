@@ -50,6 +50,7 @@ class ActivationViewModel @Inject constructor(
      * 做一些进入页面初始化的操作
      */
     private fun initPageData() {
+
     }
 
     /**
@@ -57,7 +58,7 @@ class ActivationViewModel @Inject constructor(
      */
     private fun confirmActivationInfo() {
         viewModelScope.launch {
-            _viewEvents.send(ActivationViewEvent.NavTo(Route.HOME_PAGE))
+            _viewEvents.send(ActivationViewEvent.NavTo(Route.HOME_GRAPH))
         }
     }
 

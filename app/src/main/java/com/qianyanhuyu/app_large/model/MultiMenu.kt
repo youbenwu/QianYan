@@ -17,6 +17,7 @@ data class MultiMenuItem(
     @DrawableRes val icon: Int,
     val label: String,
     val labelTextColor: Color = Color.White,
+    val route: String = "",
     val labelBackgroundColor: Color = Color.Transparent,
     val itemClick: () -> Unit = {}
 )

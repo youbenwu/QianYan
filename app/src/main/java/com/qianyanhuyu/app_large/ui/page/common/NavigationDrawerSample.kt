@@ -20,8 +20,11 @@ import com.qianyanhuyu.app_large.util.cdp
  * @Author : Cheng
  * @CreateDate : 2023/10/17 10:32
  * @Description : 侧边栏展开
+ *
+ * @param drawerState 侧边栏开启状态, 可通过 open(),close()方法操作,isOpen,isClose 获取当前状态
+ * @param sheetContent 侧边栏内容
+ * @param content 主体内容
  */
-
 @ExperimentalMaterial3Api
 @Composable
 fun NavigationDrawerSample(
@@ -29,13 +32,16 @@ fun NavigationDrawerSample(
     sheetContent: @Composable () -> Unit,
     content: @Composable () -> Unit
 ) {
+    // 设置布局方向
     CompositionLocalProvider(
         LocalLayoutDirection.provides(LayoutDirection.Rtl)
     ) {
+        // 侧边栏菜单, gesturesEnabled控制是否可滑动唤出
         ModalNavigationDrawer(
             drawerState = drawerState,
-            gesturesEnabled =/* drawerState.isOpen*/true,
+            gesturesEnabled = drawerState.isOpen/*true*/,
             drawerContent = {
+                // 侧边栏主背景显示, 背景渐变, 不需要圆角
                 ModalDrawerSheet(
                     drawerContainerColor = Color.Transparent,
                     drawerContentColor = Color.Transparent,
@@ -49,6 +55,7 @@ fun NavigationDrawerSample(
                     CompositionLocalProvider(
                         LocalLayoutDirection.provides(LayoutDirection.Ltr)
                     ){
+                        // 侧边栏内容
                         sheetContent()
                     }
                 }
@@ -57,6 +64,7 @@ fun NavigationDrawerSample(
             CompositionLocalProvider(
                 LocalLayoutDirection.provides(LayoutDirection.Ltr)
             ){
+                // 主体内容
                 content()
             }
 

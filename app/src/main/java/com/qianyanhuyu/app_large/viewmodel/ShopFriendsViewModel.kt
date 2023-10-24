@@ -15,6 +15,7 @@ import com.qianyanhuyu.app_large.model.ShopFriendsImageData
 import com.qianyanhuyu.app_large.ui.page.common.ShopFriendsAnimation
 import com.qianyanhuyu.app_large.util.getImageBitmapByUrl
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -36,6 +37,12 @@ class ShopFriendsViewModel @Inject constructor(
 
     private val _viewEvents = Channel<ShopFriendsViewEvent>(Channel.BUFFERED)
     val viewEvents = _viewEvents.receiveAsFlow()
+
+    private val exception = CoroutineExceptionHandler { _, throwable ->
+        viewModelScope.launch {
+            _viewEvents.send(ShopFriendsViewEvent.ShowMessage("错误："+throwable.message))
+        }
+    }
 
     fun dispatch(action: ShopFriendsViewAction) {
         when (action) {
