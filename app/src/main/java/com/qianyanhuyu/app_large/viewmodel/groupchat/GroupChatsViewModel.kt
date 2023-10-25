@@ -9,10 +9,13 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.constants.AppPagingConfig
 import com.qianyanhuyu.app_large.data.ContentApi
 import com.qianyanhuyu.app_large.data.model.CommonPageDataSource
 import com.qianyanhuyu.app_large.model.GroupChatItem
+import com.qianyanhuyu.app_large.model.GroupChatEditTextType
+import com.qianyanhuyu.app_large.model.GroupChatForm
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.channels.Channel
@@ -47,6 +50,8 @@ class GroupChatsViewModel @Inject constructor(
     fun dispatch(action: GroupChatsViewAction) {
         when (action) {
             is GroupChatsViewAction.InitPageData -> initPageData()
+            is GroupChatsViewAction.IsShowCreateGroupChatDialog -> isShowCreateGroupChatDialog(action.isShowDialog)
+            is GroupChatsViewAction.UpdateFormValue -> updateFormValue(action.type, action.text)
             else -> {
 
             }
@@ -72,8 +77,72 @@ class GroupChatsViewModel @Inject constructor(
                     )
                 )
             ),
+            formList = listOf(
+                GroupChatForm(
+                    title = R.string.group_chat_form_name,
+                    placeholder = R.string.group_chat_form_name_placeholder,
+                    data = "",
+                    type = GroupChatEditTextType.GroupName
+                ),
+                GroupChatForm(
+                    title = R.string.group_chat_form_type,
+                    placeholder = R.string.group_chat_form_type_placeholder,
+                    data = "",
+                    type = GroupChatEditTextType.GroupType
+                )
+            ),
             chatsFlow = getGroupChats().cachedIn(viewModelScope)
         )
+    }
+
+    private fun isShowCreateGroupChatDialog(isShow: Boolean) {
+        viewStates = viewStates.copy(
+            isShowDialog = isShow
+        )
+    }
+
+    private fun updateFormValue(type: GroupChatEditTextType, data: String) {
+        when(type) {
+            GroupChatEditTextType.GroupTerm -> {
+                viewStates = viewStates.copy(
+                    termIsCheck = data.toBooleanStrict()
+                )
+            }
+            GroupChatEditTextType.GroupType -> {
+                // 在UTF-8下汉字占3个Byte
+                val lengthMax = 18
+                val isCheckLength = data.isNotEmpty() && data.toByteArray().size <= lengthMax
+
+                viewStates = viewStates.copy(
+                    formList = viewStates.formList.map {
+                        if(it.type == type) {
+                            it.copy(
+                                data = if(data.isEmpty() || isCheckLength) {
+                                    data
+                                } else {
+                                    it.data
+                                }
+                            )
+                        } else {
+                            it
+                        }
+                    }
+                )
+            }
+            else -> {
+                viewStates = viewStates.copy(
+                    formList = viewStates.formList.map {
+                        if(it.type == type) {
+                            it.copy(
+                                data = data
+                            )
+                        } else {
+                            it
+                        }
+                    }
+                )
+            }
+        }
     }
 
     private fun getGroupChats() : Flow<PagingData<GroupChatItem>> {
@@ -92,10 +161,22 @@ data class GroupChatsViewState(
     val groupChats: List<GroupChatItem> = emptyList(),
     val chatsFlow: (Flow<PagingData<GroupChatItem>>)? = null,
     val isLogging: Boolean = true,
+    val isShowDialog: Boolean = false,
+    val termIsCheck: Boolean = false,
+    val formList: List<GroupChatForm> = mutableListOf()
 )
 
 sealed class GroupChatsViewAction {
     object InitPageData : GroupChatsViewAction()
+
+    data class IsShowCreateGroupChatDialog(
+        val isShowDialog: Boolean = false
+    ) : GroupChatsViewAction()
+
+    data class UpdateFormValue(
+        val type: GroupChatEditTextType,
+        val text: String = "",
+    ): GroupChatsViewAction()
 }
 
 sealed class GroupChatsViewEvent {

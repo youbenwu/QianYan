@@ -1,48 +1,32 @@
 package com.qianyanhuyu.app_large.ui.page
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material3.Button
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.constants.AppConfig.brush121
 import com.qianyanhuyu.app_large.constants.AppConfig.brush121_192
@@ -62,12 +46,6 @@ import kotlinx.coroutines.launch
  * @CreateDate : 2023/9/15 9:19
  * @Description : 主页
  */
-
-private lateinit var openDialog: MutableState<Boolean>
-
-private lateinit var listData: MutableState<List<String>>
-
-// 首页导航内容
 val expandFbItemList: MutableList<MultiMenuItem> = mutableListOf(
     MultiMenuItem(
         index = 0,
@@ -107,20 +85,12 @@ val expandFbItemList: MutableList<MultiMenuItem> = mutableListOf(
     ),
 )
 
-private var selectedHomeTabIndex by mutableStateOf(expandFbItemList.size + 1)
-
 @Composable
 fun HomePageScreen(
     viewModel: HomePageViewModel = hiltViewModel(),
-    navController: NavHostController,
-    onFinish: () -> Unit = {}
 ) {
-    val context = LocalContext.current
-
-    val castingState = viewModel.castingStateLiveData
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineState = rememberCoroutineScope()
-    val fragmentManager = (context as FragmentActivity).supportFragmentManager
 
     DisposableEffect(Unit) {
         // 初始化需要执行的内容
@@ -381,87 +351,4 @@ private fun VideoOrImageView(
                 cellSize.value = it.size
             }*/
     )
-}
-
-@Composable
-fun testAA(
-    viewModel: HomePageViewModel,
-    fragmentManager: FragmentManager
-) {
-    Column {
-        openDialog = remember {
-            mutableStateOf(false)
-        }
-
-        listData = remember {
-            mutableStateOf(listOf("test"))
-        }
-
-        if(viewModel.isCastingAvailable) {
-            Column {
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {
-                        try {
-                            val shouldShowChooserFragment = viewModel.shouldShowChooserFragment()
-                            val fragmentTag = if(shouldShowChooserFragment) "MediaRouteChooserFragment" else "MediaRouteControllerDialogFragment"
-                            val fragment = if(shouldShowChooserFragment) {
-                                viewModel.mDialogFactory.onCreateChooserDialogFragment()
-                                    .apply {
-                                        routeSelector = viewModel.mSelector
-                                    }
-                            } else {
-                                viewModel.mDialogFactory.onCreateControllerDialogFragment()
-                            }
-
-                            val transaction = fragmentManager.beginTransaction()
-                            transaction.add(fragment, fragmentTag)
-                            transaction.commitAllowingStateLoss()
-                        } catch (e: Exception) {
-
-                        }
-                    },
-                ) {
-                    Text(text = "互动投屏")
-                }
-            }
-            Box(
-
-            ) {
-                Image(
-                    imageVector = Icons.Filled.Face,
-                    contentDescription = null,
-                    modifier = Modifier.clickable {
-                        openDialog.value = true
-                    },
-                    contentScale = ContentScale.FillBounds
-                )
-            }
-        }
-
-        if(openDialog.value) {
-            /*BaseMsgDialog(
-                title = "连接到设备",
-                message = listData.value,
-                confirmText="Ok"
-            ) {
-                openDialog.value = false
-            }*/
-        }
-    }
-}
-
-@Composable
-fun MediaRouterCustomButton(openDialog: MutableState<Boolean>) {
-    val context = LocalContext.current
-
-    Column {
-        Button(
-            onClick = {
-                openDialog.value = true
-            },
-        ) {
-            Text(text = "互动投屏")
-        }
-    }
 }

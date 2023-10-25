@@ -1,24 +1,11 @@
 package com.qianyanhuyu.app_large.model
 
 import android.graphics.Bitmap
-import androidx.annotation.StringRes
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.unit.Dp
 import com.qianyanhuyu.app_large.ui.page.common.ShopFriendsAnimation
 import com.qianyanhuyu.app_large.util.cdp
-
-/***
- * @Author : Cheng
- * @CreateDate : 2023/10/16 10:24
- * @Description : 店友圈数据类
- */
-data class ShopFriendsForm(
-    @StringRes val title: Int,
-    @StringRes val placeholder: Int,
-    val data: String,
-    val type: ShopFriendsEditTextType
-)
 
 /**
  * 头像数据类
@@ -41,9 +28,3 @@ data class ShopFriendsImageData(
     val offsetIndex: Int = 0,
     val isShowed:Boolean = false,
 )
-
-enum class ShopFriendsEditTextType {
-    GroupName,
-    GroupType,
-    GroupTerm,
-}

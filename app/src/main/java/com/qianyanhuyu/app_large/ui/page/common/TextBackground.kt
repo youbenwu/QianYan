@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextAlign
@@ -19,6 +20,8 @@ import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
+import com.qianyanhuyu.app_large.util.onClick
+import kotlinx.coroutines.launch
 
 /***
  * @Author : Cheng
@@ -30,18 +33,33 @@ fun TextBackground(
     text: String,
     shapes: Shape = Shapes.extraSmall,
     textBackground: Color = CustomLavender,
+    textBackgroundBrush: Brush? = null,
     fontSize: TextUnit = 25.csp,
     lineHeight: TextUnit = 30.csp,
     letterSpacing: TextUnit = 4.csp,
     textHorizontalPadding: Dp = 31.cdp,
-    modifier: Modifier
+    modifier: Modifier,
+    onClick: () -> Unit = {}
 ) {
-    Box(
-        modifier = modifier
-            .clip(shapes)
+    val modifierCurrent: Modifier = textBackgroundBrush?.let {
+        modifier
             .background(
-                textBackground
+                textBackgroundBrush,
+                shapes
             )
+            .clip(shapes)
+    } ?: modifier
+            .background(
+                textBackground,
+                shapes
+            )
+            .clip(shapes)
+
+    Box(
+        modifier = modifierCurrent
+            .onClick {
+                onClick.invoke()
+            }
     ) {
         CommonText(
             text,

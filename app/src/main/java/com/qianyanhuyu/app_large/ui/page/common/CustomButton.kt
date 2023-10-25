@@ -35,10 +35,9 @@ fun CustomButton(
     text: String,
     textLetterSpacing: TextUnit= 4.csp,
     fontSize: TextUnit = 30.csp,
-    shape: Shape = Shapes.medium,
+    shape: Shape = Shapes.small,
     contentColor: Color = Color.White,
     containerColor: Color = CustomPurple,
-    colorBrush: Brush = originToBlueHorizontal,
     isShowIcon: Boolean = false,
     modifier: Modifier,
     onClick: () -> Unit = {}

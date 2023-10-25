@@ -192,6 +192,7 @@ fun CustomerServiceContent(
                     subTitle = "专业服务关怀亲切",
                     buttonText = "立即呼叫",
                     isShowTextBackgroundView = true,
+                    paddingHorizontal = 60.cdp,
                     buttonColor = CustomPurple,
                     modifier = Modifier
                         .constrainAs(imageContentView) {
@@ -286,6 +287,8 @@ fun CustomerServiceContent(
                     title = "外卖送餐",
                     subTitle = "商城配送急速送达",
                     buttonText = "去点好吃的",
+                    paddingHorizontal = 45.cdp,
+                    paddingVertical = 5.cdp,
                     modifier = Modifier
                         .constrainAs(topContentView) {
                             top.linkTo(topView.top)
@@ -344,6 +347,8 @@ fun CustomerServiceContent(
                     title = "干洗服务",
                     subTitle = "全家健康快乐生活",
                     buttonText = "查看服务",
+                    paddingVertical = 5.cdp,
+                    paddingHorizontal = 45.cdp,
                     modifier = Modifier
                         .constrainAs(bottomContentView) {
                             top.linkTo(bottomView.top)
@@ -353,7 +358,9 @@ fun CustomerServiceContent(
                             width = Dimension.fillToConstraints
                             height = Dimension.preferredWrapContent
                         }
-                )
+                ) {
+                    AppNavController.instance.navigate(Route.DRY_CLEAN)
+                }
             }
         }
     }
@@ -366,16 +373,16 @@ fun ImageContentView (
     buttonText: String,
     buttonColor: Color = CustomOrigin,
     isShowTextBackgroundView: Boolean = false,
-    paddingStart: Dp = 60.cdp,
-    modifier: Modifier
+    paddingHorizontal: Dp = 0.cdp,
+    paddingVertical: Dp = 35.cdp,
+    modifier: Modifier,
+    onClick: () -> Unit = {}
 ) {
     ConstraintLayout(
         modifier = modifier
             .padding(
-                start = paddingStart,
-                end = paddingStart,
-                top = 35.cdp,
-                bottom = 35.cdp
+                horizontal = paddingHorizontal,
+                vertical = paddingVertical
             )
     ) {
 
@@ -432,7 +439,7 @@ fun ImageContentView (
                     start.linkTo(parent.start)
                 }
                 .padding(
-                    top = 35.cdp,
+                    top = if(isShowTextBackgroundView) { 35.cdp } else { 0.cdp },
                 )
         )
 
@@ -467,6 +474,7 @@ fun ImageContentView (
         CustomButton(
             text = buttonText,
             containerColor = buttonColor,
+            onClick = onClick,
             modifier = Modifier
                 .constrainAs(buttonView4) {
                     start.linkTo(parent.start)
@@ -475,8 +483,6 @@ fun ImageContentView (
                 .padding(
                     top = 35.cdp
                 )
-        ) {
-            AppNavController.instance.navigate(Route.DRY_CLEAN)
-        }
+        )
     }
 }

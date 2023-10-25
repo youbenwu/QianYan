@@ -67,9 +67,7 @@ fun HomeNavHost(
 
         homeGraph(
             route = Route.HOME_GRAPH,
-            navController = navController,
             drawerState = drawerState,
-            onFinish = onFinish
         )
 
         // 客房服务
@@ -87,21 +85,15 @@ fun HomeNavHost(
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 private fun NavGraphBuilder.homeGraph(
     startDestination: String = Route.HOME_CONTENT,
-    navController: NavHostController,
     drawerState: DrawerState,
     route: String,
-    onFinish: () -> Unit = {}
 ) {
     navigation(
         startDestination = startDestination,
         route = route
     ) {
         composable(Route.HOME_CONTENT) {
-            HomePageScreen(
-                navController = navController,
-            ) {
-                onFinish()
-            }
+            HomePageScreen()
         }
 
         composable(Route.CUSTOMER_SERVICE) {

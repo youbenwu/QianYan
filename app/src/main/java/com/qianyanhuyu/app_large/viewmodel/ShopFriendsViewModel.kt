@@ -9,8 +9,6 @@ import com.qianyanhuyu.app_large.App.Companion.context
 import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.constants.AppConfig.CIRCLE_NUMBER_IMAGE
 import com.qianyanhuyu.app_large.constants.AppConfig.smallCircleRadius
-import com.qianyanhuyu.app_large.model.ShopFriendsEditTextType
-import com.qianyanhuyu.app_large.model.ShopFriendsForm
 import com.qianyanhuyu.app_large.model.ShopFriendsImageData
 import com.qianyanhuyu.app_large.ui.page.common.ShopFriendsAnimation
 import com.qianyanhuyu.app_large.util.getImageBitmapByUrl
@@ -49,8 +47,6 @@ class ShopFriendsViewModel @Inject constructor(
             is ShopFriendsViewAction.InitPageData -> initPageData()
             is ShopFriendsViewAction.UpdateImageData -> updateImageData()
             is ShopFriendsViewAction.UpdateOnlinePerson -> updateOnlinePerson()
-            is ShopFriendsViewAction.IsShowCreateGroupChatDialog -> isShowCreateGroupChatDialog(action.isShowDialog)
-            is ShopFriendsViewAction.UpdateFormValue -> updateFormValue(action.type, action.text)
             else -> {}
         }
     }
@@ -112,20 +108,6 @@ class ShopFriendsViewModel @Inject constructor(
 
             viewStates = viewStates.copy(
                 onlinePersonCount = 59116,
-                formList = listOf(
-                    ShopFriendsForm(
-                        title = R.string.group_chat_form_name,
-                        placeholder = R.string.group_chat_form_name_placeholder,
-                        data = "",
-                        type = ShopFriendsEditTextType.GroupName
-                    ),
-                    ShopFriendsForm(
-                        title = R.string.group_chat_form_type,
-                        placeholder = R.string.group_chat_form_type_placeholder,
-                        data = "",
-                        type = ShopFriendsEditTextType.GroupType
-                    )
-                ),
                 imageData = viewStates.imageData.ifEmpty {
                     imageDataList.dropWhile {
                         it.isShow.value == ShopFriendsAnimation.Hide && it.isShowed
@@ -282,82 +264,19 @@ class ShopFriendsViewModel @Inject constructor(
             }
         }
     }
-
-    private fun isShowCreateGroupChatDialog(isShow: Boolean) {
-        viewStates = viewStates.copy(
-            isShowDialog = isShow
-        )
-    }
-
-    private fun updateFormValue(type: ShopFriendsEditTextType, data: String) {
-        when(type) {
-            ShopFriendsEditTextType.GroupTerm -> {
-                viewStates = viewStates.copy(
-                    termIsCheck = data.toBooleanStrict()
-                )
-            }
-            ShopFriendsEditTextType.GroupType -> {
-                // 在UTF-8下汉字占3个Byte
-                val lengthMax = 18
-                val isCheckLength = data.isNotEmpty() && data.toByteArray().size <= lengthMax
-
-                viewStates = viewStates.copy(
-                    formList = viewStates.formList.map {
-                        if(it.type == type) {
-                            it.copy(
-                                data = if(data.isEmpty() || isCheckLength) {
-                                    data
-                                } else {
-                                    it.data
-                                }
-                            )
-                        } else {
-                            it
-                        }
-                    }
-                )
-            }
-            else -> {
-                viewStates = viewStates.copy(
-                    formList = viewStates.formList.map {
-                        if(it.type == type) {
-                            it.copy(
-                                data = data
-                            )
-                        } else {
-                            it
-                        }
-                    }
-                )
-            }
-        }
-    }
-
 }
 
 data class ShopFriendsViewState(
     val imageData: List<ShopFriendsImageData> = mutableListOf(),
     val imageIsShowed: Boolean = false,
     val isLoading: Boolean = false,
-    val onlinePersonCount: Int = 0,
-    val isShowDialog: Boolean = false,
-    val termIsCheck: Boolean = false,
-    val formList: List<ShopFriendsForm> = mutableListOf()
+    val onlinePersonCount: Int = 0
 )
 
 sealed class ShopFriendsViewAction {
     object InitPageData : ShopFriendsViewAction()
     object UpdateImageData : ShopFriendsViewAction()
     object UpdateOnlinePerson: ShopFriendsViewAction()
-
-    data class IsShowCreateGroupChatDialog(
-        val isShowDialog: Boolean = false
-    ): ShopFriendsViewAction()
-
-    data class UpdateFormValue(
-        val type: ShopFriendsEditTextType,
-        val text: String = "",
-    ): ShopFriendsViewAction()
 }
 
 sealed class ShopFriendsViewEvent {

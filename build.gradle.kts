@@ -1,10 +1,4 @@
 buildscript {
-//    ext {
-//        compose_version = "1.2.1"
-//        val accompanist_version = "0.25.1"
-//        room_version = "2.4.2"
-//    }
-
     dependencies {
         classpath("com.google.dagger:hilt-android-gradle-plugin:2.44")
     }

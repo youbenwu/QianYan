@@ -6,16 +6,22 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -31,6 +37,8 @@ import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
+import com.qianyanhuyu.app_large.util.onClick
+import kotlinx.coroutines.launch
 
 /***
  * @Author : Cheng
@@ -54,33 +62,45 @@ fun DryClean() {
 data class DryCleanType(
     val name: String,
     val type: Int,
+    val title: String = "",
 )
+
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun DryCleanContent(
     modifier: Modifier
 ) {
+    val labelCoroutineScope = rememberCoroutineScope()
+
     val pagerState = rememberPagerState(
         initialPage = 0,
     )
 
+    val selectedIndex = remember {
+        mutableStateOf(0)
+    }
+
     val testTypeData = listOf<DryCleanType>(
         DryCleanType(
             name = "服饰",
-            type = 1,
+            type = 0,
+            title = "衣服"
         ),
         DryCleanType(
-            name = "家访",
-            type = 2,
+            name = "家纺",
+            type = 1,
+            title = "家纺"
         ),
         DryCleanType(
             name = "皮衣",
-            type = 3,
+            type = 2,
+            title = "皮上衣"
         ),
         DryCleanType(
             name = "箱包",
-            type = 4,
+            type = 3,
+            title = "箱包"
         )
     )
 
@@ -99,18 +119,27 @@ private fun DryCleanContent(
             )
 
             testTypeData.forEach {
+                val isCheck = it.type == selectedIndex.value
+
                 TextBackground(
                     text = it.name,
                     textBackground = Color.Transparent,
+                    textBackgroundBrush = if(isCheck) { AppConfig.ipPutInBorder } else { null },
                     fontSize = 25.csp,
                     textHorizontalPadding = 50.cdp,
                     modifier = Modifier
                         .border(
-                            1.cdp,
-                            Color.White
+                            if(isCheck) { 0.cdp } else { 1.cdp },
+                            Color.White,
+                            Shapes.extraSmall
                         )
                         .clip(Shapes.extraSmall)
-                )
+                ) {
+                    labelCoroutineScope.launch {
+                        selectedIndex.value = it.type
+                        pagerState.scrollToPage(it.type)
+                    }
+                }
             }
         }
 
@@ -121,8 +150,9 @@ private fun DryCleanContent(
             userScrollEnabled = false,
             modifier = modifier
                 .weight(1f)
-        ) { _ ->
+        ) { pagePosition ->
             TypeContentView(
+                data = testTypeData[pagePosition],
                 modifier = Modifier
                     .fillMaxSize()
             )
@@ -136,6 +166,7 @@ private fun DryCleanContent(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun TypeContentView(
+    data: DryCleanType,
     modifier: Modifier
 ) {
     val imageData = listOf(
@@ -159,7 +190,7 @@ private fun TypeContentView(
 
         val guideLine = createGuidelineFromStart(0.33f)
 
-        Box(
+        Column(
             modifier = Modifier
                 .constrainAs(leftImageView) {
                     linkTo(
@@ -173,19 +204,22 @@ private fun TypeContentView(
                     width = Dimension.fillToConstraints
                     height = Dimension.fillToConstraints
                 }
+                .padding(
+                    start = 80.cdp,
+                    bottom = 20.cdp
+                )
         ) {
             HorizontalPager(
                 count = imageData.count(),
                 state = pagerState,
                 userScrollEnabled = true,
                 modifier = modifier
-                    .fillMaxSize()
+                    .weight(1f)
             ) { pagePosition ->
                 CommonNetworkImage(
                     url = imageData[pagePosition],
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(30.cdp)
                 )
             }
 
@@ -195,9 +229,8 @@ private fun TypeContentView(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
-                        bottom = 10.cdp
+                        vertical = 45.cdp
                     )
-                    .align(Alignment.BottomCenter)
             ) {
                 HorizontalPagerIndicator(
                     pagerState = pagerState,
@@ -209,6 +242,7 @@ private fun TypeContentView(
         }
 
         RightContentView(
+            data = data,
             modifier = Modifier
                 .constrainAs(rightContentView) {
                     linkTo(
@@ -222,12 +256,16 @@ private fun TypeContentView(
                     width = Dimension.fillToConstraints
                     height = Dimension.preferredWrapContent
                 }
+                .padding(
+                    horizontal = 150.cdp
+                )
         )
     }
 }
 
 @Composable
 private fun RightContentView(
+    data: DryCleanType,
     modifier: Modifier
 ) {
     Box(
@@ -240,26 +278,37 @@ private fun RightContentView(
                 .fillMaxSize()
         ) {
             Row(
+                verticalAlignment = Alignment.Bottom,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .weight(2f)
             ) {
                 CommonText(
-                    "| 皮上衣",
+                    "| ${data.title}",
                     textAlign = TextAlign.Start,
+                    fontSize = 50.csp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .weight(3f)
                 )
                 CommonText(
-                    "¥ 599.0",
+                    "¥ 599.00",
                     color = AppConfig.CustomOrigin,
+                    fontSize = 50.csp,
+                    textAlign = TextAlign.Start,
                     modifier = Modifier
                         .weight(1f)
                 )
             }
 
+            Divider(
+                color = Color.White.copy(alpha = 0.8f),
+                thickness = 1.cdp
+            )
+
             CommonText(
                 "| 附加项",
+                fontSize = 50.csp,
                 textAlign = TextAlign.Start,
                 fontWeight = FontWeight.Bold,
             )
@@ -280,6 +329,9 @@ private fun RightContentView(
                     price = "100.00",
                     modifier = Modifier
                         .weight(1f)
+                        .padding(
+                            start = 60.cdp
+                        )
                 )
             }
 
@@ -299,15 +351,21 @@ private fun RightContentView(
                     price = "100.00",
                     modifier = Modifier
                         .weight(1f)
+                        .padding(
+                            start = 60.cdp
+                        )
                 )
             }
 
             ConfirmButton(
                 "立即支付",
                 modifier = Modifier
-                    .fillMaxWidth(0.8f)
+                    .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
-            )
+                    .weight(3f)
+            ) {
+
+            }
         }
     }
 }
@@ -316,25 +374,35 @@ private fun RightContentView(
 @Composable
 private fun ConfirmButton(
     text: String,
-    modifier: Modifier
+    modifier: Modifier,
+    onClick: () -> Unit = {}
 ) {
     Box(
         modifier = modifier
-            .background(
-                AppConfig.ipPutInBorder,
-                shape = Shapes.extraLarge
-            )
-            .clip(shape = Shapes.extraLarge)
-            .padding(
-                vertical = 30.cdp
-            )
     ) {
-        CommonText(
-            text,
-            fontWeight = FontWeight.Bold,
+        Box(
             modifier = Modifier
+                .background(
+                    AppConfig.ipPutInBorder,
+                    shape = Shapes.extraLarge
+                )
+                .clip(shape = Shapes.extraLarge)
+                .padding(
+                    vertical = 30.cdp
+                )
+                .fillMaxWidth(0.8f)
                 .align(Alignment.Center)
-        )
+                .onClick {
+                    onClick.invoke()
+                }
+        ) {
+            CommonText(
+                text,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .align(Alignment.Center)
+            )
+        }
     }
 }
 
@@ -352,7 +420,6 @@ private fun AdditionalItem(
     CommonText(
         "+ ¥ $price",
         textAlign = TextAlign.Start,
-        modifier = modifier
     )
 }
 

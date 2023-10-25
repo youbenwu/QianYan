@@ -26,9 +26,6 @@ android {
 
     buildTypes {
         release {
-            buildConfigField("String", "NE_APP_KEY", "\"ef14009133ab39fbfea8e783193d8445\"")
-            buildConfigField("String", "NE_APP_SECRET", "\"e1b68179435f\"")
-
             isMinifyEnabled = false
             isDebuggable = false
             proguardFiles(
@@ -38,10 +35,6 @@ android {
         }
 
         debug {
-            buildConfigField("String", "NE_APP_KEY", "\"ef14009133ab39fbfea8e783193d8445\"")
-            buildConfigField("String", "NE_APP_SECRET", "\"e1b68179435f\"")
-
-
             isDebuggable = true
             isMinifyEnabled = false
         }
@@ -79,9 +72,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.activity:activity-compose:1.7.0")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -132,10 +125,10 @@ dependencies {
     val pagingVersion = "3.1.1"
     implementation("androidx.paging:paging-compose:1.0.0-alpha18")
     implementation("androidx.paging:paging-runtime-ktx:${pagingVersion}")
-    implementation("androidx.paging:paging-common:${pagingVersion}")
+    implementation("androidx.paging:paging-common-ktx:${pagingVersion}")
 
     // ExoPlayer
     // implementation("com.google.android.exoplayer:exoplayer:2.19.1")
 
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.2")
 }

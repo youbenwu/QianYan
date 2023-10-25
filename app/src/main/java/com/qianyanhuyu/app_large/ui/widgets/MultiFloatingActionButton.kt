@@ -57,7 +57,7 @@ fun MultiFloatingActionButton(
     val centerContentWidth = 203.cdp
     val centerContentHeight = 150.cdp
     val itemImageSize = 139.cdp
-    val mediumWidth = 50.cdp
+    val mediumWidth = 47.cdp
 
     //用于+号按钮的旋转动画
     val rotateAnim: Float by transition.animateFloat(
@@ -122,7 +122,7 @@ fun MultiFloatingActionButton(
                 .width(1485.cdp)
                 .height(808.cdp)
                 .graphicsLayer {
-                    this.translationY = 210.cdp.toPx
+                    this.translationY = 230.cdp.toPx
                 }
                 .alpha(animateFloatAsState(alphaAnim, label = "").value)
                 .align(Alignment.BottomCenter)
@@ -200,7 +200,7 @@ fun MultiFloatingActionButton(
             modifier = Modifier
                 .size(195.cdp)
                 .graphicsLayer {
-                    this.translationY = 70.cdp.toPx
+                    this.translationY = 85.cdp.toPx
                 }
                 .clip(CircleShape)
                 .clickable {

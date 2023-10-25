@@ -82,19 +82,20 @@ fun CommonLocalImage(
     )
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun CommonComposeImage(
     resId: Int,
     contentScale: ContentScale = ContentScale.Crop,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    colorFilter: ColorFilter? = null
 ) {
 
     Image(
         painter = painterResource(id = resId),
         contentDescription = null,
         modifier = modifier,
-        contentScale = contentScale
+        contentScale = contentScale,
+        colorFilter = colorFilter
     )
 }
 

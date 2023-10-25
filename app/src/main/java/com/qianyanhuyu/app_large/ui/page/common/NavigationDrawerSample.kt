@@ -1,7 +1,10 @@
 package com.qianyanhuyu.app_large.ui.page.common
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -9,6 +12,7 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -36,17 +40,24 @@ fun NavigationDrawerSample(
     CompositionLocalProvider(
         LocalLayoutDirection.provides(LayoutDirection.Rtl)
     ) {
+
+        val progress by animateFloatAsState(if (drawerState.isOpen) 0.33f else 0f, animationSpec = tween(200),
+            label = ""
+        )
+
         // 侧边栏菜单, gesturesEnabled控制是否可滑动唤出
         ModalNavigationDrawer(
             drawerState = drawerState,
-            gesturesEnabled = drawerState.isOpen/*true*/,
+            gesturesEnabled = drawerState.isOpen,
             drawerContent = {
                 // 侧边栏主背景显示, 背景渐变, 不需要圆角
                 ModalDrawerSheet(
                     drawerContainerColor = Color.Transparent,
                     drawerContentColor = Color.Transparent,
                     modifier = Modifier
-                        .fillMaxWidth(0.33f)
+                        .then(
+                            Modifier.fillMaxWidth(progress)
+                        )
                         .background(
                             AppConfig.navDrawerBgBrush,
                             RoundedCornerShape(0.cdp)
@@ -60,6 +71,8 @@ fun NavigationDrawerSample(
                     }
                 }
             },
+            modifier = Modifier
+                .safeDrawingPadding()
         ) {
             CompositionLocalProvider(
                 LocalLayoutDirection.provides(LayoutDirection.Ltr)

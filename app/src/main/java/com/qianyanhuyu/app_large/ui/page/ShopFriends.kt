@@ -63,24 +63,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.qianyanhuyu.app_large.R
-import com.qianyanhuyu.app_large.constants.AppConfig
-import com.qianyanhuyu.app_large.model.ShopFriendsEditTextType
-import com.qianyanhuyu.app_large.model.ShopFriendsForm
 import com.qianyanhuyu.app_large.ui.page.common.CommonText
 import com.qianyanhuyu.app_large.ui.page.common.ImageCircle
 import com.qianyanhuyu.app_large.ui.page.common.ShopFriendsAnimation
-import com.qianyanhuyu.app_large.ui.theme.IconColor
-import com.qianyanhuyu.app_large.ui.theme.Shapes
-import com.qianyanhuyu.app_large.ui.widgets.ActivationClickText
-import com.qianyanhuyu.app_large.ui.widgets.BaseMessageDialog
-import com.qianyanhuyu.app_large.ui.widgets.CommonCheckBox
 import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
-import com.qianyanhuyu.app_large.ui.widgets.CommonLocalImage
-import com.qianyanhuyu.app_large.ui.widgets.SimpleEditTextWidget
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
-import com.qianyanhuyu.app_large.util.onClick
-import com.qianyanhuyu.app_large.util.toPx
 import com.qianyanhuyu.app_large.util.units
 import com.qianyanhuyu.app_large.viewmodel.ShopFriendsViewAction
 import com.qianyanhuyu.app_large.viewmodel.ShopFriendsViewEvent
@@ -172,34 +160,16 @@ fun ShopFriendsScreen(
         ShopFriendsContent(
             viewStates = viewModel.viewStates,
             onGroupChat = {
-                viewModel.dispatch(ShopFriendsViewAction.IsShowCreateGroupChatDialog(!viewModel.viewStates.isShowDialog))
-            },
-            onSoundMatching = {
                 coroutineState.launch {
                     drawerState.open()
                 }
             },
+            onSoundMatching = {
+
+            },
             modifier = Modifier
                 .fillMaxSize()
         )
-
-        CreateChatGroupDialog(
-            "欢迎体验「语音聊天室」功能",
-            viewStates = viewModel.viewStates,
-            onTermClick = { type, isCheck ->
-                viewModel.dispatch(ShopFriendsViewAction.UpdateFormValue(type, isCheck.toString()))
-            },
-            onClearClick = {
-                viewModel.dispatch(ShopFriendsViewAction.UpdateFormValue(it))
-            },
-            onValueChange = { type, text ->
-                viewModel.dispatch(ShopFriendsViewAction.UpdateFormValue(type, text))
-            },
-            data = viewModel.viewStates.formList,
-
-            ) {
-            viewModel.dispatch(ShopFriendsViewAction.IsShowCreateGroupChatDialog(false))
-        }
     }
 }
 
@@ -476,254 +446,5 @@ private fun addAnimation(duration: Int = 800): ContentTransform {
     } + fadeOut(
         animationSpec = tween(duration)
     )
-}
-
-@OptIn(ExperimentalTextApi::class)
-@Composable
-private fun CreateChatGroupDialog(
-    title: String = "",
-    viewStates: ShopFriendsViewState,
-    onClearClick: (ShopFriendsEditTextType) -> Unit = {},
-    onValueChange: ((type: ShopFriendsEditTextType, text: String) -> Unit)? = null,
-    onTermClick: ((type: ShopFriendsEditTextType, isShow: Boolean) -> Unit)? = null,
-    data: List<ShopFriendsForm> = listOf(),
-    onCancelClick: () -> Unit = {}
-) {
-    BaseMessageDialog(
-        isShow = viewStates.isShowDialog,
-        dialogHeight = 0.75f,
-        dialogBackground = Color(18, 18, 40),
-    ) {
-        ConstraintLayout(
-            modifier = Modifier.fillMaxSize()
-        ) {
-
-            val (
-                cancelView,
-                titleTextView,
-                titleView,
-                chatGroupFormView,
-                confirmTripsView,
-                confirmView,
-                bottomView,
-            ) = createRefs()
-            
-            CommonLocalImage(
-                resId = R.drawable.trips_dialog_top_bg,
-                modifier = Modifier
-                    .constrainAs(titleView) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-
-                        width = Dimension.fillToConstraints
-                    }
-            )
-
-            CommonLocalImage(
-                resId = R.drawable.trips_dialog_bottom_bg,
-                colorFilter = ColorFilter.tint(AppConfig.CustomBlue84),
-                modifier = Modifier
-                    .constrainAs(bottomView) {
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-
-                        width = Dimension.fillToConstraints
-                    }
-            )
-
-            CommonText(
-                title,
-                fontSize = 50.csp,
-                modifier = Modifier
-                    .constrainAs(titleTextView) {
-                        start.linkTo(parent.start)
-                        top.linkTo(titleView.top)
-                        end.linkTo(cancelView.start)
-                        bottom.linkTo(titleView.bottom)
-                        width = Dimension.fillToConstraints
-                    }
-                    .padding(
-                        start = 20.cdp
-                    )
-            )
-
-            CommonLocalImage(
-                resId = R.drawable.ic_dialog_cancel,
-                modifier = Modifier
-                    .constrainAs(cancelView) {
-                        end.linkTo(parent.end)
-                        top.linkTo(titleView.top)
-                        bottom.linkTo(titleView.bottom)
-                        height = Dimension.fillToConstraints
-                    }
-                    .aspectRatio(1F)
-                    .clip(
-                        RoundedCornerShape(
-                            topEndPercent = 30.cdp.toPx.toInt(),
-                        )
-                    )
-                    .clickable {
-                        onCancelClick.invoke()
-                    }
-            )
-
-            CreateChatGroupForm(
-                data = data,
-                termIsCheck = viewStates.termIsCheck,
-                onTermClick = onTermClick,
-                onClearClick = onClearClick,
-                onValueChange = onValueChange,
-                modifier = Modifier
-                    .constrainAs(chatGroupFormView) {
-                        top.linkTo(titleView.bottom)
-                        bottom.linkTo(confirmView.top)
-                        linkTo(start = parent.start, end = parent.end)
-
-                        height = Dimension.fillToConstraints
-                        width = Dimension.fillToConstraints
-                    }
-            )
-
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .constrainAs(confirmView) {
-                        top.linkTo(chatGroupFormView.bottom)
-                        bottom.linkTo(bottomView.top, margin = 25.cdp)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    }
-                    .clip(Shapes.extraLarge)
-                    .background(
-                        AppConfig.createGroupChatDialogBrush
-                    )
-                    .fillMaxWidth(0.35f)
-                    .onClick { }
-            ) {
-                Text(
-                    text = "立即创建",
-                    fontSize = 37.csp,
-                    fontWeight = FontWeight.Bold,
-                    style = TextStyle(
-                        brush = AppConfig.whiteToTransaction,
-                    ),
-                    modifier = Modifier
-                        .padding(vertical = 25.cdp)
-                )
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun CreateChatGroupForm(
-    data: List<ShopFriendsForm>,
-    termIsCheck: Boolean = false,
-    onClearClick: (ShopFriendsEditTextType) -> Unit = {},
-    onValueChange: ((type: ShopFriendsEditTextType, text: String) -> Unit)? = null,
-    onTermClick: ((type: ShopFriendsEditTextType, isShow: Boolean) -> Unit)? = null,
-    modifier: Modifier
-) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(30.cdp),
-        modifier = modifier
-            .padding(30.cdp)
-    ) {
-        data.forEach {
-            SimpleEditTextWidget(
-                value = it.data,
-                valueLabel = it.title,
-                placeholder = {
-                    CommonText(
-                        stringResource(id = it.placeholder),
-                        color = AppConfig.CustomGrey,
-                        modifier = Modifier
-                            .padding(vertical = 8.cdp)
-                    )
-                },
-                colors = TextFieldDefaults.textFieldColors(
-                    textColor = Color.White,
-                    containerColor = Color.Transparent,
-                    focusedIndicatorColor = AppConfig.CustomGrey.copy(alpha = 0.5F),
-                    unfocusedIndicatorColor = AppConfig.CustomGrey,
-                    unfocusedLeadingIconColor = IconColor,
-                    focusedLeadingIconColor = IconColor,
-                    unfocusedTrailingIconColor = Color.White,
-                    focusedTrailingIconColor = Color.White,
-                    focusedLabelColor = Color.White,
-                    unfocusedLabelColor = Color.White
-                ),
-                onClick = {
-                    onClearClick.invoke(it.type)
-                },
-                onValueChange = { value ->
-                    onValueChange?.invoke(it.type, value)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
-        }
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .toggleable(
-                    value = termIsCheck,
-                    role = Role.Checkbox,
-                    onValueChange = {
-                        onTermClick?.invoke(ShopFriendsEditTextType.GroupTerm, it)
-                    }
-                )
-                .fillMaxWidth()
-        ) {
-            CommonCheckBox(
-                isCheck = termIsCheck,
-            )
-
-            ActivationClickText(
-                text = R.string.group_chat_form_term,
-                clickText = "用户使用群聊协议",
-                clickTextColor = AppConfig.CustomBlue84,
-                fontSize = 25.csp,
-                modifier = Modifier
-                    .weight(1F)
-                    .padding(start = 15.cdp)
-            ) {
-                Log.d("ClickText: ", "ActivationClickText")
-            }
-        }
-    }
-}
-
-@Preview
-@Composable
-fun PerText() {
-    val isChecked = remember {mutableStateOf(false)}
-
-    /*CreateChatGroupDialog(
-        "欢迎体验「语音聊天室」功能",
-        isShow = true,
-        termIsCheck = isChecked.value,
-        isCheck = {
-            isChecked.value = it
-        },
-        data = listOf(
-            ShopFriendsForm(
-                title = R.string.group_chat_form_name,
-                placeholder = R.string.group_chat_form_name_placeholder,
-                data = "",
-                type = ShopFriendsEditTextType.GroupName
-            ),
-            ShopFriendsForm(
-                title = R.string.group_chat_form_type,
-                placeholder = R.string.group_chat_form_type_placeholder,
-                data = "",
-                type = ShopFriendsEditTextType.GroupType
-            )
-        )
-    )*/
 }
 

@@ -1,5 +1,6 @@
 package com.qianyanhuyu.app_large.model
 
+import androidx.annotation.StringRes
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
@@ -27,3 +28,21 @@ data class GroupChatItem(
         "https://img.js.design/assets/img/64460169ed05937640eb5146.png#a6d093d1a3b96c6b883e4d523c187606"
     )
 ) : Serializable
+
+/***
+ * @Author : Cheng
+ * @CreateDate : 2023/10/16 10:24
+ * @Description : 店友圈数据类
+ */
+data class GroupChatForm(
+    @StringRes val title: Int,
+    @StringRes val placeholder: Int,
+    val data: String,
+    val type: GroupChatEditTextType
+)
+
+enum class GroupChatEditTextType {
+    GroupName,
+    GroupType,
+    GroupTerm,
+}

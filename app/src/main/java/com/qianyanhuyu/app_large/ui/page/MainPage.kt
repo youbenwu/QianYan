@@ -1,6 +1,5 @@
 package com.qianyanhuyu.app_large.ui.page
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -36,8 +35,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.pager.ExperimentalPagerApi
 import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.ui.AppNavController
 import com.qianyanhuyu.app_large.ui.HomeNavHost
@@ -94,7 +91,7 @@ fun MainPage(
                     AppNavController.instance.navigate(HOME_ROUTE)
                 }
             } else {
-                TwoBackFinish().execute(onFinish)
+                // TwoBackFinish().execute(onFinish)
             }
         }
     }

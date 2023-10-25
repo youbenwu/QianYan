@@ -234,7 +234,7 @@ fun ImageCircle(
                 ),
                 topLeft = Offset(
                     offset.x - imageSize / 2,
-                    offset.y - imageSize / 1.15F
+                    offset.y - imageSize / 1.15F - 5.cdp.toPx
                 ),
                 style = TextStyle(
                     fontFamily = FontFamily.Default,
