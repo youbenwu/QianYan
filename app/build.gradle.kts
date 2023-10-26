@@ -9,6 +9,18 @@ android {
     namespace = "com.qianyanhuyu.app_large"
     compileSdk = 33
 
+
+    signingConfigs {
+        create("release") {
+            storeFile = file("/Users/macbook/Desktop/youbenwu/git/QianYan/key")
+            storePassword = "111111"
+            keyAlias = "key0"
+            keyPassword = "111111"
+        }
+
+    }
+
+
     defaultConfig {
         applicationId = "com.qianyanhuyu.app_large"
         minSdk = 24
@@ -20,7 +32,7 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-
+        signingConfig = signingConfigs.findByName("release")
 
     }
 
