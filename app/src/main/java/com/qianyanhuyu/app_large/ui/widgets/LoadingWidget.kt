@@ -40,6 +40,7 @@ fun LoadingComponent(
     loadingWidth: Dp = 60.cdp,
     loadingHeight: Dp = 50.cdp,
     loadingRadius: Boolean = true,
+    isScreen: Boolean = false,
     color: Color = MaterialTheme.colorScheme.primary,
     contentAlignment: Alignment = Alignment.Center
 ) {
@@ -62,8 +63,14 @@ fun LoadingComponent(
     }
 
 
+    val boxModifier = if(isScreen) {
+        modifier.requestFocus()
+    } else {
+        modifier
+    }
+
     Box(
-        modifier = modifier,
+        modifier = boxModifier,
         contentAlignment = contentAlignment
     ) {
 

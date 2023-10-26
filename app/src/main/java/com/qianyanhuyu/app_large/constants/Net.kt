@@ -6,8 +6,8 @@ package com.qianyanhuyu.app_large.constants
  * @Description : description
  */
 object Net {
-    // https://47dbe167-7d43-450a-960d-32bb8bc2d450.mock.pstmn.io/
-    const val BASE_URL = "https://mock.apifox.cn/m1/3437614-0-default/"
+    //https://mock.apifox.cn/m1/3437614-0-default/
+    const val BASE_URL = "http://192.168.7.59:9900/"
 
     const val CONNECTION_TIME_OUT = 10L
     const val READ_TIME_OUT = 10L

@@ -11,7 +11,7 @@ import java.io.Serializable
  */
 @Keep
 data class BaseResponse<T : Any>(
-    @SerializedName("code")
+    @SerializedName("status")
     val code: Int,
     @SerializedName("message")
     val message: String,

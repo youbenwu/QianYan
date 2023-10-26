@@ -34,7 +34,6 @@ class CommonPageDataSource<T : Any>(
             if(response.isSuccessful && response.body() != null) {
                 val pageData = response.body()?.data as? BasePaging<T>
                 val dataList = pageData?.comments ?: emptyList()
-                Log.d("PPPPPPPPPPPPageList: ", dataList.toString())
                 LoadResult.Page(
                     data = dataList,
                     prevKey = if (currentKey == 1) null else currentKey.minus(1),

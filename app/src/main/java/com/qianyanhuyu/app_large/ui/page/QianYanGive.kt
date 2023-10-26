@@ -37,10 +37,13 @@ import com.qianyanhuyu.app_large.ui.page.common.CommonText
 import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
+import com.qianyanhuyu.app_large.ui.widgets.LoadingComponent
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
+import com.qianyanhuyu.app_large.viewmodel.QianYanGiveViewAction
 import com.qianyanhuyu.app_large.viewmodel.QianYanGiveViewEvent
 import com.qianyanhuyu.app_large.viewmodel.QianYanGiveViewModel
+import com.qianyanhuyu.app_large.viewmodel.QianYanGiveViewState
 import kotlinx.coroutines.launch
 
 /***
@@ -61,7 +64,7 @@ fun QianYanGiveScreen(
 
     DisposableEffect(Unit) {
         // 初始化需要执行的内容
-        // viewModel.dispatch(ActivationViewAction.InitPageData)
+        viewModel.dispatch(QianYanGiveViewAction.InitPageData)
         onDispose {  }
     }
 
@@ -84,17 +87,28 @@ fun QianYanGiveScreen(
             .fillMaxSize()
     ) {
         QianYanGiveContent(
+            viewState = viewModel.viewStates,
             modifier = Modifier
                 .fillMaxSize()
         )
+
+        if(viewModel.viewStates.isLoading)
+            LoadingComponent(
+                isScreen = true
+            )
     }
 }
 
 /**
  * QianYanGive页面内容
+ * https://img.js.design/assets/img/6259ca77ba0a72d317f8dff4.png
+ * https://img.js.design/assets/img/617fd7537e06ae29ef55e3e8.png
+ * https://img.js.design/assets/img/6184ce18d97511650cd34cfd.png
+ *
  */
 @Composable
 fun QianYanGiveContent(
+    viewState: QianYanGiveViewState,
     modifier: Modifier
 ) {
     // 主体内容
@@ -140,7 +154,7 @@ fun QianYanGiveContent(
 
             // 左边布局
             FillHeightContent(
-                src = "https://img.js.design/assets/img/6259ca77ba0a72d317f8dff4.png",
+                src = viewState.data.getOrNull(0)?.image ?: "",
                 title = "免费送餐",
                 subTitle = "免费领取酒店早餐",
                 buttonText = "去领取",
@@ -157,7 +171,7 @@ fun QianYanGiveContent(
 
             // 右边布局
             FillHeightContent(
-                src = "https://img.js.design/assets/img/617fd7537e06ae29ef55e3e8.png",
+                src = viewState.data.getOrNull(1)?.image ?: "",
                 title = "免费门票",
                 subTitle = "赠送附近酒店门票",
                 buttonText = "去领取",
@@ -174,7 +188,7 @@ fun QianYanGiveContent(
 
             // 中间布局
             FillHeightContent(
-                src = "https://img.js.design/assets/img/6184ce18d97511650cd34cfd.png",
+                src = viewState.data.getOrNull(2)?.image ?: "",
                 buttonText = "去领取",
                 title = "免费住房",
                 subTitle = "酒店免费提供住房",

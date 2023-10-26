@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
@@ -35,6 +36,7 @@ fun HomeNavHost(
     startDestination: String = Route.SPLASH,
     route: String? = null,
     drawerState: DrawerState,
+    snackHostState: SnackbarHostState? = null,
     onFinish: () -> Unit = {}
 ) {
     AppNavController.instance = navController
@@ -68,6 +70,7 @@ fun HomeNavHost(
         homeGraph(
             route = Route.HOME_GRAPH,
             drawerState = drawerState,
+            snackHostState = snackHostState,
         )
 
         // 客房服务
@@ -86,6 +89,7 @@ fun HomeNavHost(
 private fun NavGraphBuilder.homeGraph(
     startDestination: String = Route.HOME_CONTENT,
     drawerState: DrawerState,
+    snackHostState: SnackbarHostState? = null,
     route: String,
 ) {
     navigation(
@@ -93,7 +97,9 @@ private fun NavGraphBuilder.homeGraph(
         route = route
     ) {
         composable(Route.HOME_CONTENT) {
-            HomePageScreen()
+            HomePageScreen(
+                snackHostState = snackHostState
+            )
         }
 
         composable(Route.CUSTOMER_SERVICE) {

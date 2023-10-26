@@ -1,5 +1,6 @@
 package com.qianyanhuyu.app_large.ui.page
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -72,26 +73,37 @@ fun MainPage(
     // 返回当前route名称
     val currentRoute = navBackStackEntry?.destination?.route
     val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackHostState = remember { SnackbarHostState() }
     val selectState = remember { mutableStateOf(-1)}
     val coroutineState = rememberCoroutineScope()
 
     BackHandler {
+        // 抽屉打开的时候关闭抽屉
         if(drawerState.isOpen) {
             coroutineState.launch {
                 drawerState.close()
             }
         } else {
-            val homeIndex = -1
-            // 不是首页的时候回上一页,是首页的时候按两次退出
-            if(selectState.value != homeIndex) {
-                coroutineState.launch {
-                    selectState.value = homeIndex
-                    AppNavController.instance.popBackStack()
-                    AppNavController.instance.navigate(HOME_ROUTE)
+            coroutineState.launch {
+                // 获取堆栈上一页路由
+                val preRoute = navController.previousBackStackEntry?.destination?.route
+                val homeIndex = -1
+                when(preRoute) {
+                    Route.CUSTOMER_SERVICE,
+                    Route.SHOP_FRIENDS,
+                    Route.QIAN_YAN_PLAY,
+                    Route.SMART_TOURISM,
+                    Route.QIAN_YAN_GIVE,
+                    Route.IP_PUT_IN -> {
+                        selectState.value = expandFbItemList.filter {
+                            it.route == preRoute
+                        }.getOrNull(0)?.index ?: homeIndex
+                    }
+                    else -> {
+                        selectState.value = homeIndex
+                    }
                 }
-            } else {
-                // TwoBackFinish().execute(onFinish)
+                AppNavController.instance.popBackStack()
             }
         }
     }
@@ -108,7 +120,7 @@ fun MainPage(
                 }
             ) {
                 Scaffold(
-                    snackbarHost = { SnackbarHost(snackbarHostState) },
+                    snackbarHost = { SnackbarHost(snackHostState) },
                     topBar = {
                         HomeTopBar(
                             selectState = selectState,
@@ -123,7 +135,7 @@ fun MainPage(
                                 items = expandFbItemList,
                                 selectState = selectState,
                             ) { item ->
-                                AppNavController.instance.popBackStack()
+                                // AppNavController.instance.popBackStack()
                                 AppNavController.instance.navigate(item.route)
                             }
                         }
@@ -147,7 +159,8 @@ fun MainPage(
                         ) {
                             HomeNavHost(
                                 navController,
-                                drawerState = drawerState
+                                drawerState = drawerState,
+                                snackHostState = snackHostState,
                             ) {
                                 onFinish.invoke()
                             }
@@ -162,7 +175,8 @@ fun MainPage(
     } else {
         HomeNavHost(
             navController,
-            drawerState = drawerState
+            drawerState = drawerState,
+            snackHostState = snackHostState
         ) {
             onFinish.invoke()
         }
@@ -391,7 +405,6 @@ private fun HomeTopBar(
                     .clickable {
                         ipCoroutineState.launch {
                             selectState.value = -1
-                            AppNavController.instance.popBackStack()
                             AppNavController.instance.navigate(HOME_ROUTE)
 
                         }

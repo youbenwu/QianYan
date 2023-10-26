@@ -1,16 +1,21 @@
 package com.qianyanhuyu.app_large.ui.page.common
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.qianyanhuyu.app_large.R
@@ -28,6 +33,7 @@ import com.qianyanhuyu.app_large.util.csp
 @Composable
 fun CustomTopTrips(
     text: String,
+    isShowSearch: Boolean = false,
     modifier: Modifier
 ) {
     Box(
@@ -66,7 +72,22 @@ fun CustomTopTrips(
                     .padding(
                         vertical = 15.cdp
                     )
+                    .weight(1f)
             )
+
+            AnimatedVisibility(visible = isShowSearch) {
+                Icon(
+                    Icons.Outlined.Search,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier
+                        .padding(
+                            start = 20.cdp,
+                            end = 54.cdp
+                        )
+                        .size(38.cdp)
+                )
+            }
         }
     }
 }
