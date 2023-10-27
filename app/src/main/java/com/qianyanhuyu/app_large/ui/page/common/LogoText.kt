@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
+import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
 import com.qianyanhuyu.app_large.ui.widgets.CommonLocalImage
 import com.qianyanhuyu.app_large.util.cdp
@@ -76,7 +77,7 @@ fun LogoImageText(
         horizontalArrangement = Arrangement.spacedBy(rowSpacing),
         modifier = modifier
     ) {
-        CommonLocalImage(
+        CommonComposeImage(
             resId = iconDrawable,
             modifier = Modifier
                 .width(iconWidth)

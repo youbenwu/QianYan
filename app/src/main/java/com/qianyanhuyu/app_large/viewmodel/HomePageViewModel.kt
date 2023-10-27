@@ -1,6 +1,5 @@
 package com.qianyanhuyu.app_large.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,19 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.qianyanhuyu.app_large.data.ContentApi
 import com.qianyanhuyu.app_large.data.model.Advert
-import com.qianyanhuyu.app_large.data.model.AdvertType
-import com.qianyanhuyu.app_large.data.model.AdvertTypeRequest
 import com.qianyanhuyu.app_large.util.requestFlowResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -60,8 +50,8 @@ class HomePageViewModel @Inject constructor(
         viewModelScope.launch(exception) {
             requestFlowResponse(
                 requestCall = {
-                    contentApi.getAdvertList(
-                        AdvertTypeRequest.PadHome.value,
+                    contentApi.getAdvertPage(
+                        0,
                         3
                     )
                 },
@@ -71,9 +61,47 @@ class HomePageViewModel @Inject constructor(
                     )
                 }
             ).apply {
-                val data = this ?: emptyList()
+                val data = this?.content ?: emptyList()
                 viewStates = viewStates.copy(
-                    data = data,
+                    dataPage1 = data,
+                )
+            }
+
+            requestFlowResponse(
+                requestCall = {
+                    contentApi.getAdvertPage(
+                        1,
+                        4
+                    )
+                },
+                showLoading = {
+                    viewStates = viewStates.copy(
+                        isLoading = it
+                    )
+                }
+            ).apply {
+                val data = this?.content ?: emptyList()
+                viewStates = viewStates.copy(
+                    dataPage2 = data,
+                )
+            }
+
+            requestFlowResponse(
+                requestCall = {
+                    contentApi.getAdvertPage(
+                        2,
+                        3
+                    )
+                },
+                showLoading = {
+                    viewStates = viewStates.copy(
+                        isLoading = it
+                    )
+                }
+            ).apply {
+                val data = this?.content ?: emptyList()
+                viewStates = viewStates.copy(
+                    dataPage3 = data,
                 )
             }
 
@@ -83,7 +111,9 @@ class HomePageViewModel @Inject constructor(
 
 data class HomePageViewState(
     val isLoading: Boolean = false,
-    val data: List<Advert> = emptyList()
+    val dataPage1: List<Advert> = emptyList(),
+    val dataPage2: List<Advert> = emptyList(),
+    val dataPage3: List<Advert> = emptyList()
 )
 
 sealed class HomePageViewAction {

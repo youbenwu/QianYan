@@ -263,6 +263,7 @@ private fun GroupChatList(
             },
             enableRefresh = true,
         ) {beanList ->
+
             itemsIndexed(beanList) {_, data ->
                 data?.let {
                     GroupChatItem(

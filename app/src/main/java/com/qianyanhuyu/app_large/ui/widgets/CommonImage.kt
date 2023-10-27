@@ -10,14 +10,11 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.transform.Transformation
 import com.qianyanhuyu.app_large.R
 
-
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun CommonNetworkImage(
     url: Any?,
@@ -60,8 +57,6 @@ fun CommonNetworkImage(
     )
 }
 
-
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun CommonLocalImage(
     resId: Int,

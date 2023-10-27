@@ -151,7 +151,13 @@ class GroupChatsViewModel @Inject constructor(
                 pageSize = AppPagingConfig().pageSize
             ),
             pagingSourceFactory = {
-                CommonPageDataSource<GroupChatItem>(contentApi)
+                CommonPageDataSource(
+                    requestCall = {
+                        contentApi.getGroupChats(
+                            page = it ?: 1
+                        )
+                    }
+                )
             }
         ).flow
     }

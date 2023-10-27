@@ -21,6 +21,8 @@ data class Advert(
     var image: String?,
     @SerializedName("url")
     var url: String?,
+    @SerializedName("qrCode")
+    val qrCode: String?,
     @SerializedName("advertType")
     val advertType: AdvertType?
 )

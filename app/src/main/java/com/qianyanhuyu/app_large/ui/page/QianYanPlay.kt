@@ -36,7 +36,9 @@ import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.ui.widgets.BaseMsgDialog
 import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
+import com.qianyanhuyu.app_large.ui.widgets.LoadingComponent
 import com.qianyanhuyu.app_large.util.cdp
+import com.qianyanhuyu.app_large.viewmodel.QianYanPlayViewAction
 import com.qianyanhuyu.app_large.viewmodel.QianYanPlayViewEvent
 import com.qianyanhuyu.app_large.viewmodel.QianYanPlayViewModel
 import com.qianyanhuyu.app_large.viewmodel.QianYanPlayViewState
@@ -60,7 +62,7 @@ fun QianYanPlayScreen(
 
     DisposableEffect(Unit) {
         // 初始化需要执行的内容
-        // viewModel.dispatch(ActivationViewAction.InitPageData)
+        viewModel.dispatch(QianYanPlayViewAction.InitPageData)
         onDispose {  }
     }
 
@@ -83,20 +85,33 @@ fun QianYanPlayScreen(
             .fillMaxSize()
     ) {
         QianYanPlayContent(
+            viewState = viewModel.viewStates,
             playButtonOnClick = {
 
             },
             modifier = Modifier
                 .fillMaxSize()
         )
+
+        if(viewModel.viewStates.isLoading)
+            LoadingComponent(
+                isScreen = true
+            )
     }
 }
 
 /**
  * QianYanPlay页面内容
- */
+ *
+ * https://img.js.design/assets/img/643d15f1097d676c83ee3656.png
+ * https://img.js.design/assets/img/643d15f1097d676c83ee361a.png,
+ * https://img.js.design/assets/img/64c4cad7a2cdceb1b17f754a.png#433538b4f062f82e87f2cb6eac7fdba5,
+ * https://img.js.design/assets/img/64c4cad7a2cdceb1b17f754a.png#433538b4f062f82e87f2cb6eac7fdba5,
+ * https://img.js.design/assets/img/64c4c8683835e991fbfa7bd8.png#c14c965f63603d513ff4723e904bc1ec
+ * */
 @Composable
 fun QianYanPlayContent(
+    viewState: QianYanPlayViewState,
     playButtonOnClick: () -> Unit,
     modifier: Modifier
 ) {
@@ -143,7 +158,7 @@ fun QianYanPlayContent(
 
             // 左边布局
             FillHeightImageContent(
-                src = "https://img.js.design/assets/img/643d15f1097d676c83ee3656.png",
+                src = viewState.data.getOrNull(0)?.image ?:"",
                 iconSrc = "https://img.js.design/assets/img/64747616d18b309f6e7d8594.png#d1e4aa5e2fccfeb1b9eba374eabad772",
                 buttonText = "腾讯视频",
                 isTripsVisible = true,
@@ -161,7 +176,7 @@ fun QianYanPlayContent(
 
             // 右边布局
             FillHeightImageContent(
-                src = "https://img.js.design/assets/img/64c4c8683835e991fbfa7bd8.png#c14c965f63603d513ff4723e904bc1ec",
+                src = viewState.data.getOrNull(4)?.image ?: "",
                 iconSrc = "https://img.js.design/assets/img/6497edd31e215bbdd2c52c44.png#cf6c4a4e8db29bee13fc4ce69a3bafb4",
                 buttonText = "优酷",
                 buttonColor = CustomBlue,
@@ -177,9 +192,9 @@ fun QianYanPlayContent(
             )
 
             CenterContent(
-                src = "https://img.js.design/assets/img/643d15f1097d676c83ee361a.png",
-                bottomLeftSrc = "https://img.js.design/assets/img/64c4cad7a2cdceb1b17f754a.png#433538b4f062f82e87f2cb6eac7fdba5",
-                bottomRightSrc = "https://img.js.design/assets/img/64c4cad7a2cdceb1b17f754a.png#433538b4f062f82e87f2cb6eac7fdba5",
+                src = viewState.data.getOrNull(1)?.image ?: "",
+                bottomLeftSrc = viewState.data.getOrNull(2)?.image ?:"",
+                bottomRightSrc = viewState.data.getOrNull(3)?.image ?: "",
                 modifier = Modifier
                     .constrainAs(centerContentView) {
                         start.linkTo(leftContentView.end)
@@ -274,8 +289,8 @@ private fun CenterContent(
 
         }
 
-        CommonComposeImage(
-            R.drawable.test_xiaohongshu,
+        CommonNetworkImage(
+            url = bottomLeftSrc,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .constrainAs(bottomLeftView) {
@@ -293,8 +308,8 @@ private fun CenterContent(
                 .clip(RoundedCornerShape(imageRadius))
         )
 
-        CommonComposeImage(
-            R.drawable.test_douyin,
+        CommonNetworkImage(
+            url = bottomRightSrc,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .constrainAs(bottomRightView) {
@@ -311,17 +326,6 @@ private fun CenterContent(
                 )
                 .clip(RoundedCornerShape(imageRadius))
         )
-    }
-}
-
-@Composable
-private fun OpenTripsDialog() {
-    BaseMsgDialog(
-        title = "连接到设备",
-        confirmText="Ok",
-        onRequestDismiss = {}
-    ) {
-
     }
 }
 

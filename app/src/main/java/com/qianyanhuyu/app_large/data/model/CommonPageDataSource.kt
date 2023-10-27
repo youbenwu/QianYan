@@ -1,10 +1,10 @@
 package com.qianyanhuyu.app_large.data.model
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.qianyanhuyu.app_large.data.ContentApi
 import com.qianyanhuyu.app_large.data.response.BasePaging
+import com.qianyanhuyu.app_large.data.response.BaseResponse
+import retrofit2.Response
 
 /***
  * @Author : DT
@@ -12,7 +12,9 @@ import com.qianyanhuyu.app_large.data.response.BasePaging
  * @Description : 定义数据加载方式
  */
 class CommonPageDataSource<T : Any>(
-    private val contentApi: ContentApi
+    private val requestCall: suspend (
+        Int?
+    ) -> Response<BaseResponse<BasePaging<T>>>?,
 ) : PagingSource<Int, T>() {
 
     override fun getRefreshKey(state: PagingState<Int, T>): Int? {
@@ -27,12 +29,10 @@ class CommonPageDataSource<T : Any>(
         // 定义键值
         val currentKey = params.key ?: 1
         return try {
-            val response = contentApi.getGroupChats(
-                page = currentKey
-            )
+            val response = requestCall(currentKey)
 
-            if(response.isSuccessful && response.body() != null) {
-                val pageData = response.body()?.data as? BasePaging<T>
+            if(response != null && response.isSuccessful && response.body() != null) {
+                val pageData = response.body()?.data
                 val dataList = pageData?.comments ?: emptyList()
                 LoadResult.Page(
                     data = dataList,
@@ -40,7 +40,7 @@ class CommonPageDataSource<T : Any>(
                     nextKey = if (currentKey == (pageData?.pageCount ?: currentKey)) null else currentKey.plus(1)
                 )
             } else {
-                LoadResult.Error(PagingException(response.code().toString(), response.message() ?: "未知错误"))
+                LoadResult.Error(PagingException(response?.code().toString(), response?.message() ?: "未知错误"))
             }
 
         } catch (exception: Exception) {

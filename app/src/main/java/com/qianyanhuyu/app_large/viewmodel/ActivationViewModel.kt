@@ -1,5 +1,6 @@
 package com.qianyanhuyu.app_large.viewmodel
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -7,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.qianyanhuyu.app_large.ui.common.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -20,7 +22,6 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class ActivationViewModel @Inject constructor(
-
 ) : ViewModel() {
     var viewStates by mutableStateOf(ActivationViewState())
         private set
@@ -50,7 +51,6 @@ class ActivationViewModel @Inject constructor(
      * 做一些进入页面初始化的操作
      */
     private fun initPageData() {
-
     }
 
     /**

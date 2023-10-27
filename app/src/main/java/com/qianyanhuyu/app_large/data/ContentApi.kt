@@ -1,6 +1,7 @@
 package com.qianyanhuyu.app_large.data
 
 import com.qianyanhuyu.app_large.data.model.Advert
+import com.qianyanhuyu.app_large.data.response.BaseCommonPaging
 import com.qianyanhuyu.app_large.data.response.BasePaging
 import com.qianyanhuyu.app_large.data.response.BaseResponse
 import com.qianyanhuyu.app_large.model.GroupChatItem
@@ -38,4 +39,14 @@ interface ContentApi {
         @Field("channelCode") channelCode: String,
         @Field("size") size: Int,
     ): Response<BaseResponse<List<Advert>>>
+
+    /**
+     * 获取广告内容分页接口
+     */
+    @FormUrlEncoded
+    @POST("api/portal/advert/page")
+    suspend fun getAdvertPage(
+        @Field("page") page: Int,
+        @Field("size") size: Int,
+    ): Response<BaseResponse<BaseCommonPaging<Advert>>>
 }

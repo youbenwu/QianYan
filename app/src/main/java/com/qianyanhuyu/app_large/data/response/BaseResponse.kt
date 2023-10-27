@@ -30,3 +30,9 @@ data class BasePaging<T : Any>(
     @SerializedName("comments")
     val comments: List<T> = emptyList(),
 )
+
+@Keep
+data class BaseCommonPaging<T : Any>(
+    @SerializedName("content")
+    val content: List<T> = emptyList(),
+)

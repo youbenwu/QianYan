@@ -38,6 +38,7 @@ fun TextBackground(
     lineHeight: TextUnit = 30.csp,
     letterSpacing: TextUnit = 4.csp,
     textHorizontalPadding: Dp = 31.cdp,
+    textColor: Color = Color.White,
     modifier: Modifier,
     onClick: () -> Unit = {}
 ) {
@@ -64,6 +65,7 @@ fun TextBackground(
         CommonText(
             text,
             fontSize = fontSize,
+            color = textColor,
             letterSpacing = letterSpacing,
             lineHeight = lineHeight,
             modifier = Modifier
