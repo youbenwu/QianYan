@@ -445,7 +445,6 @@ private fun isMain(
     route: String
 ) : Boolean = when(route) {
     Route.SPLASH,
-    Route.LOGIN,
     Route.ACTIVATION,
     Route.AUTHENTICATION -> false
     else -> true

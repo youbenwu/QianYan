@@ -1,21 +1,14 @@
 package com.qianyanhuyu.app_large.ui.page
 
-import android.annotation.SuppressLint
-import android.app.Activity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Email
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,7 +16,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -34,29 +26,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.ui.AppNavController
 import com.qianyanhuyu.app_large.ui.theme.AuthButtonTextColor
 import com.qianyanhuyu.app_large.ui.theme.ButtonColor
-import com.qianyanhuyu.app_large.ui.theme.IconColor
 import com.qianyanhuyu.app_large.ui.theme.Shapes
-import com.qianyanhuyu.app_large.ui.widgets.BaseMsgDialog
 import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
 import com.qianyanhuyu.app_large.ui.widgets.CommonLocalImage
-import com.qianyanhuyu.app_large.ui.widgets.LoadDataContent
 import com.qianyanhuyu.app_large.ui.widgets.SimpleEditTextWidget
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
@@ -79,7 +63,7 @@ private const val TAG = "el, AuthenticationScreen"
 fun AuthenticationScreen(
     viewModel: AuthenticationViewModel = hiltViewModel()
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackHostState = remember { SnackbarHostState() }
     val coroutineState = rememberCoroutineScope()
 
     DisposableEffect(Unit) {
@@ -98,7 +82,7 @@ fun AuthenticationScreen(
             else if (it is AuthenticationViewEvent.ShowMessage) {
                 println("收到错误消息：${it.message}")
                 coroutineState.launch {
-                    snackbarHostState.showSnackbar(message = it.message)
+                    snackHostState.showSnackbar(message = it.message)
                 }
             }
         }
@@ -106,7 +90,7 @@ fun AuthenticationScreen(
 
     MaterialTheme {
         Scaffold(
-            snackbarHost = { SnackbarHost(snackbarHostState) },
+            snackbarHost = { SnackbarHost(snackHostState) },
             topBar = {
                 Box(
                     Modifier

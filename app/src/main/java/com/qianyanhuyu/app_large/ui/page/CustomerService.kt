@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,16 +21,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.qianyanhuyu.app_large.R
+import com.qianyanhuyu.app_large.constants.AppConfig
 import com.qianyanhuyu.app_large.ui.page.common.CustomButton
 import com.qianyanhuyu.app_large.ui.page.common.CustomTopTrips
 import com.qianyanhuyu.app_large.ui.page.common.TextBackground
@@ -48,9 +51,10 @@ import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
-import com.qianyanhuyu.app_large.util.onClick
+import com.qianyanhuyu.app_large.viewmodel.CustomerServiceViewAction
 import com.qianyanhuyu.app_large.viewmodel.CustomerServiceViewEvent
 import com.qianyanhuyu.app_large.viewmodel.CustomerServiceViewModel
+import com.qianyanhuyu.app_large.viewmodel.CustomerServiceViewState
 import kotlinx.coroutines.launch
 
 /***
@@ -58,10 +62,9 @@ import kotlinx.coroutines.launch
  * @CreateDate : 2023/9/15 9:19
  * @Description : 客房服务
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomerServiceScreen(
-    snackbarHostState: SnackbarHostState? = null,
+    snackHostState: SnackbarHostState? = null,
     viewModel: CustomerServiceViewModel = hiltViewModel()
 ) {
 
@@ -69,19 +72,19 @@ fun CustomerServiceScreen(
 
     DisposableEffect(Unit) {
         // 初始化需要执行的内容
-        // viewModel.dispatch(ActivationViewAction.InitPageData)
+        viewModel.dispatch(CustomerServiceViewAction.InitPageData)
         onDispose {  }
     }
 
     LaunchedEffect(Unit) {
         viewModel.viewEvents.collect {
             if (it is CustomerServiceViewEvent.NavTo) {
-
+                AppNavController.instance.navigate(it.route)
             }
             else if (it is CustomerServiceViewEvent.ShowMessage) {
                 println("收到错误消息：${it.message}")
                 coroutineState.launch {
-                    snackbarHostState?.showSnackbar(message = it.message)
+                    snackHostState?.showSnackbar(message = it.message)
                 }
             }
         }
@@ -92,6 +95,7 @@ fun CustomerServiceScreen(
             .fillMaxSize()
     ) {
         CustomerServiceContent(
+            viewState = viewModel.viewStates,
             modifier = Modifier
                 .fillMaxSize()
         )
@@ -100,9 +104,16 @@ fun CustomerServiceScreen(
 
 /**
  * CustomerService页面内容
+ *
+ * 测试数据地址:
+ * https://img.js.design/assets/img/64c4ac847fb47e5020773a74.png#9c0460d34524da3540cda829c709b098
+ * https://img.js.design/assets/img/64b4d729b23f2cad3d25ff2e.png
+ * https://img.js.design/assets/img/64b4d72aa669203171642f06.png
+ *
  */
 @Composable
 fun CustomerServiceContent(
+    viewState: CustomerServiceViewState,
     modifier: Modifier
 ) {
     // 主体内容
@@ -121,11 +132,10 @@ fun CustomerServiceContent(
             val(
                 tipsView,
                 leftContentView,
+                centerContentView,
                 rightContentView
             ) = createRefs()
 
-            // 竖中线
-            val guideLineV = createGuidelineFromStart(0.5f)
             // 底部中线
             val guideLine9f = createGuidelineFromTop(0.9f)
 
@@ -157,23 +167,20 @@ fun CustomerServiceContent(
                 modifier = Modifier
                     .constrainAs(leftContentView) {
                         linkTo(
-                            start = parent.start,
-                            end = guideLineV
+                            top = tipsView.bottom,
+                            bottom = guideLine9f
                         )
-                        top.linkTo(tipsView.bottom)
-                        bottom.linkTo(guideLine9f)
-                        width = Dimension.fillToConstraints
+                        start.linkTo(parent.start)
+
                         height = Dimension.fillToConstraints
                     }
-                    .padding(
-                        end = 15.cdp
-                    )
+                    .fillMaxWidth(0.33f)
             ) {
 
                 val imageContentView = createRef()
 
                 CommonNetworkImage(
-                    url = "https://img.js.design/assets/img/64c4ac847fb47e5020773a74.png#9c0460d34524da3540cda829c709b098",
+                    url = viewState.data.getOrNull(0)?.image?: "",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .clip(RoundedCornerShape(contentMaxRadius))
@@ -193,7 +200,7 @@ fun CustomerServiceContent(
                     buttonText = "立即呼叫",
                     isShowTextBackgroundView = true,
                     paddingHorizontal = 60.cdp,
-                    buttonColor = CustomPurple,
+                    buttonColor = AppConfig.CustomButtonBrushPurple,
                     modifier = Modifier
                         .constrainAs(imageContentView) {
                             bottom.linkTo(parent.bottom)
@@ -206,13 +213,13 @@ fun CustomerServiceContent(
 
             }
 
-            // 右边图片布局
+            // 中间图片布局
             ConstraintLayout(
                 modifier = Modifier
-                    .constrainAs(rightContentView) {
+                    .constrainAs(centerContentView) {
                         linkTo(
-                            start = guideLineV,
-                            end = parent.end
+                            start = leftContentView.end,
+                            end = rightContentView.start
                         )
                         linkTo(
                             top = tipsView.bottom,
@@ -222,7 +229,8 @@ fun CustomerServiceContent(
                         height = Dimension.fillToConstraints
                     }
                     .padding(
-                        start = 15.cdp,
+                        start = 30.cdp,
+                        end = 30.cdp
                     )
             ) {
                 val (
@@ -236,30 +244,19 @@ fun CustomerServiceContent(
 
                 val lineLeftContentH = createGuidelineFromTop(0.5f)
 
-                val blackToBlack = remember {
-                    blackToBlack
-                }
-
                 CommonNetworkImage(
-                    url = "https://img.js.design/assets/img/64b4d729b23f2cad3d25ff2e.png",
+                    url = viewState.data.getOrNull(1)?.image?: "",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .constrainAs(topView) {
                             top.linkTo(parent.top)
-                            bottom.linkTo(lineLeftContentH)
+                            bottom.linkTo(lineLeftContentH, margin = 15.cdp)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
 
                             width = Dimension.fillToConstraints
                             height = Dimension.fillToConstraints
                         }
-                        .padding(
-                            bottom = 15.cdp
-                        )
-                        .border(
-                            BorderStroke(contentRadius, blackToBlack),
-                            RoundedCornerShape(contentRadius)
-                        )
                         .clip(RoundedCornerShape(contentRadius))
                         .fillMaxHeight()
                 )
@@ -284,11 +281,11 @@ fun CustomerServiceContent(
                 )
 
                 ImageContentView(
-                    title = "外卖送餐",
+                    title = "酒店商超",
                     subTitle = "商城配送急速送达",
-                    buttonText = "去点好吃的",
-                    paddingHorizontal = 45.cdp,
-                    paddingVertical = 5.cdp,
+                    buttonText = "去购买",
+                    buttonColor = AppConfig.CustomButtonBrushOrigin,
+                    paddingHorizontal = 60.cdp,
                     modifier = Modifier
                         .constrainAs(topContentView) {
                             top.linkTo(topView.top)
@@ -301,7 +298,7 @@ fun CustomerServiceContent(
                 )
 
                 CommonNetworkImage(
-                    url = "https://img.js.design/assets/img/64b4d72aa669203171642f06.png",
+                    url = viewState.data.getOrNull(2)?.image?: "",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .constrainAs(bottomView) {
@@ -315,10 +312,6 @@ fun CustomerServiceContent(
                         }
                         .padding(
                             top = 15.cdp
-                        )
-                        .border(
-                            BorderStroke(contentRadius, blackToBlack),
-                            RoundedCornerShape(contentRadius)
                         )
                         .clip(RoundedCornerShape(contentMaxRadius))
                         .fillMaxHeight()
@@ -347,8 +340,9 @@ fun CustomerServiceContent(
                     title = "干洗服务",
                     subTitle = "全家健康快乐生活",
                     buttonText = "查看服务",
-                    paddingVertical = 5.cdp,
-                    paddingHorizontal = 45.cdp,
+                    buttonColor = AppConfig.CustomButtonBrushBlack,
+                    paddingVertical = 15.cdp,
+                    paddingHorizontal = 30.cdp,
                     modifier = Modifier
                         .constrainAs(bottomContentView) {
                             top.linkTo(bottomView.top)
@@ -362,16 +356,67 @@ fun CustomerServiceContent(
                     AppNavController.instance.navigate(Route.DRY_CLEAN)
                 }
             }
+
+            // 右边图片布局
+            ConstraintLayout(
+                modifier = Modifier
+                    .constrainAs(rightContentView) {
+                        linkTo(
+                            top = tipsView.bottom,
+                            bottom = guideLine9f
+                        )
+                        end.linkTo(parent.end)
+
+                        height = Dimension.fillToConstraints
+                    }
+                    .fillMaxWidth(0.33f)
+            ) {
+
+                val imageContentView = createRef()
+
+                CommonNetworkImage(
+                    url = viewState.data.getOrNull(3)?.image?: "",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(contentMaxRadius))
+                        .fillMaxSize()
+                )
+
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(contentMaxRadius))
+                        .fillMaxSize()
+                        .background(whiteToBlackVertical7f)
+                )
+
+                ImageContentView(
+                    title = "外卖送餐",
+                    subTitle = "商城配送极速送达",
+                    buttonText = "去点好吃的",
+                    isShowTextBackgroundView = false,
+                    paddingHorizontal = 60.cdp,
+                    buttonColor = AppConfig.CustomButtonBrushOrigin,
+                    modifier = Modifier
+                        .constrainAs(imageContentView) {
+                            bottom.linkTo(parent.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+
+                            width = Dimension.fillToConstraints
+                        }
+                )
+
+            }
         }
     }
 }
 
 @Composable
-fun ImageContentView (
+private fun ImageContentView (
     title: String,
     subTitle: String,
     buttonText: String,
-    buttonColor: Color = CustomOrigin,
+    buttonColor: Brush? = null,
     isShowTextBackgroundView: Boolean = false,
     paddingHorizontal: Dp = 0.cdp,
     paddingVertical: Dp = 35.cdp,
@@ -471,18 +516,20 @@ fun ImageContentView (
                 )
         )
 
-        CustomButton(
+        TextBackground(
             text = buttonText,
-            containerColor = buttonColor,
+            shapes = Shapes.small,
+            fontSize = 30.csp,
+            textHorizontalPadding = 20.cdp,
+            textVerticalPadding = 10.cdp,
+            textBackgroundBrush = buttonColor,
             onClick = onClick,
             modifier = Modifier
                 .constrainAs(buttonView4) {
                     start.linkTo(parent.start)
-                    top.linkTo(textView3.bottom)
+                    top.linkTo(textView3.bottom, margin = 35.cdp)
                 }
-                .padding(
-                    top = 35.cdp
-                )
+                .zIndex(9999f)
         )
     }
 }

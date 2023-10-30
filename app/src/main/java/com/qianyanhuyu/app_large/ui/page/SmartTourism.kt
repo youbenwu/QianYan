@@ -21,7 +21,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +39,7 @@ import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
 import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.constants.AppConfig
+import com.qianyanhuyu.app_large.ui.AppNavController
 import com.qianyanhuyu.app_large.ui.page.common.CommonText
 import com.qianyanhuyu.app_large.ui.page.common.CustomTopTrips
 import com.qianyanhuyu.app_large.ui.page.common.SimpleLazyGrid
@@ -63,11 +63,11 @@ private val imageRadius = 15.cdp
 
 @Composable
 fun SmartTourismScreen(
-    viewModel: SmartTourismViewModel = hiltViewModel()
+    viewModel: SmartTourismViewModel = hiltViewModel(),
+    snackHostState: SnackbarHostState? = null,
 ) {
 
     val coroutineState = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
 
     DisposableEffect(Unit) {
         // 初始化需要执行的内容
@@ -78,12 +78,12 @@ fun SmartTourismScreen(
     LaunchedEffect(Unit) {
         viewModel.viewEvents.collect {
             if (it is SmartTourismViewEvent.NavTo) {
-
+                AppNavController.instance.navigate(it.route)
             }
             else if (it is SmartTourismViewEvent.ShowMessage) {
                 println("收到错误消息：${it.message}")
                 coroutineState.launch {
-                    snackbarHostState.showSnackbar(message = it.message)
+                    snackHostState?.showSnackbar(message = it.message)
                 }
             }
         }

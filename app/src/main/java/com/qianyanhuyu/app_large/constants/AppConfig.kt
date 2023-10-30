@@ -13,6 +13,30 @@ object AppConfig {
     const val APP_DESIGN_WIDTH = 1920
 
 
+    // 36 开头的黑色
+    val Black36 = Color(36, 39, 49, 1)
+
+    val CustomOrigin = Color(255, 87, 51)
+    val CustomYellowish = Color(205, 113, 65)
+    val CustomYellow = Color(255, 195, 0)
+    val CustomPurple = Color(108, 93, 211)
+    val CustomLavender = Color(154, 137, 189)
+    val CustomGreen = Color(67, 207, 124)
+    val CustomGreen9 = Color(68, 227, 64)
+    val CustomGreen165 = Color(165, 214, 63)
+    val CustomBlue = Color(32, 169, 232)
+    val CustomRed = Color(229, 9, 20)
+    val CustomBlue9 = Color(56, 69, 171)
+    val CustomBlue84 = Color(84, 163, 246)
+    val CustomGrey = Color(255,255,255).copy(alpha = 0.30F)
+    val CustomLogoImageTextBg = Color(9, 14, 41)
+    val voiceFalseBrush = Brush.verticalGradient(
+        listOf(
+            CustomLogoImageTextBg,
+            CustomLogoImageTextBg
+        )
+    )
+
     /**
      * 边框渐变
      */
@@ -277,27 +301,39 @@ object AppConfig {
         )
     )
 
-    // 36 开头的黑色
-    val Black36 = Color(36, 39, 49, 1)
-
-    val CustomOrigin = Color(255, 87, 51)
-    val CustomYellowish = Color(205, 113, 65)
-    val CustomYellow = Color(255, 195, 0)
-    val CustomPurple = Color(108, 93, 211)
-    val CustomLavender = Color(154, 137, 189)
-    val CustomGreen = Color(67, 207, 124)
-    val CustomGreen9 = Color(68, 227, 64)
-    val CustomGreen165 = Color(165, 214, 63)
-    val CustomBlue = Color(32, 169, 232)
-    val CustomRed = Color(229, 9, 20)
-    val CustomBlue9 = Color(56, 69, 171)
-    val CustomBlue84 = Color(84, 163, 246)
-    val CustomGrey = Color(255,255,255).copy(alpha = 0.30F)
-    val CustomLogoImageTextBg = Color(9, 14, 41)
-    val voiceFalseBrush = Brush.verticalGradient(
+    val CustomButtonBrushOrigin = Brush.horizontalGradient(
         listOf(
-            CustomLogoImageTextBg,
-            CustomLogoImageTextBg
+            CustomOrigin,
+            CustomOrigin.copy(
+                alpha = 0.4f
+            ),
+            CustomOrigin.copy(
+                alpha = 0f
+            )
+        )
+    )
+
+    val CustomButtonBrushPurple = Brush.horizontalGradient(
+        listOf(
+            CustomPurple,
+            CustomPurple.copy(
+                alpha = 0.4f
+            ),
+            CustomPurple.copy(
+                alpha = 0f
+            )
+        )
+    )
+
+    val CustomButtonBrushBlack = Brush.horizontalGradient(
+        listOf(
+            Color.Black,
+            Color.Black.copy(
+                alpha = 0.4f
+            ),
+            Color.Black.copy(
+                alpha = 0f
+            )
         )
     )
 

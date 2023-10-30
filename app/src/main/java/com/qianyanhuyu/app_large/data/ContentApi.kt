@@ -1,11 +1,14 @@
 package com.qianyanhuyu.app_large.data
 
 import com.qianyanhuyu.app_large.data.model.Advert
+import com.qianyanhuyu.app_large.data.model.Product
+import com.qianyanhuyu.app_large.data.request.ProductListRequest
 import com.qianyanhuyu.app_large.data.response.BaseCommonPaging
 import com.qianyanhuyu.app_large.data.response.BasePaging
 import com.qianyanhuyu.app_large.data.response.BaseResponse
 import com.qianyanhuyu.app_large.model.GroupChatItem
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -21,6 +24,12 @@ interface ContentApi {
         @Query("page") page: Int = 1,
         @Query("page_size")pageSize: Int = 10
     ): Response<BaseResponse<BasePaging<GroupChatItem>>>
+
+
+    @POST("api/mall/product/page")
+    suspend fun getProductDetails(
+        @Body request: ProductListRequest
+    ) : Response<BaseResponse<BaseCommonPaging<Product>>>
 
 
     /**

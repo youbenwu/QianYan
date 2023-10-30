@@ -23,7 +23,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.ui.page.common.CustomButton
 import com.qianyanhuyu.app_large.ui.page.common.CustomTopTrips
 import com.qianyanhuyu.app_large.ui.page.common.TextBackground
@@ -32,9 +31,8 @@ import com.qianyanhuyu.app_large.constants.AppConfig.CustomGreen9
 import com.qianyanhuyu.app_large.constants.AppConfig.CustomRed
 import com.qianyanhuyu.app_large.constants.AppConfig.whiteToBlack
 import com.qianyanhuyu.app_large.constants.AppConfig.whiteToGreenHorizontal
+import com.qianyanhuyu.app_large.ui.AppNavController
 import com.qianyanhuyu.app_large.ui.theme.Shapes
-import com.qianyanhuyu.app_large.ui.widgets.BaseMsgDialog
-import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
 import com.qianyanhuyu.app_large.ui.widgets.LoadingComponent
 import com.qianyanhuyu.app_large.util.cdp
@@ -54,11 +52,11 @@ private val imageRadius = 15.cdp
 
 @Composable
 fun QianYanPlayScreen(
-    viewModel: QianYanPlayViewModel = hiltViewModel()
+    viewModel: QianYanPlayViewModel = hiltViewModel(),
+    snackHostState: SnackbarHostState? = null,
 ) {
 
     val coroutineState = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
 
     DisposableEffect(Unit) {
         // 初始化需要执行的内容
@@ -69,12 +67,12 @@ fun QianYanPlayScreen(
     LaunchedEffect(Unit) {
         viewModel.viewEvents.collect {
             if (it is QianYanPlayViewEvent.NavTo) {
-
+                AppNavController.instance.navigate(it.route)
             }
             else if (it is QianYanPlayViewEvent.ShowMessage) {
                 println("收到错误消息：${it.message}")
                 coroutineState.launch {
-                    snackbarHostState.showSnackbar(message = it.message)
+                    snackHostState?.showSnackbar(message = it.message)
                 }
             }
         }
@@ -87,7 +85,7 @@ fun QianYanPlayScreen(
         QianYanPlayContent(
             viewState = viewModel.viewStates,
             playButtonOnClick = {
-
+                // viewModel.dispatch(QianYanPlayViewAction.OpenOtherApp())
             },
             modifier = Modifier
                 .fillMaxSize()

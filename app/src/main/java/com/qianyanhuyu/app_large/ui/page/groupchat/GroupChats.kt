@@ -119,7 +119,7 @@ fun GroupChats(
                 )
 
                 CreateChatGroupDialog(
-                    "欢迎体验「语音聊天室」功能",
+                    title = "欢迎体验「语音聊天室」功能",
                     viewStates = viewModel.viewStates,
                     onTermClick = { type, isCheck ->
                         viewModel.dispatch(GroupChatsViewAction.UpdateFormValue(type, isCheck.toString()))
@@ -147,7 +147,7 @@ fun GroupChats(
     }
 }
 
-@OptIn(ExperimentalTextApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalTextApi::class)
 @Composable
 private fun GroupChasContent(
     viewState: GroupChatsViewState,
@@ -393,7 +393,7 @@ private fun GroupChatItem(
 @OptIn(ExperimentalTextApi::class)
 @Composable
 private fun CreateChatGroupDialog(
-    title: String = "",
+    title: String,
     viewStates: GroupChatsViewState,
     onClearClick: (GroupChatEditTextType) -> Unit = {},
     onValueChange: ((type: GroupChatEditTextType, text: String) -> Unit)? = null,
@@ -415,7 +415,6 @@ private fun CreateChatGroupDialog(
                 titleTextView,
                 titleView,
                 chatGroupFormView,
-                confirmTripsView,
                 confirmView,
                 bottomView,
             ) = createRefs()

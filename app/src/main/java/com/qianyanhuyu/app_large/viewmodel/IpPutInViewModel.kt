@@ -4,7 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.qianyanhuyu.app_large.data.model.MediaData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -28,26 +27,26 @@ class IpPutInViewModel @Inject constructor(
 
     fun dispatch(action: IpPutInViewAction) {
         when (action) {
-
+            is IpPutInViewAction.InitPageData -> initPageData()
             else -> {
 
             }
         }
     }
 
+    private fun initPageData() {
+
+    }
+
 
 }
 
 data class IpPutInViewState(
-    val email: String = "",
-    val mediaData: MediaData = MediaData(
-        bannerSrc = "https://img.js.design/assets/img/64b4d729b23f2cad3d25ff2e.png"
-    ),
-    val isLogging: Boolean = true,
+    val isLoading: Boolean = true,
 )
 
 sealed class IpPutInViewAction {
-    object IpPutIn : IpPutInViewAction()
+    object InitPageData : IpPutInViewAction()
 }
 
 sealed class IpPutInViewEvent {

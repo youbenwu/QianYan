@@ -3,20 +3,16 @@ package com.qianyanhuyu.app_large.ui.page
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,8 +27,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.ui.page.common.CustomButton
 import com.qianyanhuyu.app_large.ui.page.common.CustomTopTrips
-import com.qianyanhuyu.app_large.constants.AppConfig.CustomBlue
 import com.qianyanhuyu.app_large.constants.AppConfig.CustomBlue9
+import com.qianyanhuyu.app_large.ui.AppNavController
 import com.qianyanhuyu.app_large.ui.page.common.CommonText
 import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
@@ -56,11 +52,11 @@ private val imageRadius = 15.cdp
 
 @Composable
 fun QianYanGiveScreen(
-    viewModel: QianYanGiveViewModel = hiltViewModel()
+    viewModel: QianYanGiveViewModel = hiltViewModel(),
+    snackHostState: SnackbarHostState? = null,
 ) {
 
     val coroutineState = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
 
     DisposableEffect(Unit) {
         // 初始化需要执行的内容
@@ -71,12 +67,12 @@ fun QianYanGiveScreen(
     LaunchedEffect(Unit) {
         viewModel.viewEvents.collect {
             if (it is QianYanGiveViewEvent.NavTo) {
-
+                AppNavController.instance.navigate(it.route)
             }
             else if (it is QianYanGiveViewEvent.ShowMessage) {
                 println("收到错误消息：${it.message}")
                 coroutineState.launch {
-                    snackbarHostState.showSnackbar(message = it.message)
+                    snackHostState?.showSnackbar(message = it.message)
                 }
             }
         }

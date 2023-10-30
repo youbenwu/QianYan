@@ -3,7 +3,6 @@ package com.qianyanhuyu.app_large.ui.page
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,7 +28,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -37,7 +35,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
-import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.constants.AppConfig.brush121
@@ -47,13 +44,10 @@ import com.qianyanhuyu.app_large.data.model.Advert
 import com.qianyanhuyu.app_large.data.model.AdvertType
 import com.qianyanhuyu.app_large.model.MultiMenuItem
 import com.qianyanhuyu.app_large.ui.common.Route
-import com.qianyanhuyu.app_large.ui.page.common.CommonText
 import com.qianyanhuyu.app_large.ui.page.common.TextBackground
 import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
-import com.qianyanhuyu.app_large.ui.widgets.LoadingComponent
-import com.qianyanhuyu.app_large.ui.widgets.LoadingDialog
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
 import com.qianyanhuyu.app_large.util.toPx
@@ -61,7 +55,6 @@ import com.qianyanhuyu.app_large.viewmodel.HomePageViewAction
 import com.qianyanhuyu.app_large.viewmodel.HomePageViewEvent
 import com.qianyanhuyu.app_large.viewmodel.HomePageViewModel
 import com.qianyanhuyu.app_large.viewmodel.HomePageViewState
-import com.qianyanhuyu.app_large.viewmodel.ShopFriendsViewAction
 import kotlinx.coroutines.launch
 import java.util.Timer
 import java.util.TimerTask
@@ -149,11 +142,11 @@ fun HomePageScreen(
                 override fun run() {
                     coroutineState.launch() {
                         pagerState.animateScrollToPage(
-                            if(pagerState.currentPage + 1 == 3) {
+                            page = if(pagerState.currentPage + 1 == 3) {
                                 0
                             } else {
                                 pagerState.currentPage + 1
-                            }
+                            },
                         )
                     }
                 }

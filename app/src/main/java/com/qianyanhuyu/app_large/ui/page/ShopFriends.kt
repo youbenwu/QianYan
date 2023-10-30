@@ -90,13 +90,12 @@ private lateinit var timerOnlinePerson: Timer
 @Composable
 fun ShopFriendsScreen(
     drawerState: DrawerState,
-    viewModel: ShopFriendsViewModel = hiltViewModel()
+    viewModel: ShopFriendsViewModel = hiltViewModel(),
+    snackHostState: SnackbarHostState? = null,
 ) {
 
     val coroutineState = rememberCoroutineScope()
     val lifecycleOwner = LocalLifecycleOwner.current
-    val snackbarHostState = remember { SnackbarHostState() }
-
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -147,7 +146,7 @@ fun ShopFriendsScreen(
             if (it is ShopFriendsViewEvent.ShowMessage) {
                 println("收到错误消息：${it.message}")
                 coroutineState.launch {
-                    snackbarHostState.showSnackbar(message = it.message)
+                    snackHostState?.showSnackbar(message = it.message)
                 }
             }
         }

@@ -6,7 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.qianyanhuyu.app_large.App.Companion.context
-import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.constants.AppConfig.CIRCLE_NUMBER_IMAGE
 import com.qianyanhuyu.app_large.constants.AppConfig.smallCircleRadius
 import com.qianyanhuyu.app_large.model.ShopFriendsImageData
@@ -200,7 +199,7 @@ class ShopFriendsViewModel @Inject constructor(
 
             var angle: Int = -1
 
-            // 增加概率
+            // 同一个数据增加概率
             val circleIndex = listOf(
                 0,1,2,
                 -6,-5,-4,-3,-2,-1,

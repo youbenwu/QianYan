@@ -2,7 +2,6 @@ package com.qianyanhuyu.app_large.ui.common
 
 object Route {
     const val SPLASH = "splash"
-    const val LOGIN = "login"
 
     const val AUTHENTICATION = "authentication"
     const val ACTIVATION = "activation"

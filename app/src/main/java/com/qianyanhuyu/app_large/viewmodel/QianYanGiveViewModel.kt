@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.qianyanhuyu.app_large.data.ContentApi
 import com.qianyanhuyu.app_large.data.model.Advert
 import com.qianyanhuyu.app_large.data.model.AdvertTypeRequest
-import com.qianyanhuyu.app_large.data.model.MediaData
 import com.qianyanhuyu.app_large.util.requestFlowResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler

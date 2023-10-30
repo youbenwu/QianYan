@@ -2,11 +2,9 @@ package com.qianyanhuyu.app_large.ui.page
 
 import android.util.Log
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,7 +37,6 @@ import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.ui.AppNavController
 import com.qianyanhuyu.app_large.ui.theme.BlackColor21
@@ -69,7 +66,7 @@ fun ActivationScreen(
     viewModel: ActivationViewModel = hiltViewModel()
 ) {
 
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackHostState = remember { SnackbarHostState() }
     val coroutineState = rememberCoroutineScope()
 
 
@@ -88,7 +85,7 @@ fun ActivationScreen(
             else if (it is ActivationViewEvent.ShowMessage) {
                 println("收到错误消息：${it.message}")
                 coroutineState.launch {
-                    snackbarHostState.showSnackbar(message = it.message)
+                    snackHostState.showSnackbar(message = it.message)
                 }
             }
         }
@@ -96,7 +93,7 @@ fun ActivationScreen(
 
     MaterialTheme {
             Scaffold(
-            snackbarHost = { SnackbarHost(snackbarHostState) },
+            snackbarHost = { SnackbarHost(snackHostState) },
             topBar = {
                 Box(Modifier.fillMaxWidth())
             }
@@ -340,104 +337,6 @@ fun ActivationInfoWidget(
             }
         }
     }
-
-    /*Column(
-        modifier = modifier
-    ) {
-        Text(
-            text = stringResource(id = R.string.activation_info_title),
-            fontWeight = FontWeight.Bold,
-            fontSize = 60.csp,
-            textAlign = TextAlign.Left,
-            letterSpacing = 4.csp,
-            color = TitleColor39,
-            modifier = Modifier.fillMaxWidth()
-        )
-        SimpleEditTextWidget(
-            value = viewState.deviceId,
-            valueLabel = R.string.activation_device_id,
-            onClick = {
-                activationViewModel.dispatch(ActivationViewAction.ClearEditText(ActivationEditTextType.DeviceId))
-            },
-            onValueChange = {
-                activationViewModel.dispatch(ActivationViewAction.UpdateEditText(ActivationEditTextType.DeviceId, it))
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 60.cdp)
-        )
-        SimpleEditTextWidget(
-            value = viewState.location,
-            valueLabel = R.string.activation_location,
-            onClick = {
-                activationViewModel.dispatch(ActivationViewAction.ClearEditText(ActivationEditTextType.Location))
-            },
-            onValueChange = {
-                activationViewModel.dispatch(ActivationViewAction.UpdateEditText(ActivationEditTextType.Location, it))
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 30.cdp)
-        )
-        SimpleEditTextWidget(
-            value = viewState.roomNum,
-            valueLabel = R.string.activation_room_num,
-            onClick = {
-                activationViewModel.dispatch(ActivationViewAction.ClearEditText(ActivationEditTextType.RoomNum))
-            },
-            onValueChange = {
-                activationViewModel.dispatch(ActivationViewAction.UpdateEditText(ActivationEditTextType.RoomNum, it))
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 30.cdp)
-        )
-        SimpleEditTextWidget(
-            value = viewState.personName,
-            valueLabel = R.string.activation_person_name,
-            onClick = {
-                activationViewModel.dispatch(ActivationViewAction.ClearEditText(ActivationEditTextType.PersonName))
-            },
-            onValueChange = {
-                activationViewModel.dispatch(ActivationViewAction.UpdateEditText(ActivationEditTextType.PersonName, it))
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 30.cdp)
-        )
-        Button(
-            onClick = {
-                activationViewModel.dispatch(ActivationViewAction.ConfirmActivationInfo)
-            },
-            shape = Shapes.large,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = BlackColor21,
-                contentColor = Color.White
-            ),
-            modifier = Modifier
-                .fillMaxWidth(0.6f)
-                .padding(
-                    top = 50.cdp
-                )
-        ) {
-            Text(
-                text = stringResource(id = R.string.activation_confirm_text),
-                fontSize = 24.csp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-        ActivationClickText(
-            text = R.string.activation_confirm_tips,
-            clickText = "请点击此处",
-            modifier = Modifier
-                .padding(
-                    start = 20.cdp,
-                    top = 6.cdp
-                )
-        ) {
-            Log.d("ClickText: ", "ActivationClickText")
-        }
-    }*/
 }
 
 /**

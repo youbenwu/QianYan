@@ -1,13 +1,12 @@
 package com.qianyanhuyu.app_large.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.qianyanhuyu.app_large.ui.common.Route
-import com.qianyanhuyu.app_large.util.datastore.DataKey
-import com.qianyanhuyu.app_large.util.datastore.DataStoreUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.channels.Channel
@@ -73,19 +72,14 @@ class AuthenticationViewModel @Inject constructor(
             } catch(e: Exception) {
                 return@launch
             }
-//            viewStates = viewStates.copy(
-//                personPhone = user?.code ?: ""
-//            )
         }
     }
 
     /**
      * 提交验证信息
      */
-    private fun confirmAuthInfo(a: String) {
-        /*viewStates = viewStates.copy(
-            isLoading = true
-        )*/
+    private fun confirmAuthInfo(verificationCode: String) {
+        Log.d("Auth -> VerificationCode: ", verificationCode)
         viewModelScope.launch {
             _viewEvents.send(AuthenticationViewEvent.NavTo(Route.ACTIVATION))
         }

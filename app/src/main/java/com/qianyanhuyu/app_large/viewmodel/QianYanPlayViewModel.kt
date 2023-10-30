@@ -1,15 +1,15 @@
 package com.qianyanhuyu.app_large.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.qianyanhuyu.app_large.App.Companion.context
 import com.qianyanhuyu.app_large.data.ContentApi
 import com.qianyanhuyu.app_large.data.model.Advert
 import com.qianyanhuyu.app_large.data.model.AdvertTypeRequest
-import com.qianyanhuyu.app_large.data.model.MediaData
+import com.qianyanhuyu.app_large.util.OtherAppUtil
 import com.qianyanhuyu.app_large.util.requestFlowResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -44,6 +44,7 @@ class QianYanPlayViewModel @Inject constructor(
         when (action) {
             is QianYanPlayViewAction.InitPageData -> initPageData()
             is QianYanPlayViewAction.CheckIsVip -> checkIsVip(action.isShowTripsDialog)
+            is QianYanPlayViewAction.OpenOtherApp -> openOtherApp(action.packageName)
             else -> {
 
             }
@@ -78,6 +79,16 @@ class QianYanPlayViewModel @Inject constructor(
         )
     }
 
+    private fun openOtherApp(
+        packageName: OtherAppUtil.OtherPackage
+    ) {
+        viewModelScope.launch {
+            OtherAppUtil.openOtherApp(
+                context = context
+            )
+        }
+    }
+
 
 }
 
@@ -91,6 +102,10 @@ sealed class QianYanPlayViewAction {
     object InitPageData : QianYanPlayViewAction()
     data class CheckIsVip(
         val isShowTripsDialog: Boolean = false
+    ) : QianYanPlayViewAction()
+
+    data class OpenOtherApp(
+        val packageName: OtherAppUtil.OtherPackage = OtherAppUtil.OtherPackage.EMPTY
     ) : QianYanPlayViewAction()
 }
 

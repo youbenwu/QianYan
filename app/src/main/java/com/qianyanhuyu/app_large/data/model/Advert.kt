@@ -6,8 +6,10 @@ package com.qianyanhuyu.app_large.data.model
  * @Description : 广告
  */
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class Advert(
     @SerializedName("id")
     var id: Int?,

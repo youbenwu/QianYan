@@ -6,6 +6,7 @@ import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 
 /**
@@ -24,4 +25,14 @@ fun Modifier.onClick(enableRipple: Boolean = true, rippleColor: Color = Color.Un
     indication = if (enableRipple) rememberRipple(color = rippleColor, bounded = true) else null
 ) {
     onClick()
+}
+
+/**
+ * 消费点击事件,使点击没有效果
+ */
+fun Modifier.requestFocus(): Modifier = composed {
+    this.clickable(
+        interactionSource = remember { MutableInteractionSource() },
+        indication = null
+    ) {}
 }

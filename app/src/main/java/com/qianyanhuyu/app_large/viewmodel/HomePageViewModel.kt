@@ -48,6 +48,7 @@ class HomePageViewModel @Inject constructor(
 
     private fun initPageData() {
         viewModelScope.launch(exception) {
+            // 由于不是从接口获取页数,所以写死3页,异步加载
             requestFlowResponse(
                 requestCall = {
                     contentApi.getAdvertPage(
@@ -117,7 +118,6 @@ data class HomePageViewState(
 )
 
 sealed class HomePageViewAction {
-    object HomePage : HomePageViewAction()
 
     object InitPageData : HomePageViewAction()
 }

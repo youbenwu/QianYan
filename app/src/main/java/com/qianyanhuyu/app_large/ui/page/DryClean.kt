@@ -6,12 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -21,23 +21,27 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
 import com.qianyanhuyu.app_large.constants.AppConfig
+import com.qianyanhuyu.app_large.data.model.Product
 import com.qianyanhuyu.app_large.ui.page.common.CommonText
 import com.qianyanhuyu.app_large.ui.page.common.TextBackground
 import com.qianyanhuyu.app_large.ui.theme.Shapes
-import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
+import com.qianyanhuyu.app_large.ui.widgets.LoadingComponent
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
 import com.qianyanhuyu.app_large.util.onClick
+import com.qianyanhuyu.app_large.viewmodel.DryCleanViewAction
+import com.qianyanhuyu.app_large.viewmodel.DryCleanViewModel
+import com.qianyanhuyu.app_large.viewmodel.DryCleanViewState
 import kotlinx.coroutines.launch
 
 /***
@@ -47,28 +51,37 @@ import kotlinx.coroutines.launch
  */
 
 @Composable
-fun DryClean() {
+fun DryClean(
+    viewModel: DryCleanViewModel = hiltViewModel()
+) {
+
+    DisposableEffect(Unit) {
+        // 初始化需要执行的内容
+        viewModel.dispatch(DryCleanViewAction.InitPageData)
+        onDispose {  }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
     ) {
         DryCleanContent(
+            viewState = viewModel.viewStates,
             modifier = Modifier
                 .fillMaxSize()
         )
+
+        if(viewModel.viewStates.isLoading)
+            LoadingComponent(
+                isScreen = true
+            )
     }
 }
-
-data class DryCleanType(
-    val name: String,
-    val type: Int,
-    val title: String = "",
-)
-
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun DryCleanContent(
+    viewState: DryCleanViewState,
     modifier: Modifier
 ) {
     val labelCoroutineScope = rememberCoroutineScope()
@@ -80,30 +93,6 @@ private fun DryCleanContent(
     val selectedIndex = remember {
         mutableStateOf(0)
     }
-
-    val testTypeData = listOf<DryCleanType>(
-        DryCleanType(
-            name = "服饰",
-            type = 0,
-            title = "衣服"
-        ),
-        DryCleanType(
-            name = "家纺",
-            type = 1,
-            title = "家纺"
-        ),
-        DryCleanType(
-            name = "皮衣",
-            type = 2,
-            title = "皮上衣"
-        ),
-        DryCleanType(
-            name = "箱包",
-            type = 3,
-            title = "箱包"
-        )
-    )
-
 
     Column(
         modifier = modifier
@@ -118,7 +107,7 @@ private fun DryCleanContent(
                 "分类选择:",
             )
 
-            testTypeData.forEach {
+            viewState.typeData.forEach {
                 val isCheck = it.type == selectedIndex.value
 
                 TextBackground(
@@ -129,7 +118,11 @@ private fun DryCleanContent(
                     textHorizontalPadding = 50.cdp,
                     modifier = Modifier
                         .border(
-                            if(isCheck) { 0.cdp } else { 1.cdp },
+                            if (isCheck) {
+                                0.cdp
+                            } else {
+                                1.cdp
+                            },
                             Color.White,
                             Shapes.extraSmall
                         )
@@ -145,14 +138,14 @@ private fun DryCleanContent(
 
         // 分类内容页面
         HorizontalPager(
-            count = testTypeData.count(),
+            count = viewState.data.count(),
             state = pagerState,
             userScrollEnabled = false,
             modifier = modifier
                 .weight(1f)
         ) { pagePosition ->
             TypeContentView(
-                data = testTypeData[pagePosition],
+                data = viewState.data[pagePosition],
                 modifier = Modifier
                     .fillMaxSize()
             )
@@ -166,7 +159,7 @@ private fun DryCleanContent(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun TypeContentView(
-    data: DryCleanType,
+    data: Product,
     modifier: Modifier
 ) {
     val imageData = listOf(
@@ -265,7 +258,7 @@ private fun TypeContentView(
 
 @Composable
 private fun RightContentView(
-    data: DryCleanType,
+    data: Product,
     modifier: Modifier
 ) {
     Box(

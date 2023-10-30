@@ -24,6 +24,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import com.qianyanhuyu.app_large.util.cdp
+import com.qianyanhuyu.app_large.util.requestFocus
 
 /***
  * @Author : Cheng

@@ -2,18 +2,13 @@ package com.qianyanhuyu.app_large.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.navigation
@@ -21,7 +16,6 @@ import com.qianyanhuyu.app_large.ui.common.Route
 import com.qianyanhuyu.app_large.ui.page.*
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
-import com.qianyanhuyu.app_large.util.cdp
 
 object AppNavController {
     @SuppressLint("StaticFieldLeak")
@@ -53,10 +47,6 @@ fun HomeNavHost(
 
         }
 
-        composable(Route.LOGIN) {
-            LoginScreen()
-        }
-
         // 认证页
         composable(Route.AUTHENTICATION) {
             AuthenticationScreen()
@@ -67,17 +57,12 @@ fun HomeNavHost(
             ActivationScreen()
         }
 
+        // 首页及从首页进入的内容 systemBarsPadding
         homeGraph(
             route = Route.HOME_GRAPH,
             drawerState = drawerState,
             snackHostState = snackHostState,
         )
-
-        // 客房服务
-        /*composable(Route.CUSTOMER_SERVICE) {
-            // Column(Modifier.systemBarsPadding()) {}
-            CustomerServiceScreen()
-        }*/
     }
 
 }
@@ -107,11 +92,15 @@ private fun NavGraphBuilder.homeGraph(
         }
 
         composable(Route.QIAN_YAN_PLAY) {
-            QianYanPlayScreen()
+            QianYanPlayScreen(
+                snackHostState = snackHostState
+            )
         }
 
         composable(Route.QIAN_YAN_GIVE) {
-            QianYanGiveScreen()
+            QianYanGiveScreen(
+                snackHostState = snackHostState
+            )
         }
 
         composable(Route.SHOP_FRIENDS) {

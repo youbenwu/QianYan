@@ -4,20 +4,26 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.qianyanhuyu.app_large.data.model.MediaData
+import androidx.lifecycle.viewModelScope
+import com.qianyanhuyu.app_large.data.ContentApi
+import com.qianyanhuyu.app_large.data.model.Advert
+import com.qianyanhuyu.app_large.data.model.AdvertTypeRequest
+import com.qianyanhuyu.app_large.util.requestFlowResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /***
  * @Author : Cheng
  * @CreateDate : 2023/9/14 11:27
- * @Description : description
+ * @Description : 客房服务
  */
 @HiltViewModel
 class CustomerServiceViewModel @Inject constructor(
-
+    private val contentApi: ContentApi
 ) : ViewModel() {
 
     var viewStates by mutableStateOf(CustomerServiceViewState())
@@ -26,21 +32,40 @@ class CustomerServiceViewModel @Inject constructor(
     private val _viewEvents = Channel<CustomerServiceViewEvent>(Channel.BUFFERED)
     val viewEvents = _viewEvents.receiveAsFlow()
 
-
-    init {
-    }
-
-    /**
-     * 检查登录状态
-     */
-    private fun checkCustomerServiceState() {
+    private val exception = CoroutineExceptionHandler { _, throwable ->
+        viewModelScope.launch {
+            _viewEvents.send(CustomerServiceViewEvent.ShowMessage("错误："+throwable.message))
+        }
     }
 
     fun dispatch(action: CustomerServiceViewAction) {
         when (action) {
-
+            is CustomerServiceViewAction.InitPageData -> initPageData()
             else -> {
 
+            }
+        }
+    }
+
+    private fun initPageData() {
+        viewModelScope.launch(exception) {
+            requestFlowResponse(
+                requestCall = {
+                    contentApi.getAdvertList(
+                        AdvertTypeRequest.PadServices.value,
+                        4
+                    )
+                },
+                showLoading = {
+                    viewStates = viewStates.copy(
+                        isLoading = it
+                    )
+                }
+            ).apply {
+                val data = this ?: emptyList()
+                viewStates = viewStates.copy(
+                    data = data,
+                )
             }
         }
     }
@@ -49,15 +74,12 @@ class CustomerServiceViewModel @Inject constructor(
 }
 
 data class CustomerServiceViewState(
-    val email: String = "",
-    val mediaData: MediaData = MediaData(
-        bannerSrc = "https://img.js.design/assets/img/64b4d729b23f2cad3d25ff2e.png"
-    ),
-    val isLogging: Boolean = true,
+    val data: List<Advert> = emptyList(),
+    val isLoading: Boolean = true,
 )
 
 sealed class CustomerServiceViewAction {
-    object CustomerService : CustomerServiceViewAction()
+    object InitPageData : CustomerServiceViewAction()
 }
 
 sealed class CustomerServiceViewEvent {

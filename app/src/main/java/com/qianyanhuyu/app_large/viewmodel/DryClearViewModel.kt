@@ -1,0 +1,111 @@
+package com.qianyanhuyu.app_large.viewmodel
+
+import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.qianyanhuyu.app_large.data.ContentApi
+import com.qianyanhuyu.app_large.data.model.Product
+import com.qianyanhuyu.app_large.data.request.ProductListRequest
+import com.qianyanhuyu.app_large.util.requestFlowResponse
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+/***
+ * @Author : Cheng
+ * @CreateDate : 2023/9/25 11:27
+ * @Description : 干洗服务
+ */
+@HiltViewModel
+class DryCleanViewModel @Inject constructor(
+    private val contentApi: ContentApi
+) : ViewModel() {
+
+    var viewStates by mutableStateOf(DryCleanViewState())
+        private set
+
+    private val _viewEvents = Channel<DryCleanViewEvent>(Channel.BUFFERED)
+    val viewEvents = _viewEvents.receiveAsFlow()
+
+    private val exception = CoroutineExceptionHandler { _, throwable ->
+        viewModelScope.launch {
+            _viewEvents.send(DryCleanViewEvent.ShowMessage("错误："+throwable.message))
+        }
+    }
+
+    fun dispatch(action: DryCleanViewAction) {
+        when (action) {
+            is DryCleanViewAction.InitPageData -> initPageData()
+            else -> {
+
+            }
+        }
+    }
+
+    private fun initPageData() {
+        viewModelScope.launch(exception) {
+            requestFlowResponse(
+                requestCall = {
+                    contentApi.getProductDetails(
+                        request = ProductListRequest(
+                            // TODO 使用设备信息接口数据中的 shopId, 现在暂时未接入
+                            shopId = 749,
+                            type = 30
+                        )
+                    )
+                },
+                showLoading = {
+                    viewStates = viewStates.copy(
+                        isLoading = it
+                    )
+                }
+            ).apply {
+                val data = this?.content ?: emptyList()
+                Log.d("DryCleanData: ", data.toString())
+                // 根据产品列表数据封装选择分类类型数据
+                val typeData = data.mapIndexed { index, advert ->
+                    DryCleanType(
+                        name = advert.title ?: "",
+                        type = index,
+                        title = advert.title ?: ""
+                    )
+                }
+
+                viewStates = viewStates.copy(
+                    typeData = typeData,
+                    data = data,
+                )
+            }
+        }
+    }
+
+
+}
+
+data class DryCleanViewState(
+    val data: List<Product> = emptyList(),
+    val typeData: List<DryCleanType> = emptyList(),
+    val isLoading: Boolean = true,
+)
+
+data class DryCleanType(
+    val name: String,
+    val type: Int,
+    val title: String = "",
+)
+
+sealed class DryCleanViewAction {
+    object InitPageData : DryCleanViewAction()
+}
+
+sealed class DryCleanViewEvent {
+    data class NavTo(val route: String) : DryCleanViewEvent()
+    data class ShowMessage(val message: String) : DryCleanViewEvent()
+}

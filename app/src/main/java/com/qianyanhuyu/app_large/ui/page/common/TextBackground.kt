@@ -38,6 +38,7 @@ fun TextBackground(
     lineHeight: TextUnit = 30.csp,
     letterSpacing: TextUnit = 4.csp,
     textHorizontalPadding: Dp = 31.cdp,
+    textVerticalPadding: Dp = 5.cdp,
     textColor: Color = Color.White,
     modifier: Modifier,
     onClick: () -> Unit = {}
@@ -70,7 +71,7 @@ fun TextBackground(
             lineHeight = lineHeight,
             modifier = Modifier
                 .padding(
-                    vertical = 5.cdp,
+                    vertical = textVerticalPadding,
                     horizontal = textHorizontalPadding
                 )
         )
