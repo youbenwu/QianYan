@@ -1,9 +1,6 @@
 package com.qianyanhuyu.app_large.ui.page
 
-
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -17,13 +14,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -34,14 +31,10 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.constants.AppConfig
-import com.qianyanhuyu.app_large.ui.page.common.CustomButton
 import com.qianyanhuyu.app_large.ui.page.common.CustomTopTrips
 import com.qianyanhuyu.app_large.ui.page.common.TextBackground
 import com.qianyanhuyu.app_large.constants.AppConfig.CustomGreen
-import com.qianyanhuyu.app_large.constants.AppConfig.CustomOrigin
-import com.qianyanhuyu.app_large.constants.AppConfig.CustomPurple
 import com.qianyanhuyu.app_large.constants.AppConfig.CustomYellowish
-import com.qianyanhuyu.app_large.constants.AppConfig.blackToBlack
 import com.qianyanhuyu.app_large.constants.AppConfig.whiteToBlackVertical7f
 import com.qianyanhuyu.app_large.constants.AppConfig.whiteToGreenHorizontal
 import com.qianyanhuyu.app_large.ui.AppNavController
@@ -286,6 +279,7 @@ fun CustomerServiceContent(
                     buttonText = "去购买",
                     buttonColor = AppConfig.CustomButtonBrushOrigin,
                     paddingHorizontal = 60.cdp,
+                    isItalic = true,
                     modifier = Modifier
                         .constrainAs(topContentView) {
                             top.linkTo(topView.top)
@@ -343,6 +337,7 @@ fun CustomerServiceContent(
                     buttonColor = AppConfig.CustomButtonBrushBlack,
                     paddingVertical = 15.cdp,
                     paddingHorizontal = 30.cdp,
+                    isItalic = true,
                     modifier = Modifier
                         .constrainAs(bottomContentView) {
                             top.linkTo(bottomView.top)
@@ -396,6 +391,7 @@ fun CustomerServiceContent(
                     isShowTextBackgroundView = false,
                     paddingHorizontal = 60.cdp,
                     buttonColor = AppConfig.CustomButtonBrushOrigin,
+                    isItalic = true,
                     modifier = Modifier
                         .constrainAs(imageContentView) {
                             bottom.linkTo(parent.bottom)
@@ -420,6 +416,7 @@ private fun ImageContentView (
     isShowTextBackgroundView: Boolean = false,
     paddingHorizontal: Dp = 0.cdp,
     paddingVertical: Dp = 35.cdp,
+    isItalic: Boolean = false,
     modifier: Modifier,
     onClick: () -> Unit = {}
 ) {
@@ -475,6 +472,7 @@ private fun ImageContentView (
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
             letterSpacing = 4.csp,
+            fontStyle = if(isItalic) FontStyle.Italic else FontStyle.Normal,
             color = Color.White,
             modifier = Modifier
                 .constrainAs(textView2) {

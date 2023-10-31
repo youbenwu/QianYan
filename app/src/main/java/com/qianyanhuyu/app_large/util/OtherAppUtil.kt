@@ -7,6 +7,12 @@ import android.content.pm.PackageInfo
 import android.content.pm.ResolveInfo
 import android.util.Log
 import android.widget.Toast
+import com.qianyanhuyu.app_large.ui.widgets.showToast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /***
  * @Author : Cheng
@@ -16,16 +22,18 @@ import android.widget.Toast
 object OtherAppUtil {
     fun openOtherApp(
         context: Context,
-        packageName: OtherPackage = OtherPackage.TENCENT
+        packageName: OtherPackage = OtherPackage.EMPTY
     ) {
-        // 包名不是Null 的时候跳转
         try {
-            /*val aa = context.packageManager
+            val aa = context.packageManager
             aa?.getInstalledPackages(0)?.forEach {
                 Log.d("test: ", it.applicationInfo.packageName);
                 Log.d("appinfo", aa.getApplicationLabel(it.applicationInfo).toString());
-            }*/
+            }
 
+            // 包名不是空的时候跳转
+            if(packageName.value.isEmpty())
+                return
 
             val pi: PackageInfo = context.packageManager
                 .getPackageInfo(packageName.value, 0)
@@ -39,19 +47,58 @@ object OtherAppUtil {
             val className = ri.activityInfo.name
             val intent = Intent(Intent.ACTION_MAIN)
             intent.addCategory(Intent.CATEGORY_LAUNCHER)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             val cn = ComponentName(packageName, className)
             intent.component = cn
             context.startActivity(intent)
         } catch(e: Exception) {
-            e.printStackTrace();
-            Log.d("OtherApplication Error: ", "otherApplication.getPackageName()");
-
+            e.printStackTrace()
+            Log.d("OtherApplication Error: ", "package: ${packageName.value}")
+            val viewModelJob = Job()
+            val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+            uiScope.launch {
+                withContext(Dispatchers.IO) {
+                    withContext(Dispatchers.Main) {
+                        showToast("暂未支持,敬请期待")
+                    }
+                }
+            }
         }
     }
 
+    /**
+     * 第三方包名
+     * 来源: 应用宝
+     */
     enum class OtherPackage(
         val value: String
     ) {
-        TENCENT("com.tencent.qqlive")
+        EMPTY(""),
+
+        /**
+         * 腾讯视频
+         * 测试包: tv.danmaku.bili
+         */
+        TENCENT("com.tencent.qqlive"),
+
+        /**
+         * 爱奇艺
+         */
+        AI_QI_YI("com.qiyi.video"),
+
+        /**
+         * 抖音
+         */
+        DOU_YIN("com.ss.android.ugc.aweme"),
+
+        /**
+         * 优酷
+         */
+        YOU_KU("com.youku.phone"),
+
+        /**
+         * 小红书
+         */
+        SMALL_HONG_SHU("com.xingin.xhs")
     }
 }

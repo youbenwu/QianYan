@@ -79,12 +79,16 @@ class QianYanPlayViewModel @Inject constructor(
         )
     }
 
+    /**
+     * Intent方式打开第三方App
+     */
     private fun openOtherApp(
         packageName: OtherAppUtil.OtherPackage
     ) {
         viewModelScope.launch {
             OtherAppUtil.openOtherApp(
-                context = context
+                context = context,
+                packageName = packageName
             )
         }
     }

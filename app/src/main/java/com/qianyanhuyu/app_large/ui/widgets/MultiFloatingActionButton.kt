@@ -1,5 +1,7 @@
 package com.qianyanhuyu.app_large.ui.widgets
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
@@ -8,6 +10,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -29,11 +32,13 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.model.MultiMenuItem
 import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
+import com.qianyanhuyu.app_large.util.onClick
 import com.qianyanhuyu.app_large.util.toPx
 
 /***
@@ -50,6 +55,10 @@ fun MultiFloatingActionButton(
 ) {
     //当前菜单默认状态处于：Collapsed
     val currentState = remember { mutableStateOf(MultiFabState.Collapsed) }
+
+    BackHandler(currentState.value == MultiFabState.Expanded) {
+        currentState.value = MultiFabState.Collapsed
+    }
 
     //创建过渡对象，用于管理多个动画值，并且根据状态变化运行这些值
     val transition = updateTransition(targetState = currentState, label = "")
@@ -116,6 +125,21 @@ fun MultiFloatingActionButton(
         modifier = modifier,
         contentAlignment = Alignment.BottomCenter
     ) {
+        AnimatedVisibility(visible = currentState.value == MultiFabState.Expanded) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onPress = {
+                                // 按下时候的操作
+                                currentState.value = MultiFabState.Collapsed
+                            }
+                        )
+                    }
+            )
+        }
+
         CommonComposeImage(
             resId = R.drawable.nav_bg,
             modifier = Modifier
@@ -134,21 +158,25 @@ fun MultiFloatingActionButton(
             // 设置偏移量
             val modifierItem = Modifier
                 .graphicsLayer {
-                    this.translationX = if(index < 3) {
+                    this.translationX = if (index < 3) {
                         -shrinkListAnim[index]
                     } else {
                         shrinkListAnim[index]
                     }
-                    this.translationY = if(index == 1 || index == 4) {
-                        -(shrinkListAnim[index] - (mediumWidth * 3).toPx)
-                    } else if(index == 2 || index == 3) {
-                        if(currentState.value == MultiFabState.Collapsed)
-                            shrinkListAnim[index]
-                        else
-                            -(shrinkListAnim[index] + (mediumWidth * 3).toPx)
-
+                    this.translationY = if (currentState.value == MultiFabState.Collapsed) {
+                        100F
                     } else {
-                        20.cdp.toPx
+                        if (index == 1 || index == 4) {
+                            -(shrinkListAnim[index] - (mediumWidth * 3).toPx)
+                        } else if (index == 2 || index == 3) {
+                            if (currentState.value == MultiFabState.Collapsed)
+                                shrinkListAnim[index]
+                            else
+                                -(shrinkListAnim[index] + (mediumWidth * 3).toPx)
+
+                        } else {
+                            20.cdp.toPx
+                        }
                     }
                 }
                 .alpha(animateFloatAsState(alphaAnim, label = "").value)
@@ -165,7 +193,7 @@ fun MultiFloatingActionButton(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = modifierItem
-                    .clickable {
+                    .onClick {
                         if (currentState.value == MultiFabState.Expanded){
                             //更新状态 => 折叠菜单
                             currentState.value = MultiFabState.Collapsed

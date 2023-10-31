@@ -36,6 +36,7 @@ import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
+import com.qianyanhuyu.app_large.viewmodel.IpPutInViewAction
 import com.qianyanhuyu.app_large.viewmodel.IpPutInViewEvent
 import com.qianyanhuyu.app_large.viewmodel.IpPutInViewModel
 import kotlinx.coroutines.launch
@@ -55,7 +56,7 @@ fun IpPutInScreen(
 
     DisposableEffect(Unit) {
         // 初始化需要执行的内容
-        // viewModel.dispatch(ActivationViewAction.InitPageData)
+        viewModel.dispatch(IpPutInViewAction.InitPageData)
         onDispose {  }
     }
 

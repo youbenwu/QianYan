@@ -51,7 +51,6 @@ class SplashViewModel @Inject constructor(
     }
 
     private fun checkLoginState() {
-        println("收到错误消息：check")
         viewModelScope.launch {
             viewStates = viewStates.copy(isLogging = false)
             _viewEvents.send(SplashViewEvent.NavTo(Route.HOME_PAGE))

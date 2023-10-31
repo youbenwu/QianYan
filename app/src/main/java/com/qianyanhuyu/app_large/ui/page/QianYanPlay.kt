@@ -35,7 +35,9 @@ import com.qianyanhuyu.app_large.ui.AppNavController
 import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
 import com.qianyanhuyu.app_large.ui.widgets.LoadingComponent
+import com.qianyanhuyu.app_large.util.OtherAppUtil
 import com.qianyanhuyu.app_large.util.cdp
+import com.qianyanhuyu.app_large.util.onClick
 import com.qianyanhuyu.app_large.viewmodel.QianYanPlayViewAction
 import com.qianyanhuyu.app_large.viewmodel.QianYanPlayViewEvent
 import com.qianyanhuyu.app_large.viewmodel.QianYanPlayViewModel
@@ -85,7 +87,7 @@ fun QianYanPlayScreen(
         QianYanPlayContent(
             viewState = viewModel.viewStates,
             playButtonOnClick = {
-                // viewModel.dispatch(QianYanPlayViewAction.OpenOtherApp())
+                viewModel.dispatch(QianYanPlayViewAction.OpenOtherApp(it))
             },
             modifier = Modifier
                 .fillMaxSize()
@@ -110,7 +112,7 @@ fun QianYanPlayScreen(
 @Composable
 fun QianYanPlayContent(
     viewState: QianYanPlayViewState,
-    playButtonOnClick: () -> Unit,
+    playButtonOnClick: (OtherAppUtil.OtherPackage) -> Unit,
     modifier: Modifier
 ) {
     // 主体内容
@@ -160,7 +162,7 @@ fun QianYanPlayContent(
                 iconSrc = "https://img.js.design/assets/img/64747616d18b309f6e7d8594.png#d1e4aa5e2fccfeb1b9eba374eabad772",
                 buttonText = "腾讯视频",
                 isTripsVisible = true,
-                onClick = playButtonOnClick,
+                onClick = { playButtonOnClick.invoke(OtherAppUtil.OtherPackage.TENCENT) },
                 modifier = Modifier
                     .constrainAs(leftContentView) {
                         start.linkTo(parent.start)
@@ -178,6 +180,7 @@ fun QianYanPlayContent(
                 iconSrc = "https://img.js.design/assets/img/6497edd31e215bbdd2c52c44.png#cf6c4a4e8db29bee13fc4ce69a3bafb4",
                 buttonText = "优酷",
                 buttonColor = CustomBlue,
+                onClick = { playButtonOnClick.invoke(OtherAppUtil.OtherPackage.YOU_KU) },
                 modifier = Modifier
                     .constrainAs(rightContentView) {
                         end.linkTo(parent.end)
@@ -193,6 +196,7 @@ fun QianYanPlayContent(
                 src = viewState.data.getOrNull(1)?.image ?: "",
                 bottomLeftSrc = viewState.data.getOrNull(2)?.image ?:"",
                 bottomRightSrc = viewState.data.getOrNull(3)?.image ?: "",
+                playButtonOnClick = playButtonOnClick,
                 modifier = Modifier
                     .constrainAs(centerContentView) {
                         start.linkTo(leftContentView.end)
@@ -217,6 +221,7 @@ private fun CenterContent(
     src: String,
     bottomLeftSrc: String,
     bottomRightSrc: String,
+    playButtonOnClick: (OtherAppUtil.OtherPackage) -> Unit,
     modifier: Modifier
 ){
     ConstraintLayout(
@@ -284,7 +289,7 @@ private fun CenterContent(
                     end = 50.cdp
                 )
         ) {
-
+            playButtonOnClick.invoke(OtherAppUtil.OtherPackage.AI_QI_YI)
         }
 
         CommonNetworkImage(
@@ -304,6 +309,9 @@ private fun CenterContent(
                     end = 15.cdp
                 )
                 .clip(RoundedCornerShape(imageRadius))
+                .onClick {
+                    playButtonOnClick.invoke(OtherAppUtil.OtherPackage.SMALL_HONG_SHU)
+                }
         )
 
         CommonNetworkImage(
@@ -323,6 +331,9 @@ private fun CenterContent(
                     start = 15.cdp
                 )
                 .clip(RoundedCornerShape(imageRadius))
+                .onClick {
+                    playButtonOnClick.invoke(OtherAppUtil.OtherPackage.DOU_YIN)
+                }
         )
     }
 }
@@ -343,7 +354,6 @@ private fun FillHeightImageContent(
     ) {
 
         val (
-            imageView,
             iconView,
             tripsView,
             contentBgView,

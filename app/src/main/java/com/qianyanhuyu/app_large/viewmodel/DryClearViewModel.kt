@@ -13,7 +13,6 @@ import com.qianyanhuyu.app_large.util.requestFlowResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,7 +24,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class DryCleanViewModel @Inject constructor(
-    private val contentApi: ContentApi
+    private val contentApi: ContentApi,
 ) : ViewModel() {
 
     var viewStates by mutableStateOf(DryCleanViewState())
@@ -95,6 +94,12 @@ data class DryCleanViewState(
     val isLoading: Boolean = true,
 )
 
+/**
+ * 干洗类型选择对象
+ * @param name 分类名称
+ * @param type 分类Id
+ * @param title 标题
+ */
 data class DryCleanType(
     val name: String,
     val type: Int,

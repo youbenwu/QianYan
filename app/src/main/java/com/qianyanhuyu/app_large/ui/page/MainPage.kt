@@ -1,6 +1,5 @@
 package com.qianyanhuyu.app_large.ui.page
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -47,7 +46,6 @@ import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
 import com.qianyanhuyu.app_large.ui.widgets.MultiFloatingActionButton
 import com.qianyanhuyu.app_large.util.FormatterEnum
 import com.qianyanhuyu.app_large.util.TimeUtil
-import com.qianyanhuyu.app_large.util.TwoBackFinish
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
 import kotlinx.coroutines.launch
@@ -134,6 +132,8 @@ fun MainPage(
                             MultiFloatingActionButton(
                                 items = expandFbItemList,
                                 selectState = selectState,
+                                modifier = Modifier
+                                    .fillMaxSize()
                             ) { item ->
                                 // AppNavController.instance.popBackStack()
                                 AppNavController.instance.navigate(item.route)
