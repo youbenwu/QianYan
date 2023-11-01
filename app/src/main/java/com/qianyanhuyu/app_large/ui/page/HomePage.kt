@@ -35,16 +35,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.util.lerp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
 import com.qianyanhuyu.app_large.R
+import com.qianyanhuyu.app_large.constants.AppConfig
 import com.qianyanhuyu.app_large.constants.AppConfig.brush121
 import com.qianyanhuyu.app_large.constants.AppConfig.brush121_192
 import com.qianyanhuyu.app_large.constants.AppConfig.brush247
@@ -57,6 +61,7 @@ import com.qianyanhuyu.app_large.ui.page.common.TextBackground
 import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
+import com.qianyanhuyu.app_large.ui.widgets.LoadingComponent
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
 import com.qianyanhuyu.app_large.util.toPx
@@ -64,7 +69,10 @@ import com.qianyanhuyu.app_large.viewmodel.HomePageViewAction
 import com.qianyanhuyu.app_large.viewmodel.HomePageViewEvent
 import com.qianyanhuyu.app_large.viewmodel.HomePageViewModel
 import com.qianyanhuyu.app_large.viewmodel.HomePageViewState
+import com.qianyanhuyu.app_large.viewmodel.ShopFriendsViewAction
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.Timer
 import java.util.TimerTask
 import kotlin.math.absoluteValue
@@ -120,11 +128,30 @@ fun HomePageScreen(
     snackHostState: SnackbarHostState?,
 ) {
     val coroutineState = rememberCoroutineScope()
+    val lifecycleOwner = LocalLifecycleOwner.current
 
-    DisposableEffect(Unit) {
-        // 初始化需要执行的内容
+    DisposableEffect(lifecycleOwner) {
+        /*// 初始化需要执行的内容
         viewModel.dispatch(HomePageViewAction.InitPageData)
-        onDispose {  }
+        onDispose {  }*/
+
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                //根据Event执行不同生命周期的操作
+                Lifecycle.Event.ON_CREATE -> {
+
+                }
+                Lifecycle.Event.ON_RESUME -> {
+                    viewModel.dispatch(HomePageViewAction.InitPageData)
+                }
+                else -> {
+                }
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
 
     LaunchedEffect(Unit) {
@@ -749,24 +776,29 @@ private fun TagImageView(
             AdvertType.PPC -> {
                 TextBackground(
                     text = "点击进入",
-                    fontSize = 40.csp,
-                    textColor = Color.Black,
-                    textBackground = Color(46, 237, 190),
+                    fontSize = 28.csp,
+                    textColor = Color.White,
                     textHorizontalPadding = 20.cdp,
+                    textBackgroundBrush = AppConfig.CustomButtonBrushGreen,
                     shapes = Shapes.extraLarge,
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .padding(
-                            end = 20.cdp,
+                            end = 40.cdp,
                             bottom = 20.cdp
                         )
-                )
+                ) {
+                    // test url : https://baidu.com
+                    // val url = URLEncoder.encode(advert.url ?: "", StandardCharsets.UTF_8.toString())
+
+                    // AppNavController.instance.navigate("${Route.WEB_VIEW}/${advert.title}/${url}")
+                }
             }
             AdvertType.PPA -> {
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
-                        .padding(20.cdp)
+                        .padding(30.cdp)
                 ) {
                     CommonNetworkImage(
                         url = advert.qrCode,
