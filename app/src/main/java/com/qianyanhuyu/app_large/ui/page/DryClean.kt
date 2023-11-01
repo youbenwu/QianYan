@@ -356,9 +356,7 @@ private fun RightContentView(
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
                     .weight(3f)
-            ) {
-
-            }
+            )
         }
     }
 }

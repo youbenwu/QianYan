@@ -56,8 +56,6 @@ import kotlinx.coroutines.launch
  * 认证手机号码
  */
 
-private const val TAG = "el, AuthenticationScreen"
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AuthenticationScreen(

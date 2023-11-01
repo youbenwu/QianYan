@@ -11,11 +11,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.qianyanhuyu.app_large.ui.common.Route
 import com.qianyanhuyu.app_large.ui.page.*
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
+import com.qianyanhuyu.app_large.ui.page.common.WebViewPage
 
 object AppNavController {
     @SuppressLint("StaticFieldLeak")
@@ -119,6 +122,30 @@ private fun NavGraphBuilder.homeGraph(
 
         composable(Route.DRY_CLEAN) {
             DryClean()
+        }
+
+        /**
+         * Url 传递的时候需要Encode
+         * 例: URLEncoder.encode("url", StandardCharsets.UTF_8.toString())
+         */
+        composable(
+            route = "${Route.WEB_VIEW}/{${Route.WEB_VIEW_TITLE}}/{${Route.WEB_VIEW_URL}}",
+            arguments = listOf(
+                navArgument(Route.WEB_VIEW_TITLE) {
+                    type = NavType.StringType
+                },
+                navArgument(Route.WEB_VIEW_URL) {
+                    type = NavType.StringType
+                },
+            )
+        ) {
+            val title = it.arguments?.getString("title")
+            val url = it.arguments?.getString("url")
+
+            WebViewPage(
+                title = title,
+                url = url
+            )
         }
     }
 }

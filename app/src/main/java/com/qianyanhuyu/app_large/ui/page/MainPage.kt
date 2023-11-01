@@ -50,6 +50,12 @@ import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
 import kotlinx.coroutines.launch
 import java.util.Date
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Arrangement
+import com.qianyanhuyu.app_large.util.onClick
 
 /***
  * @Author : Cheng
@@ -74,6 +80,7 @@ fun MainPage(
     val snackHostState = remember { SnackbarHostState() }
     val selectState = remember { mutableStateOf(-1)}
     val coroutineState = rememberCoroutineScope()
+    val isShowBackButton = remember { mutableStateOf(false) }
 
     BackHandler {
         // 抽屉打开的时候关闭抽屉
@@ -83,25 +90,11 @@ fun MainPage(
             }
         } else {
             coroutineState.launch {
-                // 获取堆栈上一页路由
-                val preRoute = navController.previousBackStackEntry?.destination?.route
-                val homeIndex = -1
-                when(preRoute) {
-                    Route.CUSTOMER_SERVICE,
-                    Route.SHOP_FRIENDS,
-                    Route.QIAN_YAN_PLAY,
-                    Route.SMART_TOURISM,
-                    Route.QIAN_YAN_GIVE,
-                    Route.IP_PUT_IN -> {
-                        selectState.value = expandFbItemList.filter {
-                            it.route == preRoute
-                        }.getOrNull(0)?.index ?: homeIndex
-                    }
-                    else -> {
-                        selectState.value = homeIndex
-                    }
-                }
-                AppNavController.instance.popBackStack()
+                onBackPre(
+                    navController = navController,
+                    isShowBackButton = isShowBackButton,
+                    selectState = selectState
+                )
             }
         }
     }
@@ -122,7 +115,9 @@ fun MainPage(
                     topBar = {
                         HomeTopBar(
                             selectState = selectState,
-                            Modifier
+                            isShowBackButton = isShowBackButton,
+                            navController = navController,
+                            modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 30.cdp)
                         )
@@ -136,6 +131,7 @@ fun MainPage(
                                     .fillMaxSize()
                             ) { item ->
                                 // AppNavController.instance.popBackStack()
+                                isShowBackButton.value = true
                                 AppNavController.instance.navigate(item.route)
                             }
                         }
@@ -188,7 +184,9 @@ fun MainPage(
  */
 @Composable
 private fun HomeTopBar(
+    isShowBackButton: MutableState<Boolean>,
     selectState: MutableState<Int>,
+    navController: NavHostController,
     modifier: Modifier
 ) {
     ConstraintLayout(
@@ -314,25 +312,7 @@ private fun HomeTopBar(
                         start = 20.cdp,
                         end = 20.cdp
                     )
-            )
-
-            CommonIcon(
-                resId = R.drawable.ic_location,
-                tint = Color.White,
-                modifier = Modifier
-                    .size(30.cdp)
-            )
-            Text(
-                text = "广州",
-                fontSize = 24.csp,
-                textAlign = TextAlign.Center,
-                letterSpacing = 1.csp,
-                color = Color.White,
-                modifier = Modifier
-                    .padding(
-                        start = 10.cdp,
-                        end = 20.cdp
-                    )
+                    .weight(1f)
             )
         }
 
@@ -368,7 +348,7 @@ private fun HomeTopBar(
                     start.linkTo(lineLeftStartView.end)
                     linkTo(top = parent.top, bottom = lineLeftView.top)
 
-                    width = Dimension.preferredWrapContent
+                    width = Dimension.fillToConstraints
                 }
                 .padding(
                     top = 10.cdp,
@@ -378,21 +358,41 @@ private fun HomeTopBar(
         ) {
             val ipCoroutineState = rememberCoroutineScope()
 
-            CommonComposeImage(
-                R.drawable.ic_home_button,
+            Box(
                 modifier = Modifier
-                    .width(41.cdp)
-                    .height(37.cdp)
-                    .clickable {
-                        ipCoroutineState.launch {
-                            selectState.value = -1
-                            AppNavController.instance.popBackStack()
-                            AppNavController.instance.navigate(HOME_ROUTE)
-                        }
-                    }
+                    .width(70.cdp)
+            ) {
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = isShowBackButton.value,
+                    modifier = Modifier
+                        .padding( end = 20.cdp )
+                ) {
+                    CommonComposeImage(
+                        R.drawable.ic_back,
+                        modifier = Modifier
+                            .width(42.cdp)
+                            .height(34.cdp)
+                            .onClick {
+                                ipCoroutineState.launch {
+                                    onBackPre(
+                                        navController = navController,
+                                        isShowBackButton = isShowBackButton,
+                                        selectState = selectState
+                                    )
+                                }
+                            }
+                    )
+                }
+            }
+
+            CommonIcon(
+                resId = R.drawable.ic_location,
+                tint = Color.White,
+                modifier = Modifier
+                    .size(30.cdp)
             )
             Text(
-                text = "返回主页",
+                text = "广州",
                 fontSize = 24.csp,
                 textAlign = TextAlign.Center,
                 letterSpacing = 1.csp,
@@ -400,15 +400,8 @@ private fun HomeTopBar(
                 modifier = Modifier
                     .padding(
                         start = 10.cdp,
-                        end = 20.cdp
+                        end = 30.cdp
                     )
-                    .clickable {
-                        ipCoroutineState.launch {
-                            selectState.value = -1
-                            AppNavController.instance.navigate(HOME_ROUTE)
-
-                        }
-                    }
             )
 
             CommonComposeImage(
@@ -439,6 +432,41 @@ private fun HomeTopBar(
 }
 
 /**
+ * 返回上一页
+ */
+private fun onBackPre(
+    isShowBackButton: MutableState<Boolean>,
+    navController: NavHostController,
+    selectState: MutableState<Int>,
+) {
+    // 获取堆栈上一页路由
+    val preRoute = navController.previousBackStackEntry?.destination?.route
+    val homeIndex = -1
+    when(preRoute) {
+        Route.CUSTOMER_SERVICE,
+        Route.SHOP_FRIENDS,
+        Route.QIAN_YAN_PLAY,
+        Route.SMART_TOURISM,
+        Route.QIAN_YAN_GIVE,
+        Route.IP_PUT_IN -> {
+            selectState.value = expandFbItemList.filter {
+                it.route == preRoute
+            }.getOrNull(0)?.index ?: homeIndex
+        }
+        else -> {
+            selectState.value = homeIndex
+        }
+    }
+
+    if(isShowBackButton.value) {
+        Log.d("TestSSSSSSSSSSSS: ", "${preRoute}")
+        isShowBackButton.value = preRoute != HOME_ROUTE
+    }
+
+    AppNavController.instance.popBackStack()
+}
+
+/**
  * 是否是主体页面
  */
 private fun isMain(
@@ -458,5 +486,7 @@ private fun isShowFloatButton(
 ): Boolean = when(route) {
     Route.DRY_CLEAN,
     Route.SMART_TOURISM_DETAIL -> false
-    else -> true
+    else -> {
+        !route.contains(Route.WEB_VIEW)
+    }
 }

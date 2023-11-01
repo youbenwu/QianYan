@@ -337,6 +337,20 @@ object AppConfig {
         )
     )
 
+    val CustomButtonBrushGreen = Brush.horizontalGradient(
+        listOf(
+            Color(0, 0, 0).copy(
+                alpha = 1f
+            ),
+            Color(0, 0, 0).copy(
+                alpha = 0.3f
+            ),
+            Color(10, 10, 10).copy(
+                alpha = 0f
+            )
+        )
+    )
+
 
     // 大圆数量
     const val CIRCLE_COUNT = 6

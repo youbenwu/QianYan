@@ -26,6 +26,11 @@ object Route {
     // 干洗服务
     const val DRY_CLEAN = "dry_clean"
 
+    // WebView
+    const val WEB_VIEW = "web_view"
+    const val WEB_VIEW_TITLE = "title"
+    const val WEB_VIEW_URL = "url"
+
 }
 
 object RouteParams {
