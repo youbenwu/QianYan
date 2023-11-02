@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.qianyanhuyu.app_large.constants.AppConfig
 import com.qianyanhuyu.app_large.data.ContentApi
 import com.qianyanhuyu.app_large.data.model.Product
 import com.qianyanhuyu.app_large.data.request.ProductListRequest
@@ -42,6 +43,7 @@ class DryCleanViewModel @Inject constructor(
     fun dispatch(action: DryCleanViewAction) {
         when (action) {
             is DryCleanViewAction.InitPageData -> initPageData()
+            is DryCleanViewAction.CountChange -> countChange(action.calculate, action.data)
             else -> {
 
             }
@@ -52,7 +54,7 @@ class DryCleanViewModel @Inject constructor(
         viewModelScope.launch(exception) {
             requestFlowResponse(
                 requestCall = {
-                    contentApi.getProductDetails(
+                    contentApi.getProduct(
                         request = ProductListRequest(
                             // TODO 使用设备信息接口数据中的 shopId, 现在暂时未接入
                             shopId = 749,
@@ -73,7 +75,7 @@ class DryCleanViewModel @Inject constructor(
                     DryCleanType(
                         name = advert.title ?: "",
                         type = index,
-                        title = advert.title ?: ""
+                        title = advert.subTitle ?: "",
                     )
                 }
 
@@ -85,7 +87,33 @@ class DryCleanViewModel @Inject constructor(
         }
     }
 
-
+    private fun countChange(
+        calculate: AppConfig.Calculate,
+        data: Product,
+    ) {
+        viewStates = viewStates.copy(
+            data = viewStates.data.map {
+                if(it.id == data.id) {
+                    val oldCount = it.count ?: 1
+                    it.copy(
+                        count = when(calculate) {
+                            AppConfig.Calculate.MINUS -> {
+                                oldCount - 1
+                            }
+                            AppConfig.Calculate.ADD -> {
+                                oldCount + 1
+                            }
+                            else -> {
+                                oldCount
+                            }
+                        }
+                    )
+                } else {
+                    it
+                }
+            }
+        )
+    }
 }
 
 data class DryCleanViewState(
@@ -108,6 +136,11 @@ data class DryCleanType(
 
 sealed class DryCleanViewAction {
     object InitPageData : DryCleanViewAction()
+
+    data class CountChange(
+        val calculate: AppConfig.Calculate = AppConfig.Calculate.EMPTY,
+        val data: Product,
+    ): DryCleanViewAction()
 }
 
 sealed class DryCleanViewEvent {

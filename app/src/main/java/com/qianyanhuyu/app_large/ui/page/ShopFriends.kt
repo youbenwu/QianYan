@@ -190,10 +190,8 @@ fun ShopFriendsContent(
                 groupChatButton,
             ) = createRefs()
 
-            /*Text("test")*/
             val colorPurple = Color(141, 128, 255).copy(alpha = 1f)
             val colorBlue = Color(158, 255, 255).copy(alpha = 1f)
-
 
             ShopFriendsButton(
                 "妙音匹配",

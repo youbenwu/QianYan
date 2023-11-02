@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -40,6 +41,7 @@ import com.qianyanhuyu.app_large.constants.AppConfig.whiteToGreenHorizontal
 import com.qianyanhuyu.app_large.ui.AppNavController
 import com.qianyanhuyu.app_large.ui.common.Route
 import com.qianyanhuyu.app_large.ui.theme.Shapes
+import com.qianyanhuyu.app_large.ui.theme.youSheFamily
 import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
 import com.qianyanhuyu.app_large.util.cdp
@@ -192,6 +194,7 @@ fun CustomerServiceContent(
                     subTitle = "专业服务关怀亲切",
                     buttonText = "立即呼叫",
                     isShowTextBackgroundView = true,
+                    titleFontWeight = FontWeight.Bold,
                     paddingHorizontal = 60.cdp,
                     buttonColor = AppConfig.CustomButtonBrushPurple,
                     modifier = Modifier
@@ -279,7 +282,7 @@ fun CustomerServiceContent(
                     buttonText = "去购买",
                     buttonColor = AppConfig.CustomButtonBrushOrigin,
                     paddingHorizontal = 60.cdp,
-                    isItalic = true,
+                    titleFontFamily = youSheFamily,
                     modifier = Modifier
                         .constrainAs(topContentView) {
                             top.linkTo(topView.top)
@@ -337,7 +340,7 @@ fun CustomerServiceContent(
                     buttonColor = AppConfig.CustomButtonBrushBlack,
                     paddingVertical = 15.cdp,
                     paddingHorizontal = 30.cdp,
-                    isItalic = true,
+                    titleFontFamily = youSheFamily,
                     modifier = Modifier
                         .constrainAs(bottomContentView) {
                             top.linkTo(bottomView.top)
@@ -385,13 +388,13 @@ fun CustomerServiceContent(
                 )
 
                 ImageContentView(
-                    title = "外卖送餐",
+                    title = "餐饮配送",
                     subTitle = "商城配送极速送达",
                     buttonText = "去点好吃的",
                     isShowTextBackgroundView = false,
                     paddingHorizontal = 60.cdp,
                     buttonColor = AppConfig.CustomButtonBrushOrigin,
-                    isItalic = true,
+                    titleFontFamily = youSheFamily,
                     modifier = Modifier
                         .constrainAs(imageContentView) {
                             bottom.linkTo(parent.bottom)
@@ -416,7 +419,8 @@ private fun ImageContentView (
     isShowTextBackgroundView: Boolean = false,
     paddingHorizontal: Dp = 0.cdp,
     paddingVertical: Dp = 35.cdp,
-    isItalic: Boolean = false,
+    titleFontFamily: FontFamily? = null,
+    titleFontWeight: FontWeight? = null,
     modifier: Modifier,
     onClick: () -> Unit = {}
 ) {
@@ -469,10 +473,10 @@ private fun ImageContentView (
         Text(
             title,
             fontSize = 79.csp,
-            fontWeight = FontWeight.Bold,
+            fontWeight = titleFontWeight,
             textAlign = TextAlign.Center,
             letterSpacing = 4.csp,
-            fontStyle = if(isItalic) FontStyle.Italic else FontStyle.Normal,
+            fontFamily = titleFontFamily,
             color = Color.White,
             modifier = Modifier
                 .constrainAs(textView2) {

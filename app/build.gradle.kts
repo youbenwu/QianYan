@@ -13,8 +13,8 @@ android {
         applicationId = "com.qianyanhuyu.app_large"
         minSdk = 24
         targetSdk = 33
-        versionCode = 5
-        versionName = "1.0.05"
+        versionCode = 7
+        versionName = "1.0.06"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -129,7 +129,12 @@ dependencies {
     implementation("androidx.paging:paging-common-ktx:${pagingVersion}")
 
     // ExoPlayer
+    // 完整内容直接引入注释内容
     // implementation("com.google.android.exoplayer:exoplayer:2.19.1")
+    val exoPlayerVersion = "1.1.1"
+    implementation("androidx.media3:media3-exoplayer:${exoPlayerVersion}")
+    implementation("androidx.media3:media3-exoplayer-dash:${exoPlayerVersion}")
+    implementation("androidx.media3:media3-ui:${exoPlayerVersion}")
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.2")
 }

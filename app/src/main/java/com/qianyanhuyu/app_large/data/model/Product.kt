@@ -18,6 +18,8 @@ import com.google.gson.annotations.SerializedName
  */
 @Keep
 data class Product(
+    @SerializedName("id")
+    val id: Int,
     @SerializedName("image")
     val image: String?,
     @SerializedName("price")
@@ -26,4 +28,15 @@ data class Product(
     val title: String?,
     @SerializedName("subtitle")
     val subTitle: String?,
+    val count: Int?,
+    val details: List<ProductDetails>?
+)
+
+/**
+ * 商品详情
+ */
+@Keep
+data class ProductDetails(
+    @SerializedName("images")
+    val images: String
 )

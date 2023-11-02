@@ -18,7 +18,7 @@ data class Advert(
     @SerializedName("title")
     var title: String?,
     @SerializedName("subtitle")
-    var subtitle: String?,
+    var subTitle: String?,
     @SerializedName("image")
     var image: String?,
     @SerializedName("url")

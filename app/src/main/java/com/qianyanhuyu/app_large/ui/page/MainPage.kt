@@ -51,10 +51,6 @@ import com.qianyanhuyu.app_large.util.csp
 import kotlinx.coroutines.launch
 import java.util.Date
 import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.Arrangement
 import com.qianyanhuyu.app_large.util.onClick
 
 /***
@@ -130,7 +126,6 @@ fun MainPage(
                                 modifier = Modifier
                                     .fillMaxSize()
                             ) { item ->
-                                // AppNavController.instance.popBackStack()
                                 isShowBackButton.value = true
                                 AppNavController.instance.navigate(item.route)
                             }
@@ -194,6 +189,10 @@ private fun HomeTopBar(
     ) {
 
         val currentTime = TimeUtil.parse(Date().time, FormatterEnum.YYYY_DOT_MM_DOT_DD)
+        val ttt = remember {
+            mutableStateOf(TimeUtil.parse(Date().time, FormatterEnum.YYYY_MM_DD__HH_MM_SS))
+        }
+
 
         val (
             centerView,
@@ -404,7 +403,7 @@ private fun HomeTopBar(
                     )
             )
 
-            CommonComposeImage(
+            /*CommonComposeImage(
                 R.drawable.ic_projection_screen,
                 modifier = Modifier
                     .width(44.cdp)
@@ -426,7 +425,7 @@ private fun HomeTopBar(
                     .clickable {
 
                     }
-            )
+            )*/
         }
     }
 }
@@ -439,31 +438,56 @@ private fun onBackPre(
     navController: NavHostController,
     selectState: MutableState<Int>,
 ) {
-    // 获取堆栈上一页路由
+    // 当前路由
+    val currentRoute = navController.currentBackStackEntry?.destination?.route
     val preRoute = navController.previousBackStackEntry?.destination?.route
     val homeIndex = -1
-    when(preRoute) {
+    when(currentRoute) {
         Route.CUSTOMER_SERVICE,
         Route.SHOP_FRIENDS,
         Route.QIAN_YAN_PLAY,
         Route.SMART_TOURISM,
         Route.QIAN_YAN_GIVE,
         Route.IP_PUT_IN -> {
-            selectState.value = expandFbItemList.filter {
-                it.route == preRoute
-            }.getOrNull(0)?.index ?: homeIndex
+            isShowBackButton.value = false
+            selectState.value = homeIndex
+            AppNavController.instance.navigate(
+                HOME_ROUTE
+            ) {
+                popUpTo(0)
+            }
         }
-        else -> {
+        Route.HOME_CONTENT -> {
+            isShowBackButton.value = false
+            selectState.value = homeIndex
+            AppNavController.instance.popBackStack()
+        }
+        null -> {
+            isShowBackButton.value = false
             selectState.value = homeIndex
         }
+        else -> {
+            // 返回的时候需要选中菜单栏
+            when(preRoute) {
+                Route.CUSTOMER_SERVICE,
+                Route.SHOP_FRIENDS,
+                Route.QIAN_YAN_PLAY,
+                Route.SMART_TOURISM,
+                Route.QIAN_YAN_GIVE,
+                Route.IP_PUT_IN -> {
+                    selectState.value = expandFbItemList.filter {
+                        it.route == preRoute
+                    }.getOrNull(0)?.index ?: homeIndex
+                }
+                else -> {
+                    selectState.value = homeIndex
+                }
+            }
+            isShowBackButton.value = true
+            // 返回上一页
+            AppNavController.instance.popBackStack()
+        }
     }
-
-    if(isShowBackButton.value) {
-        Log.d("TestSSSSSSSSSSSS: ", "${preRoute}")
-        isShowBackButton.value = preRoute != HOME_ROUTE
-    }
-
-    AppNavController.instance.popBackStack()
 }
 
 /**

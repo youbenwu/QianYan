@@ -4,13 +4,8 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.ZeroCornerSize
@@ -19,14 +14,12 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Clear
-import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TextFieldDefaults.indicatorLine
@@ -36,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 
@@ -44,18 +36,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.TextUnit
 import com.qianyanhuyu.app_large.ui.theme.EditTextBottomLineColor
 import com.qianyanhuyu.app_large.ui.theme.IconColor
 import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
-import com.qianyanhuyu.app_large.viewmodel.AuthenticationViewAction
 
 /***
  * @Author : Cheng
  * @CreateDate : 2023/9/18 17:02
- * @Description : 通用输入框
+ * @Description : 通用输入框 基于BasicTextField 处理
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -74,6 +64,7 @@ fun SimpleEditTextWidget(
     textStyle: TextStyle = LocalTextStyle.current.copy(
         color = Color.White
     ),
+    isShowTrailingIcon: Boolean = true,
     placeholder: @Composable (() -> Unit)? = null,
     isError: Boolean = false,
     visualTransformation: VisualTransformation = VisualTransformation.None,
@@ -144,7 +135,7 @@ fun SimpleEditTextWidget(
                         )
                     }
                 },
-                trailingIcon = if (value.isNotEmpty() && !isReadOnly ) {
+                trailingIcon = if (value.isNotEmpty() && !isReadOnly && isShowTrailingIcon ) {
                     {
                         IconButton(
                             onClick = onClick

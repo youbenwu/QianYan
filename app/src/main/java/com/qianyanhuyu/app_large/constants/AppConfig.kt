@@ -12,10 +12,6 @@ import com.qianyanhuyu.app_large.util.cdp
 object AppConfig {
     const val APP_DESIGN_WIDTH = 1920
 
-
-    // 36 开头的黑色
-    val Black36 = Color(36, 39, 49, 1)
-
     val CustomOrigin = Color(255, 87, 51)
     val CustomYellowish = Color(205, 113, 65)
     val CustomYellow = Color(255, 195, 0)
@@ -79,13 +75,6 @@ object AppConfig {
         )
     )
 
-    val blackToBlack = Brush.verticalGradient(
-        listOf(
-            Color(36, 39, 49),
-            Color(36, 39, 49),
-        )
-    )
-
     val blackToWhite = Brush.horizontalGradient(
         listOf(
             Color(0, 0, 0).copy(alpha = 0.7f),
@@ -122,24 +111,6 @@ object AppConfig {
             Color(0, 0, 0).copy(
                 alpha = 0.6f
             )
-        )
-    )
-
-    val whiteToBlackHorizontal = Brush.horizontalGradient(
-        listOf(
-            Color(0, 0, 0).copy(
-                alpha = 0f
-            ),
-            Color(0, 0, 0).copy(
-                alpha = 0.3f
-            ),
-            Color(0, 0, 0).copy(
-                alpha = 0.65f
-            ),
-            Color(0, 0, 0).copy(
-                alpha = 0.97f
-            ),
-            Color(0, 0, 0),
         )
     )
 
@@ -183,28 +154,6 @@ object AppConfig {
                 alpha = 0f
             ),
             Color(14, 28, 184).copy(
-                alpha = 1f
-            )
-        )
-    )
-
-    val friendsTextColor = Brush.horizontalGradient(
-        listOf(
-            Color(158, 255, 255).copy(
-                alpha = 1f
-            ),
-            Color(141, 128, 255).copy(
-                alpha = 1f
-            )
-        )
-    )
-
-    val ipPutInCircleBorder = Brush.verticalGradient(
-        listOf(
-            Color(42, 130, 228).copy(
-                alpha = 1f
-            ),
-            Color(54, 87, 151).copy(
                 alpha = 1f
             )
         )
@@ -364,4 +313,27 @@ object AppConfig {
         30.cdp,
         80.cdp,
     )
+
+    /**
+     *
+     */
+    enum class Calculate {
+        MINUS,
+        ADD,
+
+        /**
+         * 乘
+         */
+        MULTIPLY,
+
+        /**
+         * 除
+         */
+        DIVIDE,
+
+        /**
+         * 不做数据处理操作
+         */
+        EMPTY,
+    }
 }

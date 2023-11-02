@@ -15,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.qianyanhuyu.app_large.R
@@ -43,10 +42,6 @@ fun CustomTopTrips(
             .background(
                 topTripsColor
             )
-            /*.border(
-                BorderStroke(20.cdp, topTripsColor),
-                RoundedCornerShape(20.cdp)
-            )*/
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

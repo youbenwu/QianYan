@@ -6,10 +6,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
@@ -20,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -29,13 +37,16 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
+import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.constants.AppConfig
 import com.qianyanhuyu.app_large.data.model.Product
 import com.qianyanhuyu.app_large.ui.page.common.CommonText
 import com.qianyanhuyu.app_large.ui.page.common.TextBackground
 import com.qianyanhuyu.app_large.ui.theme.Shapes
+import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
 import com.qianyanhuyu.app_large.ui.widgets.LoadingComponent
+import com.qianyanhuyu.app_large.ui.widgets.SimpleEditTextWidget
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
 import com.qianyanhuyu.app_large.util.onClick
@@ -67,6 +78,9 @@ fun DryClean(
     ) {
         DryCleanContent(
             viewState = viewModel.viewStates,
+            countOnClick = { calculate, product ->
+                viewModel.dispatch(DryCleanViewAction.CountChange(calculate, product))
+            },
             modifier = Modifier
                 .fillMaxSize()
         )
@@ -82,6 +96,10 @@ fun DryClean(
 @Composable
 private fun DryCleanContent(
     viewState: DryCleanViewState,
+    countOnClick: (
+        AppConfig.Calculate,
+        Product
+    ) -> Unit,
     modifier: Modifier
 ) {
     val labelCoroutineScope = rememberCoroutineScope()
@@ -146,6 +164,7 @@ private fun DryCleanContent(
         ) { pagePosition ->
             TypeContentView(
                 data = viewState.data[pagePosition],
+                countOnClick = countOnClick,
                 modifier = Modifier
                     .fillMaxSize()
             )
@@ -160,6 +179,10 @@ private fun DryCleanContent(
 @Composable
 private fun TypeContentView(
     data: Product,
+    countOnClick: (
+        AppConfig.Calculate,
+        Product
+    ) -> Unit,
     modifier: Modifier
 ) {
     val imageData = listOf(
@@ -236,6 +259,7 @@ private fun TypeContentView(
 
         RightContentView(
             data = data,
+            countOnClick = countOnClick,
             modifier = Modifier
                 .constrainAs(rightContentView) {
                     linkTo(
@@ -259,6 +283,10 @@ private fun TypeContentView(
 @Composable
 private fun RightContentView(
     data: Product,
+    countOnClick: (
+        AppConfig.Calculate,
+        Product
+    ) -> Unit,
     modifier: Modifier
 ) {
     Box(
@@ -271,37 +299,72 @@ private fun RightContentView(
                 .fillMaxSize()
         ) {
             Row(
-                verticalAlignment = Alignment.Bottom,
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(25.cdp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(2f)
             ) {
                 CommonText(
-                    "| ${data.title}",
-                    textAlign = TextAlign.Start,
-                    fontSize = 50.csp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .weight(3f)
-                )
-                CommonText(
-                    "¥ 599.00",
+                    "¥ ${data.price}",
                     color = AppConfig.CustomOrigin,
                     fontSize = 50.csp,
                     textAlign = TextAlign.Start,
                     modifier = Modifier
                         .weight(1f)
                 )
+
+                CommonIcon(
+                    resId = R.drawable.ic_minus,
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(45.cdp)
+                        .onClick {
+                            countOnClick.invoke(AppConfig.Calculate.MINUS, data)
+                        }
+                )
+
+                /*SimpleEditTextWidget(
+                    value = "1",
+                    keyboardType = KeyboardType.Number,
+                    isReadOnly = true,
+                    isShowTrailingIcon = false,
+                    modifier = Modifier
+                        .size(80.cdp)
+                )*/
+
+                CommonText(
+                    "${data.count ?: 1}",
+                    fontSize = 45.csp,
+                    color = Color.White,
+                    modifier = Modifier
+                        .defaultMinSize(
+                            80.cdp
+                        )
+                )
+
+                CommonIcon(
+                    resId = R.drawable.ic_add,
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(45.cdp)
+                        .onClick {
+                            countOnClick.invoke(AppConfig.Calculate.ADD, data)
+                        }
+                )
+
+
+                CommonText(
+                    "件",
+                    fontSize = 45.csp,
+                    textAlign = TextAlign.Center,
+                )
             }
 
-            Divider(
-                color = Color.White.copy(alpha = 0.8f),
-                thickness = 1.cdp
-            )
-
             CommonText(
-                "| 附加项",
-                fontSize = 50.csp,
+                data.subTitle ?: "",
+                fontSize = 45.csp,
+                maxLines = 3,
+                lineHeight = 50.csp,
                 textAlign = TextAlign.Start,
                 fontWeight = FontWeight.Bold,
             )
@@ -409,7 +472,7 @@ private fun AdditionalItem(
         modifier = modifier
     )
     CommonText(
-        "+ ¥ $price",
+        "¥ $price",
         textAlign = TextAlign.Start,
     )
 }

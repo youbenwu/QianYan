@@ -2,6 +2,7 @@ package com.qianyanhuyu.app_large.data
 
 import com.qianyanhuyu.app_large.data.model.Advert
 import com.qianyanhuyu.app_large.data.model.Product
+import com.qianyanhuyu.app_large.data.model.ProductDetails
 import com.qianyanhuyu.app_large.data.request.ProductListRequest
 import com.qianyanhuyu.app_large.data.response.BaseCommonPaging
 import com.qianyanhuyu.app_large.data.response.BasePaging
@@ -26,10 +27,18 @@ interface ContentApi {
     ): Response<BaseResponse<BasePaging<GroupChatItem>>>
 
 
+    /**
+     * 商品列表
+     */
     @POST("api/mall/product/page")
-    suspend fun getProductDetails(
+    suspend fun getProduct(
         @Body request: ProductListRequest
     ) : Response<BaseResponse<BaseCommonPaging<Product>>>
+
+    @POST("api/mall/product/get")
+    suspend fun getProductDetails(
+        @Query("id") id: Int,
+    ) : Response<BaseResponse<ProductDetails>>
 
 
     /**
@@ -58,4 +67,6 @@ interface ContentApi {
         @Field("page") page: Int,
         @Field("size") size: Int,
     ): Response<BaseResponse<BaseCommonPaging<Advert>>>
+
+
 }

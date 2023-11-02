@@ -7,7 +7,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.util.Log
 import android.util.TypedValue
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import coil.imageLoader
@@ -15,8 +14,6 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.qianyanhuyu.app_large.constants.AppConfig.APP_DESIGN_WIDTH
 import java.lang.Math.PI
-import java.lang.Math.cos
-import java.lang.Math.sin
 import kotlin.math.pow
 
 

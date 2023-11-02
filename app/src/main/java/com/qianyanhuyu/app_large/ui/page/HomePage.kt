@@ -1,5 +1,6 @@
 package com.qianyanhuyu.app_large.ui.page
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.LinearEasing
@@ -57,6 +58,7 @@ import com.qianyanhuyu.app_large.data.model.AdvertType
 import com.qianyanhuyu.app_large.model.MultiMenuItem
 import com.qianyanhuyu.app_large.ui.AppNavController
 import com.qianyanhuyu.app_large.ui.common.Route
+import com.qianyanhuyu.app_large.ui.page.common.CommonText
 import com.qianyanhuyu.app_large.ui.page.common.TextBackground
 import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
@@ -82,6 +84,8 @@ import kotlin.math.absoluteValue
  * @CreateDate : 2023/9/15 9:19
  * @Description : 主页
  */
+private const val TAG = "HomePage"
+
 val expandFbItemList: MutableList<MultiMenuItem> = mutableListOf(
     MultiMenuItem(
         index = 0,
@@ -131,10 +135,6 @@ fun HomePageScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
 
     DisposableEffect(lifecycleOwner) {
-        /*// 初始化需要执行的内容
-        viewModel.dispatch(HomePageViewAction.InitPageData)
-        onDispose {  }*/
-
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 //根据Event执行不同生命周期的操作
@@ -142,6 +142,8 @@ fun HomePageScreen(
 
                 }
                 Lifecycle.Event.ON_RESUME -> {
+                    // OnResume 里面初始化数据, 返回页面的时候也会执行
+                    Log.d(TAG, "OnResume")
                     viewModel.dispatch(HomePageViewAction.InitPageData)
                 }
                 else -> {
@@ -772,6 +774,34 @@ private fun TagImageView(
                 .fillMaxSize()
         )
 
+        Column(
+            verticalArrangement = Arrangement.spacedBy(10.cdp, Alignment.CenterVertically),
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+                .align(Alignment.BottomStart)
+                .padding(
+                    bottom = 25.cdp,
+                    start = 25.cdp
+                )
+        ) {
+            advert?.title?.let {
+                CommonText(
+                    it,
+                    color = Color.Black,
+                    fontSize = 25.csp
+                )
+            }
+            advert?.subTitle?.let {
+                CommonText(
+                    it,
+                    maxLines = 3,
+                    color = Color.Black,
+                    lineHeight = 35.csp,
+                    fontSize = 25.csp
+                )
+            }
+        }
+
         when(advert?.advertType) {
             AdvertType.PPC -> {
                 TextBackground(
@@ -789,7 +819,7 @@ private fun TagImageView(
                         )
                 ) {
                     // test url : https://baidu.com
-                    // val url = URLEncoder.encode(advert.url ?: "", StandardCharsets.UTF_8.toString())
+                    // val url = URLEncoder.encode(advert.url ?: "https://www.ctrip.com/?sid=155952&allianceid=4897&ouid=index", StandardCharsets.UTF_8.toString())
 
                     // AppNavController.instance.navigate("${Route.WEB_VIEW}/${advert.title}/${url}")
                 }

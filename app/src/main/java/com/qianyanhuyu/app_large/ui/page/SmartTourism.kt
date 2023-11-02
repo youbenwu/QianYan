@@ -521,7 +521,7 @@ fun ContentListRightItem(
         )
 
         TextBackground(
-            text = "$400",
+            text = "￥400",
             textBackground = AppConfig.CustomOrigin,
             textHorizontalPadding = 10.cdp,
             fontSize = 18.csp,

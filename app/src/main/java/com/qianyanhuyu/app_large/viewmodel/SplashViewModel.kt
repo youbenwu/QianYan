@@ -47,12 +47,14 @@ class SplashViewModel @Inject constructor(
     }
 
     private fun initPageData() {
-
+        viewModelScope.launch {
+            _viewEvents.send(SplashViewEvent.NavTo(Route.AUTHENTICATION))
+        }
     }
 
     private fun checkLoginState() {
         viewModelScope.launch {
-            viewStates = viewStates.copy(isLogging = false)
+            viewStates = viewStates.copy(isLoading = false)
             _viewEvents.send(SplashViewEvent.NavTo(Route.HOME_PAGE))
         }
     }
@@ -60,7 +62,7 @@ class SplashViewModel @Inject constructor(
 }
 
 data class SplashViewState(
-    val isLogging: Boolean = true
+    val isLoading: Boolean = true
 )
 
 sealed class SplashViewAction {

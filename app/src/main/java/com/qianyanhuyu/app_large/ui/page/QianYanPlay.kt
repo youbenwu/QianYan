@@ -4,11 +4,14 @@ package com.qianyanhuyu.app_large.ui.page
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -229,6 +232,9 @@ private fun CenterContent(
     ) {
         val (
             topView,
+            topIconView,
+            bottomLeftIconView,
+            bottomRightIconView,
             topButtonView,
             bottomLeftView,
             bottomRightView,
@@ -273,6 +279,22 @@ private fun CenterContent(
                 .background(whiteToGreenHorizontal)
         )
 
+        CommonNetworkImage(
+            url = "https://img.js.design/assets/img/636cec49e8908799790b619f.png#606bb4d7123c11c9428868094e5f391b",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .constrainAs(topIconView) {
+                    top.linkTo(topView.top)
+                    start.linkTo(topView.start)
+                }
+                .clip(RoundedCornerShape(imageRadius))
+                .padding(
+                    start = 16.cdp
+                )
+                .width(94.cdp)
+                .height(71.cdp)
+        )
+
         // Button
         CustomButton(
             text = "爱奇艺",
@@ -283,10 +305,10 @@ private fun CenterContent(
                 .constrainAs(topButtonView) {
                     end.linkTo(parent.end)
                     top.linkTo(contentTopBgView.top)
-                    bottom.linkTo(contentTopBgView.bottom)
                 }
                 .padding(
-                    end = 50.cdp
+                    end = 25.cdp,
+                    top = 25.cdp
                 )
         ) {
             playButtonOnClick.invoke(OtherAppUtil.OtherPackage.AI_QI_YI)
@@ -309,6 +331,19 @@ private fun CenterContent(
                     end = 15.cdp
                 )
                 .clip(RoundedCornerShape(imageRadius))
+        )
+
+        CommonNetworkImage(
+            url = "https://img.js.design/assets/img/6543587e7ad15f0a2507da2f.png#f246cb31add23f2d5e3593aa1fbad8de",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .constrainAs(bottomLeftIconView) {
+                    top.linkTo(bottomLeftView.top)
+                    end.linkTo(bottomLeftView.end, margin = 15.cdp)
+                }
+                .width(221.cdp)
+                .height(122.cdp)
+                .clip(RoundedCornerShape(imageRadius))
                 .onClick {
                     playButtonOnClick.invoke(OtherAppUtil.OtherPackage.SMALL_HONG_SHU)
                 }
@@ -330,6 +365,20 @@ private fun CenterContent(
                 .padding(
                     start = 15.cdp
                 )
+                .clip(RoundedCornerShape(imageRadius))
+        )
+
+        CommonNetworkImage(
+            url = "https://img.js.design/assets/img/654357180132d638d3e8de2c.png#15d99cfb2a362e8fe599a39eac787adc",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .constrainAs(bottomRightIconView) {
+                    top.linkTo(bottomRightView.top)
+                    end.linkTo(bottomRightView.end, margin = 25.cdp)
+                }
+                .width(219.cdp)
+                .height(157.cdp)
+                .aspectRatio(1f)
                 .clip(RoundedCornerShape(imageRadius))
                 .onClick {
                     playButtonOnClick.invoke(OtherAppUtil.OtherPackage.DOU_YIN)
