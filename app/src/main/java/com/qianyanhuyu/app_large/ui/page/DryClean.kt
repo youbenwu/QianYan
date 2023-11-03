@@ -1,5 +1,6 @@
 package com.qianyanhuyu.app_large.ui.page
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.rounded.Add
@@ -40,6 +44,8 @@ import com.google.accompanist.pager.rememberPagerState
 import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.constants.AppConfig
 import com.qianyanhuyu.app_large.data.model.Product
+import com.qianyanhuyu.app_large.data.model.ProductAttributes
+import com.qianyanhuyu.app_large.ui.page.common.CircleCheckbox
 import com.qianyanhuyu.app_large.ui.page.common.CommonText
 import com.qianyanhuyu.app_large.ui.page.common.TextBackground
 import com.qianyanhuyu.app_large.ui.theme.Shapes
@@ -81,6 +87,13 @@ fun DryClean(
             countOnClick = { calculate, product ->
                 viewModel.dispatch(DryCleanViewAction.CountChange(calculate, product))
             },
+            onChecked = { productId, id, isCheck ->
+                viewModel.dispatch(DryCleanViewAction.CheckItem(
+                    id = id,
+                    productId = productId,
+                    isCheck = isCheck
+                ))
+            },
             modifier = Modifier
                 .fillMaxSize()
         )
@@ -99,6 +112,9 @@ private fun DryCleanContent(
     countOnClick: (
         AppConfig.Calculate,
         Product
+    ) -> Unit,
+    onChecked: (
+        Int,Int,Boolean
     ) -> Unit,
     modifier: Modifier
 ) {
@@ -165,6 +181,8 @@ private fun DryCleanContent(
             TypeContentView(
                 data = viewState.data[pagePosition],
                 countOnClick = countOnClick,
+                onChecked = onChecked,
+                checkItems = viewState.checkItems,
                 modifier = Modifier
                     .fillMaxSize()
             )
@@ -179,18 +197,16 @@ private fun DryCleanContent(
 @Composable
 private fun TypeContentView(
     data: Product,
+    checkItems: List<List<ProductAttributes>?>?,
     countOnClick: (
         AppConfig.Calculate,
         Product
     ) -> Unit,
+    onChecked: (
+        Int,Int,Boolean
+    ) -> Unit,
     modifier: Modifier
 ) {
-    val imageData = listOf(
-        "https://img.js.design/assets/img/6520baa5d06eb3d57dfef66f.png",
-        "https://img.js.design/assets/img/6520baa5d06eb3d57dfef66f.png",
-        "https://img.js.design/assets/img/6520baa5d06eb3d57dfef66f.png"
-    )
-
     val pagerState = rememberPagerState(
         initialPage = 0,
     )
@@ -226,14 +242,14 @@ private fun TypeContentView(
                 )
         ) {
             HorizontalPager(
-                count = imageData.count(),
+                count = data.details?.images?.count() ?: 0,
                 state = pagerState,
                 userScrollEnabled = true,
                 modifier = modifier
                     .weight(1f)
             ) { pagePosition ->
                 CommonNetworkImage(
-                    url = imageData[pagePosition],
+                    url = data.details?.images?.get(pagePosition)?.url ?: "",
                     modifier = Modifier
                         .fillMaxSize()
                 )
@@ -259,7 +275,9 @@ private fun TypeContentView(
 
         RightContentView(
             data = data,
+            checkItems = checkItems,
             countOnClick = countOnClick,
+            onChecked = onChecked,
             modifier = Modifier
                 .constrainAs(rightContentView) {
                     linkTo(
@@ -274,7 +292,7 @@ private fun TypeContentView(
                     height = Dimension.preferredWrapContent
                 }
                 .padding(
-                    horizontal = 150.cdp
+                    horizontal = 60.cdp
                 )
         )
     }
@@ -283,9 +301,15 @@ private fun TypeContentView(
 @Composable
 private fun RightContentView(
     data: Product,
+    checkItems: List<List<ProductAttributes>?>?,
     countOnClick: (
         AppConfig.Calculate,
         Product
+    ) -> Unit,
+    onChecked: (
+        Int,
+        Int,
+        Boolean
     ) -> Unit,
     modifier: Modifier
 ) {
@@ -294,7 +318,7 @@ private fun RightContentView(
     ) {
         Column(
             horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.spacedBy(50.cdp),
+            verticalArrangement = Arrangement.spacedBy(0.cdp),
             modifier = Modifier
                 .fillMaxSize()
         ) {
@@ -333,7 +357,7 @@ private fun RightContentView(
                 )*/
 
                 CommonText(
-                    "${data.count ?: 1}",
+                    "${data.countProduct ?: 1}",
                     fontSize = 45.csp,
                     color = Color.White,
                     modifier = Modifier
@@ -367,50 +391,36 @@ private fun RightContentView(
                 lineHeight = 50.csp,
                 textAlign = TextAlign.Start,
                 fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .padding(
+                        vertical = 35.cdp
+                    )
             )
 
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                AdditionalItem(
-                    typeName = "皮面修复翻新",
-                    price = "300.00",
-                    modifier = Modifier
-                        .weight(1f)
-                )
-                AdditionalItem(
-                    typeName = "缝线保色",
-                    price = "100.00",
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(
-                            start = 60.cdp
-                        )
-                )
-            }
+            Log.d("AAAAAAAAAAAAAAAAA: ","$checkItems")
 
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                AdditionalItem(
-                    typeName = "皮面改色",
-                    price = "200.00",
+            checkItems?.forEach { item ->
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(60.cdp, Alignment.Start),
                     modifier = Modifier
-                        .weight(1f)
-                )
-                AdditionalItem(
-                    typeName = "高奢品牌",
-                    price = "100.00",
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(
-                            start = 60.cdp
+                        .fillMaxWidth()
+                ) {
+                    item?.forEach { productAttributes ->
+                        Log.d("AAAAAAAAAAAAAAAAA: ","$checkItems")
+
+                        AdditionalItem(
+                            productAttributes,
+                            isCheck = productAttributes.isCheckCheckBox ?: false,
+                            onCheck = {
+                                Log.d("isCheckCheckBox", "click")
+                                onChecked.invoke(data.id, productAttributes.id ?: -1, !(productAttributes.isCheckCheckBox ?: false))
+                            },
+                            modifier = Modifier
+                                .weight(1f)
                         )
-                )
+                    }
+                }
+
             }
 
             ConfirmButton(
@@ -462,19 +472,41 @@ private fun ConfirmButton(
 
 @Composable
 private fun AdditionalItem(
-    typeName: String,
-    price: String,
+    attributes: ProductAttributes,
+    isCheck: Boolean,
+    onCheck: () -> Unit = {},
     modifier: Modifier
 ) {
-    CommonText(
-        "· $typeName",
-        textAlign = TextAlign.Start,
+    Log.d("DryClean::::::::" , "${attributes.toString()}")
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-    )
-    CommonText(
-        "¥ $price",
-        textAlign = TextAlign.Start,
-    )
+    ) {
+        CommonIcon(
+            resId = R.drawable.ic_green_dot,
+            tint = Color.White,
+            modifier = Modifier
+                .size(10.cdp)
+        )
+        CommonText(
+            attributes.name ?: "",
+            textAlign = TextAlign.Start,
+            modifier = Modifier
+                .weight(1f)
+                .padding(
+                    start = 15.cdp
+                )
+        )
+        CommonText(
+            "¥ ${attributes.value}",
+            textAlign = TextAlign.Start,
+        )
+        CircleCheckbox(
+            selected = isCheck,
+        ) {
+            onCheck.invoke()
+        }
+    }
 }
 
 @Preview

@@ -1,6 +1,7 @@
 package com.qianyanhuyu.app_large.data.model
 
 import androidx.annotation.Keep
+import com.google.firebase.encoders.annotations.Encodable.Ignore
 import com.google.gson.annotations.SerializedName
 
 /***
@@ -28,8 +29,8 @@ data class Product(
     val title: String?,
     @SerializedName("subtitle")
     val subTitle: String?,
-    val count: Int?,
-    val details: List<ProductDetails>?
+    val countProduct: Int?,
+    val details: ProductDetails?
 )
 
 /**
@@ -37,6 +38,32 @@ data class Product(
  */
 @Keep
 data class ProductDetails(
+    @SerializedName("attributes")
+    val attributes: List<ProductAttributes>?,
     @SerializedName("images")
-    val images: String
+    val images: List<ProductImage>?,
+
+)
+
+@Keep
+data class ProductAttributes(
+    @SerializedName("id")
+    val id: Int?,
+    @SerializedName("name")
+    val name: String?,
+    @SerializedName("value")
+    val value: String?,
+    @SerializedName("attributes")
+    val attributes: List<ProductAttributes>?,
+    val isCheckCheckBox: Boolean?
+)
+
+@Keep
+data class ProductImage(
+    @SerializedName("id")
+    val id: Int?,
+    @SerializedName("url")
+    val url: String?,
+    @SerializedName("type")
+    val type: Int?,
 )
