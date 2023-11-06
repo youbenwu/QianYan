@@ -60,6 +60,7 @@ import com.qianyanhuyu.app_large.viewmodel.DryCleanViewAction
 import com.qianyanhuyu.app_large.viewmodel.DryCleanViewModel
 import com.qianyanhuyu.app_large.viewmodel.DryCleanViewState
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 
 /***
  * @Author : Cheng
@@ -87,10 +88,9 @@ fun DryClean(
             countOnClick = { calculate, product ->
                 viewModel.dispatch(DryCleanViewAction.CountChange(calculate, product))
             },
-            onChecked = { productId, id, isCheck ->
+            onChecked = { id, isCheck ->
                 viewModel.dispatch(DryCleanViewAction.CheckItem(
                     id = id,
-                    productId = productId,
                     isCheck = isCheck
                 ))
             },
@@ -114,7 +114,7 @@ private fun DryCleanContent(
         Product
     ) -> Unit,
     onChecked: (
-        Int,Int,Boolean
+        Int,Boolean
     ) -> Unit,
     modifier: Modifier
 ) {
@@ -130,37 +130,33 @@ private fun DryCleanContent(
 
     Column(
         modifier = modifier
+            .padding(
+                start = 30.cdp
+            )
     ) {
+        CommonText(
+            "分类选择:",
+            color = AppConfig.CustomGreen42
+        )
+
         // 分类栏
         Row(
             horizontalArrangement = Arrangement.spacedBy(30.cdp, Alignment.Start),
             modifier = Modifier
                 .padding(50.cdp)
         ) {
-            CommonText(
-                "分类选择:",
-            )
-
             viewState.typeData.forEach {
                 val isCheck = it.type == selectedIndex.value
 
                 TextBackground(
                     text = it.name,
                     textBackground = Color.Transparent,
-                    textBackgroundBrush = if(isCheck) { AppConfig.ipPutInBorder } else { null },
+                    shapes = Shapes.extraLarge,
+                    textBackgroundBrush = if(isCheck) { AppConfig.CustomButtonBrushGreen42 } else { AppConfig.BlackToBlack },
                     fontSize = 25.csp,
                     textHorizontalPadding = 50.cdp,
+                    textColor = if(isCheck) Color.Black else Color.White,
                     modifier = Modifier
-                        .border(
-                            if (isCheck) {
-                                0.cdp
-                            } else {
-                                1.cdp
-                            },
-                            Color.White,
-                            Shapes.extraSmall
-                        )
-                        .clip(Shapes.extraSmall)
                 ) {
                     labelCoroutineScope.launch {
                         selectedIndex.value = it.type
@@ -183,6 +179,7 @@ private fun DryCleanContent(
                 countOnClick = countOnClick,
                 onChecked = onChecked,
                 checkItems = viewState.checkItems,
+                totalPrice = viewState.totalPrice,
                 modifier = Modifier
                     .fillMaxSize()
             )
@@ -198,12 +195,13 @@ private fun DryCleanContent(
 private fun TypeContentView(
     data: Product,
     checkItems: List<List<ProductAttributes>?>?,
+    totalPrice: BigDecimal,
     countOnClick: (
         AppConfig.Calculate,
         Product
     ) -> Unit,
     onChecked: (
-        Int,Int,Boolean
+        Int,Boolean
     ) -> Unit,
     modifier: Modifier
 ) {
@@ -278,6 +276,7 @@ private fun TypeContentView(
             checkItems = checkItems,
             countOnClick = countOnClick,
             onChecked = onChecked,
+            totalPrice = totalPrice,
             modifier = Modifier
                 .constrainAs(rightContentView) {
                     linkTo(
@@ -302,12 +301,12 @@ private fun TypeContentView(
 private fun RightContentView(
     data: Product,
     checkItems: List<List<ProductAttributes>?>?,
+    totalPrice: BigDecimal,
     countOnClick: (
         AppConfig.Calculate,
         Product
     ) -> Unit,
     onChecked: (
-        Int,
         Int,
         Boolean
     ) -> Unit,
@@ -397,8 +396,6 @@ private fun RightContentView(
                     )
             )
 
-            Log.d("AAAAAAAAAAAAAAAAA: ","$checkItems")
-
             checkItems?.forEach { item ->
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(60.cdp, Alignment.Start),
@@ -406,14 +403,11 @@ private fun RightContentView(
                         .fillMaxWidth()
                 ) {
                     item?.forEach { productAttributes ->
-                        Log.d("AAAAAAAAAAAAAAAAA: ","$checkItems")
-
                         AdditionalItem(
                             productAttributes,
                             isCheck = productAttributes.isCheckCheckBox ?: false,
                             onCheck = {
-                                Log.d("isCheckCheckBox", "click")
-                                onChecked.invoke(data.id, productAttributes.id ?: -1, !(productAttributes.isCheckCheckBox ?: false))
+                                onChecked.invoke(data.id, !(productAttributes.isCheckCheckBox ?: false))
                             },
                             modifier = Modifier
                                 .weight(1f)
@@ -423,13 +417,27 @@ private fun RightContentView(
 
             }
 
-            ConfirmButton(
-                "立即支付",
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(0.cdp, Alignment.CenterHorizontally),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally)
-                    .weight(3f)
-            )
+                    .weight(1f)
+            ) {
+                CommonText(
+                    "合计: ¥ $totalPrice",
+                    fontSize = 50.csp,
+                    modifier = Modifier
+                        .weight(1f)
+                )
+
+
+                ConfirmButton(
+                    "立即支付",
+                    modifier = Modifier
+                        .weight(2f)
+                )
+            }
         }
     }
 }

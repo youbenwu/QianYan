@@ -57,7 +57,6 @@ class DryCleanViewModel @Inject constructor(
             is DryCleanViewAction.GetProductDetail -> getProductDetails(action.id)
             is DryCleanViewAction.CheckItem -> checkItem(
                 id = action.id,
-                productId = action.productId,
                 isCheck = action.isCheck
             )
             else -> {
@@ -201,10 +200,10 @@ class DryCleanViewModel @Inject constructor(
      */
     private fun checkItem(
         id: Int,
-        productId: Int,
         isCheck: Boolean,
     ) {
         var itemPrice = BigDecimal.ZERO
+        Log.d("ISSSSSCHECK: ", "$isCheck")
 
         viewStates = viewStates.copy(
             checkItems = viewStates.checkItems.map {
@@ -221,7 +220,11 @@ class DryCleanViewModel @Inject constructor(
                     }
                 }
             },
-            totalPrice = viewStates.totalPrice.add(itemPrice)
+            totalPrice = if(isCheck) {
+                viewStates.totalPrice.add(itemPrice)
+            } else {
+                viewStates.totalPrice.minus(itemPrice)
+            }
         )
     }
 
@@ -229,31 +232,40 @@ class DryCleanViewModel @Inject constructor(
         calculate: AppConfig.Calculate,
         data: Product,
     ) {
-        viewStates = viewStates.copy(
-            data = viewStates.data.map {
-                if(it.id == data.id) {
-                    val oldCount = it.countProduct ?: 1
-                    it.copy(
-                        countProduct = when(calculate) {
-                            AppConfig.Calculate.MINUS -> {
-                                if(oldCount > 1) {
-                                    oldCount - 1
-                                } else {
-                                    oldCount
-                                }
-                            }
-                            AppConfig.Calculate.ADD -> {
-                                oldCount + 1
-                            }
-                            else -> {
-                                oldCount
-                            }
+        var totalPrice = viewStates.totalPrice
+
+        val newData = viewStates.data.map {
+            if(it.id == data.id) {
+                val oldCount = it.countProduct ?: 1
+                val newCount = when(calculate) {
+                    AppConfig.Calculate.MINUS -> {
+                        if(oldCount > 1) {
+                            totalPrice = totalPrice.minus(BigDecimal((it.price ?: 0.0).toDouble()))
+                            oldCount - 1
+                        } else {
+                            oldCount
                         }
-                    )
-                } else {
-                    it
+                    }
+                    AppConfig.Calculate.ADD -> {
+                        totalPrice = totalPrice.add(BigDecimal((it.price ?: 0.0).toDouble()))
+                        oldCount + 1
+                    }
+                    else -> {
+                        oldCount
+                    }
                 }
+
+                it.copy(
+                    countProduct = newCount
+                )
+            } else {
+                it
             }
+        }
+
+        viewStates = viewStates.copy(
+            data = newData,
+            totalPrice = totalPrice
         )
     }
 }
@@ -292,7 +304,6 @@ sealed class DryCleanViewAction {
 
     data class CheckItem(
         val id: Int,
-        val productId: Int,
         val isCheck: Boolean
     ): DryCleanViewAction()
 }

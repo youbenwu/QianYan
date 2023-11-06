@@ -26,6 +26,8 @@ object AppConfig {
     val CustomBlue84 = Color(84, 163, 246)
     val CustomGrey = Color(255,255,255).copy(alpha = 0.30F)
     val CustomLogoImageTextBg = Color(9, 14, 41)
+    val CustomGreen42 = Color(42, 171, 228)
+    val CustomBlue42 = Color(42, 145, 228)
     val voiceFalseBrush = Brush.verticalGradient(
         listOf(
             CustomLogoImageTextBg,
@@ -79,6 +81,13 @@ object AppConfig {
         listOf(
             Color(0, 0, 0).copy(alpha = 0.7f),
             Color(0, 0, 0).copy(alpha = 0f),
+        )
+    )
+
+    val BlackToBlack = Brush.verticalGradient(
+        listOf(
+            Color.Black,
+            Color.Black
         )
     )
 
@@ -300,6 +309,12 @@ object AppConfig {
         )
     )
 
+    val CustomButtonBrushGreen42 = Brush.verticalGradient(
+        listOf(
+            CustomGreen42,
+            CustomBlue42
+        )
+    )
 
     // 大圆数量
     const val CIRCLE_COUNT = 6

@@ -5,8 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.qianyanhuyu.app_large.App.Companion.context
 import com.qianyanhuyu.app_large.data.ContentApi
 import com.qianyanhuyu.app_large.data.model.Advert
+import com.qianyanhuyu.app_large.data.model.AdvertContentType
+import com.qianyanhuyu.app_large.util.OtherAppUtil
 import com.qianyanhuyu.app_large.util.requestFlowResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -40,6 +43,9 @@ class HomePageViewModel @Inject constructor(
     fun dispatch(action: HomePageViewAction) {
         when (action) {
             is HomePageViewAction.InitPageData -> initPageData()
+            is HomePageViewAction.OpenViewContent -> openViewContent(
+                action.contentType,action.url
+            )
             else -> {
 
             }
@@ -108,6 +114,19 @@ class HomePageViewModel @Inject constructor(
 
         }
     }
+
+    private fun openViewContent(
+        contentType: AdvertContentType = AdvertContentType.Image,
+        url: String = ""
+    ) {
+        viewModelScope.launch {
+            OtherAppUtil.openSystemVideo(
+                url = "http://tengdamy.cn/video/video2.mp4",
+                context = context,
+                advertContentType = AdvertContentType.Video
+            )
+        }
+    }
 }
 
 data class HomePageViewState(
@@ -120,6 +139,11 @@ data class HomePageViewState(
 sealed class HomePageViewAction {
 
     object InitPageData : HomePageViewAction()
+
+    data class OpenViewContent(
+        val contentType: AdvertContentType = AdvertContentType.Image,
+        val url: String = ""
+    ) : HomePageViewAction()
 }
 
 sealed class HomePageViewEvent {

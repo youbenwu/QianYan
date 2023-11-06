@@ -52,6 +52,23 @@ enum class AdvertType(
 }
 
 /**
+ * 广告内容类型
+ */
+enum class AdvertContentType(
+    val value: String
+) {
+    /**
+     * 图片
+     */
+    Image("image"),
+
+    /**
+     * 视频
+     */
+    Video("video"),
+}
+
+/**
  * 用来请求广告列表的类型参数
  * 对应不同页面
  */

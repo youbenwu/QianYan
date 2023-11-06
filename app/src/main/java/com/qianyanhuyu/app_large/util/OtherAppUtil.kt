@@ -1,18 +1,28 @@
 package com.qianyanhuyu.app_large.util
 
+import android.Manifest
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
+import android.net.Uri
+import android.os.Build
+import android.os.Environment
 import android.util.Log
+import android.webkit.MimeTypeMap
 import android.widget.Toast
+import androidx.core.content.FileProvider
+import com.qianyanhuyu.app_large.BuildConfig
+import com.qianyanhuyu.app_large.data.model.AdvertContentType
 import com.qianyanhuyu.app_large.ui.widgets.showToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 
 /***
  * @Author : Cheng
@@ -63,6 +73,37 @@ object OtherAppUtil {
                     }
                 }
             }
+        }
+    }
+
+    fun openSystemVideo(
+        url: String?,
+        context: Context,
+        advertContentType: AdvertContentType = AdvertContentType.Image,
+    ) {
+        try {
+            if (url != null && "" != url) {
+                val intent = Intent()
+                intent.action = Intent.ACTION_VIEW
+                val extension = MimeTypeMap.getFileExtensionFromUrl(url)
+                val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+
+                val uri: Uri = Uri.parse(url)
+                /*if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", File(path))
+                } else {
+                    uri = Uri.parse(url)
+                }*/
+
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                intent.setDataAndType(uri, mimeType)
+                context.startActivity(intent)
+            } else {
+
+            }
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
         }
     }
 

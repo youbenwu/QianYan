@@ -66,6 +66,7 @@ import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
 import com.qianyanhuyu.app_large.ui.widgets.LoadingComponent
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
+import com.qianyanhuyu.app_large.util.onClick
 import com.qianyanhuyu.app_large.util.toPx
 import com.qianyanhuyu.app_large.viewmodel.HomePageViewAction
 import com.qianyanhuyu.app_large.viewmodel.HomePageViewEvent
@@ -223,6 +224,9 @@ fun HomePageScreen(
                     HomePageContent(
                         viewState = viewModel.viewStates,
                         pagePosition = pagePosition,
+                        onViewClick = {
+                            viewModel.dispatch(HomePageViewAction.OpenViewContent())
+                        },
                         modifier = Modifier
                             .fillMaxSize()
                             .graphicsLayer {
@@ -260,12 +264,14 @@ fun HomePageScreen(
 fun HomePageContent(
     viewState: HomePageViewState,
     pagePosition: Int,
+    onViewClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     when(pagePosition) {
         1 -> {
             RightLeftOneCenterTwo(
                 viewState = viewState,
+                onViewClick = onViewClick,
                 modifier = modifier
             )
         }
@@ -288,6 +294,7 @@ fun HomePageContent(
 @Composable
 private fun RightLeftOneCenterTwo(
     viewState: HomePageViewState,
+    onViewClick: () -> Unit = {},
     modifier: Modifier
 ) {
     ConstraintLayout(
@@ -313,6 +320,7 @@ private fun RightLeftOneCenterTwo(
         // 左边图片
         TagImageView(
             advert = viewState.dataPage2.getOrNull(0),
+            typeOnClick = onViewClick,
             modifier = Modifier
                 .constrainAs(leftContentView) {
                     start.linkTo(parent.start)
@@ -772,6 +780,9 @@ private fun TagImageView(
             url = advert?.image ?: "",
             modifier = Modifier
                 .fillMaxSize()
+                .onClick {
+                    typeOnClick.invoke()
+                }
         )
 
         Column(
