@@ -43,9 +43,7 @@ class HomePageViewModel @Inject constructor(
     fun dispatch(action: HomePageViewAction) {
         when (action) {
             is HomePageViewAction.InitPageData -> initPageData()
-            is HomePageViewAction.OpenViewContent -> openViewContent(
-                action.contentType,action.url
-            )
+            is HomePageViewAction.OpenViewContent -> openViewContent(action.url)
             else -> {
 
             }
@@ -116,14 +114,12 @@ class HomePageViewModel @Inject constructor(
     }
 
     private fun openViewContent(
-        contentType: AdvertContentType = AdvertContentType.Image,
         url: String = ""
     ) {
         viewModelScope.launch {
             OtherAppUtil.openSystemVideo(
-                url = "http://tengdamy.cn/video/video2.mp4",
-                context = context,
-                advertContentType = AdvertContentType.Video
+                url = url,
+                context = context
             )
         }
     }
@@ -141,7 +137,6 @@ sealed class HomePageViewAction {
     object InitPageData : HomePageViewAction()
 
     data class OpenViewContent(
-        val contentType: AdvertContentType = AdvertContentType.Image,
         val url: String = ""
     ) : HomePageViewAction()
 }

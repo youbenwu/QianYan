@@ -225,7 +225,7 @@ fun HomePageScreen(
                         viewState = viewModel.viewStates,
                         pagePosition = pagePosition,
                         onViewClick = {
-                            viewModel.dispatch(HomePageViewAction.OpenViewContent())
+                            viewModel.dispatch(HomePageViewAction.OpenViewContent(it))
                         },
                         modifier = Modifier
                             .fillMaxSize()
@@ -264,7 +264,7 @@ fun HomePageScreen(
 fun HomePageContent(
     viewState: HomePageViewState,
     pagePosition: Int,
-    onViewClick: () -> Unit = {},
+    onViewClick: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     when(pagePosition) {
@@ -278,12 +278,14 @@ fun HomePageContent(
         2 -> {
             RightTwoLeftOne(
                 viewState = viewState,
+                onViewClick = onViewClick,
                 modifier = modifier
             )
         }
         else -> {
             RightOneLeftTwo(
                 viewState = viewState,
+                onViewClick = onViewClick,
                 modifier = modifier
             )
         }
@@ -294,7 +296,9 @@ fun HomePageContent(
 @Composable
 private fun RightLeftOneCenterTwo(
     viewState: HomePageViewState,
-    onViewClick: () -> Unit = {},
+    onViewClick: (
+        String
+    ) -> Unit = {},
     modifier: Modifier
 ) {
     ConstraintLayout(
@@ -340,6 +344,7 @@ private fun RightLeftOneCenterTwo(
         // 右边图片
         TagImageView(
             advert = viewState.dataPage2.getOrNull(3),
+            typeOnClick = onViewClick,
             modifier = Modifier
                 .constrainAs(rightContentView) {
                     end.linkTo(parent.end)
@@ -376,6 +381,7 @@ private fun RightLeftOneCenterTwo(
         ) {
             TagImageView(
                 advert = viewState.dataPage2.getOrNull(1),
+                typeOnClick = onViewClick,
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(1f)
@@ -388,6 +394,7 @@ private fun RightLeftOneCenterTwo(
 
             TagImageView(
                 advert = viewState.dataPage2.getOrNull(2),
+                typeOnClick = onViewClick,
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(1f)
@@ -404,6 +411,9 @@ private fun RightLeftOneCenterTwo(
 @Composable
 private fun RightTwoLeftOne(
     viewState: HomePageViewState,
+    onViewClick: (
+        String
+    ) -> Unit = {},
     modifier: Modifier
 ) {
     // 主体内容
@@ -459,6 +469,7 @@ private fun RightTwoLeftOne(
 
                 TagImageView(
                     advert = viewState.dataPage3.getOrNull(0),
+                    typeOnClick = onViewClick,
                     modifier = Modifier
                         .border(
                             BorderStroke(contentRadius, leftColorsBrush),
@@ -535,6 +546,7 @@ private fun RightTwoLeftOne(
 
                 TagImageView(
                     advert = viewState.dataPage3.getOrNull(1),
+                    typeOnClick = onViewClick,
                     modifier = Modifier
                         .constrainAs(topView) {
                             top.linkTo(parent.top)
@@ -558,6 +570,7 @@ private fun RightTwoLeftOne(
 
                 TagImageView(
                     advert = viewState.dataPage3.getOrNull(2),
+                    typeOnClick = onViewClick,
                     modifier = Modifier
                         .constrainAs(bottomView) {
                             top.linkTo(lineLeftContentH)
@@ -592,6 +605,9 @@ private fun RightTwoLeftOne(
 @Composable
 private fun RightOneLeftTwo(
     viewState: HomePageViewState,
+    onViewClick: (
+        String
+    ) -> Unit = {},
     modifier: Modifier
 ) {
     // 主体内容
@@ -641,6 +657,7 @@ private fun RightOneLeftTwo(
                 }
                 TagImageView(
                     advert = viewState.dataPage1.getOrNull(0),
+                    typeOnClick = onViewClick,
                     modifier = Modifier
                         .border(
                             BorderStroke(contentRadius, leftColorsBrush),
@@ -719,6 +736,7 @@ private fun RightOneLeftTwo(
 
                 TagImageView(
                     advert = viewState.dataPage1.getOrNull(1),
+                    typeOnClick = onViewClick,
                     modifier = Modifier
                         .constrainAs(topView) {
                             top.linkTo(parent.top)
@@ -742,6 +760,7 @@ private fun RightOneLeftTwo(
 
                 TagImageView(
                     advert = viewState.dataPage1.getOrNull(2),
+                    typeOnClick = onViewClick,
                     modifier = Modifier
                         .constrainAs(bottomView) {
                             top.linkTo(lineLeftContentH)
@@ -771,7 +790,7 @@ private fun RightOneLeftTwo(
 private fun TagImageView(
     advert: Advert?,
     modifier: Modifier,
-    typeOnClick: () -> Unit = {}
+    typeOnClick: (String) -> Unit = {}
 ) {
     Box(
         modifier = modifier
@@ -781,7 +800,7 @@ private fun TagImageView(
             modifier = Modifier
                 .fillMaxSize()
                 .onClick {
-                    typeOnClick.invoke()
+                    typeOnClick.invoke(advert?.video ?: (advert?.image ?: ""))
                 }
         )
 

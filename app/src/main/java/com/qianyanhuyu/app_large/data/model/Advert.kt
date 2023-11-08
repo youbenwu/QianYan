@@ -21,6 +21,8 @@ data class Advert(
     var subTitle: String?,
     @SerializedName("image")
     var image: String?,
+    @SerializedName("video")
+    var video: String?,
     @SerializedName("url")
     var url: String?,
     @SerializedName("qrCode")

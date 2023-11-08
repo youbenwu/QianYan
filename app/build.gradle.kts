@@ -13,7 +13,7 @@ android {
         applicationId = "com.qianyanhuyu.app_large"
         minSdk = 24
         targetSdk = 33
-        versionCode = 7
+        versionCode = 8
         versionName = "1.0.06"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
