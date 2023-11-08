@@ -9,14 +9,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import com.qianyanhuyu.app_large.util.cdp
 
 
 @Composable
 fun ShadowedIcon(
     icon: ImageVector,
     modifier: Modifier = Modifier,
-    iconSize: Dp = 48.dp,
+    iconSize: Dp = 48.cdp,
 ) {
     Box(modifier = modifier) {
         Icon(
@@ -24,7 +24,7 @@ fun ShadowedIcon(
             tint = Color.Black.copy(alpha = 0.3f),
             modifier = Modifier
                 .size(iconSize)
-                .offset(2.dp, 2.dp)
+                .offset(2.cdp, 2.cdp)
                 .then(modifier),
             contentDescription = null
         )

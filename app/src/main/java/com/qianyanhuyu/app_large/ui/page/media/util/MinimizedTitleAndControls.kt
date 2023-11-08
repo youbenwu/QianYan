@@ -19,8 +19,8 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.qianyanhuyu.app_large.util.cdp
+import com.qianyanhuyu.app_large.util.csp
 
 
 @SuppressLint("PrivateResource")
@@ -39,11 +39,11 @@ fun MinimizedTitleAndControls(
             Text(
                 videoTitle,
                 style = TextStyle(
-                    fontSize = 16.sp,
+                    fontSize = 16.csp,
                     fontWeight = FontWeight.Bold
                 ),
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(16.cdp)
                     .fillMaxWidth(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

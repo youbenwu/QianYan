@@ -24,7 +24,6 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ChainStyle
@@ -127,7 +126,7 @@ fun BaseMessageDialog(
         ) {
             Card(
                 backgroundColor = dialogBackground,
-                elevation = 8.dp,
+                elevation = 8.cdp,
                 modifier = Modifier
                     .fillMaxWidth(0.5f)
                     .fillMaxHeight(dialogHeight)
@@ -410,10 +409,10 @@ fun LoadingDialog(show: Boolean) {
     Dialog(onDismissRequest = { show }) {
         Card(
             backgroundColor = Color.White,
-            elevation = 8.dp,
+            elevation = 8.cdp,
             modifier = Modifier
-                .size(100.dp)
-                .clip(RoundedCornerShape(10.dp))
+                .size(100.cdp)
+                .clip(RoundedCornerShape(10.cdp))
         ) {
             Box(
                 contentAlignment = Alignment.Center,

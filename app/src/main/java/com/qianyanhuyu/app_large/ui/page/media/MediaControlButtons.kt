@@ -13,7 +13,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,10 +23,9 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
-import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.ui.page.media.util.getDurationString
+import com.qianyanhuyu.app_large.util.cdp
 
 @UnstableApi
 @Composable
@@ -108,7 +106,7 @@ fun PositionAndDurationNumbers(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(4.dp)
+            .padding(4.cdp)
     ) {
         Text(
             positionText,

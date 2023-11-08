@@ -8,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.qianyanhuyu.app_large.ui.common.swipe.RefreshState
 import com.qianyanhuyu.app_large.ui.common.swipe.RefreshType
 import com.qianyanhuyu.app_large.ui.widgets.LoadingComponent
@@ -55,7 +54,7 @@ fun CommonLoadMoreFooter(
                     textAlign = TextAlign.Center,
                     fontSize = 32.csp,
                     modifier = Modifier
-                        .padding(32.cdp, 0.dp)
+                        .padding(32.cdp, 0.cdp)
                         .wrapContentSize()
                         .clipToBounds()
                 )
@@ -81,7 +80,7 @@ fun CommonLoadMoreFooter(
                     textAlign = TextAlign.Center,
                     fontSize = 32.csp,
                     modifier = Modifier
-                        .padding(32.cdp, 0.dp)
+                        .padding(32.cdp, 0.cdp)
                         .wrapContentSize()
                         .clipToBounds()
                 )

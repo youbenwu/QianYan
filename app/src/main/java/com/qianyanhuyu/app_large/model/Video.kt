@@ -4,11 +4,11 @@ import android.os.Parcelable
 import java.io.Serializable
 
 data class Video(
-    val description: String,
-    val sources: List<String>,
-    val subtitle: String,
-    val title: String,
-    val thumb: String
+    val description: String = "",
+    val sources: List<String> = emptyList(),
+    val subtitle: String = "",
+    val title: String = "",
+    val thumb: String = ""
 ): Serializable
 
 data class VideoList(

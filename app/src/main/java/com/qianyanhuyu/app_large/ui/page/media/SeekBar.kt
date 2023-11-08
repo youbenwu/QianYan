@@ -20,8 +20,8 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.dp
 import com.qianyanhuyu.app_large.ui.page.media.util.getDurationString
+import com.qianyanhuyu.app_large.util.cdp
 
 @SuppressLint("ComposableLambdaParameterPosition", "ComposableLambdaParameterNaming")
 @Composable
@@ -42,7 +42,7 @@ fun SeekBar(
     // if there is an ongoing drag, only dragging progress is evaluated.
     // when dragging finishes, given [progress] continues to be used.
     var onGoingDrag by remember { mutableStateOf(false) }
-    val indicatorSize = if (onGoingDrag) 24.dp else 16.dp
+    val indicatorSize = if (onGoingDrag) 24.cdp else 16.cdp
 
     BoxWithConstraints(modifier = modifier.offset(y = indicatorSize / 2)) {
         if (progress >= max) return@BoxWithConstraints
@@ -90,7 +90,7 @@ fun SeekBar(
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.cdp),
                     modifier = Modifier
                         .offset(x = popupSeekerOffsetXDp)
                         .alpha(if (popupSize == IntSize.Zero) 0f else 1f)
@@ -105,7 +105,7 @@ fun SeekBar(
                         false
                     )
 
-                    Box(modifier = Modifier.shadow(4.dp)) {
+                    Box(modifier = Modifier.shadow(4.cdp)) {
                         seekerPopup()
                     }
 

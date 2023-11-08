@@ -17,7 +17,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.paging.LoadState
@@ -64,7 +63,7 @@ fun <T : Any> ViewStateListPagingComponent(
     loadDataBlock: () -> Flow<PagingData<T>>,
     specialRetryBlock: (() -> Unit)? = null,
     specialRefreshBlock: (() -> Unit)? = null,
-    lazyListContentPadding: PaddingValues = PaddingValues(0.dp),
+    lazyListContentPadding: PaddingValues = PaddingValues(0.cdp),
     lazyListState: LazyListState = rememberLazyListState(),
     viewStateComponentModifier: Modifier = Modifier.fillMaxSize(),
     viewStateContentAlignment: Alignment = Alignment.Center,

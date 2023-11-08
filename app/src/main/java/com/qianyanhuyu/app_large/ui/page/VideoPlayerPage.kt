@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.dp
 import com.qianyanhuyu.app_large.ui.page.media.util.MinimizeLayoutValue
+import com.qianyanhuyu.app_large.util.cdp
 
 @ExperimentalMaterialApi
 @Composable
@@ -24,7 +24,7 @@ fun VideoPlayerPage(
     Surface(
         modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
-        elevation = 16.dp,
+        elevation = 16.cdp,
         color = MaterialTheme.colors.surface,
         contentColor = contentColorFor(MaterialTheme.colors.surface)
     ) {
