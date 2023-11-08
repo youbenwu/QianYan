@@ -15,6 +15,11 @@ import coil.request.ImageRequest
 import coil.transform.Transformation
 import com.qianyanhuyu.app_large.R
 
+/**
+ * 通用图片内容
+ * 使用CommonLocalImage加载drawable文件可能很慢
+ * 最好使用CommonComposeImage
+ */
 @Composable
 fun CommonNetworkImage(
     url: Any?,
