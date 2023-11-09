@@ -3,6 +3,7 @@ package com.qianyanhuyu.app_large.ui.page.media
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.LocalContentColor
 import androidx.compose.runtime.*
@@ -85,7 +86,10 @@ fun VideoPlayer(
                 .aspectRatio(if(aspectRatio.isNaN()) 1f else aspectRatio)
                 .then(modifier)
         ) {
-            PlayerSurface {
+            PlayerSurface(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
                 videoPlayerController.playerViewAvailable(it)
             }
 

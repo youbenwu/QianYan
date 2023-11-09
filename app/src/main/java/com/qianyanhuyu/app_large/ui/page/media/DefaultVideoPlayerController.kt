@@ -17,6 +17,7 @@ import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DefaultDataSourceFactory
 import androidx.media3.datasource.RawResourceDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.LoopingMediaSource
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.ui.PlayerView
@@ -78,20 +79,28 @@ internal class DefaultVideoPlayerController(
     private val playerEventListener = object : Player.Listener {
 
         override fun onPlaybackStateChanged(playbackState: Int) {
-            // super.onPlaybackStateChanged(playbackState)
+            super.onPlaybackStateChanged(playbackState)
 
-            if(PlaybackState.of(playbackState) == PlaybackState.READY) {
-                initialStateRunner = initialStateRunner?.let {
-                    it.invoke()
-                    null
-                }
-
-                updateDurationAndPositionJob?.cancel()
-                updateDurationAndPositionJob = coroutineScope.launch {
-                    while (this.isActive) {
-                        updateDurationAndPosition()
-                        delay(250)
+            when(PlaybackState.of(playbackState)) {
+                PlaybackState.READY -> {
+                    initialStateRunner = initialStateRunner?.let {
+                        it.invoke()
+                        null
                     }
+
+                    updateDurationAndPositionJob?.cancel()
+                    updateDurationAndPositionJob = coroutineScope.launch {
+                        while (this.isActive) {
+                            updateDurationAndPosition()
+                            delay(250)
+                        }
+                    }
+                }
+                PlaybackState.ENDED -> {
+                    // 播放完成
+                }
+                else -> {
+
                 }
             }
 
@@ -200,12 +209,14 @@ internal class DefaultVideoPlayerController(
         updateDurationAndPosition()
     }
 
-    override fun setSource(source: VideoPlayerSource) {
+    override fun setSource(source: VideoPlayerSource, isLoop: Boolean) {
         this.source = source
         if (playerView == null) {
             waitPlayerViewToPrepare.set(true)
         } else {
-            prepare()
+            prepare(
+                isLoop = isLoop
+            )
         }
     }
 
@@ -244,7 +255,9 @@ internal class DefaultVideoPlayerController(
     }
 
 
-    private fun prepare() {
+    private fun prepare(
+        isLoop: Boolean = false
+    ) {
 
         fun createVideoSource(): MediaSource {
             val dataSourceFactory: DataSource.Factory = DefaultDataSourceFactory(
@@ -268,8 +281,14 @@ internal class DefaultVideoPlayerController(
             }
         }
 
-        exoPlayer.setMediaSource(createVideoSource())
-        previewExoPlayer.setMediaSource(createVideoSource())
+        val mediaSource = if(isLoop) {
+            LoopingMediaSource(createVideoSource())
+        } else {
+            createVideoSource()
+        }
+
+        exoPlayer.setMediaSource(mediaSource)
+        previewExoPlayer.setMediaSource(mediaSource)
 
         exoPlayer.prepare()
         previewExoPlayer.prepare()

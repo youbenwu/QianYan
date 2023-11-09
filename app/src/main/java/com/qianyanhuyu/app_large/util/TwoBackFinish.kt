@@ -15,11 +15,14 @@ class TwoBackFinish() {
         var mExitTime: Long = 0
     }
 
-    fun execute(finish:() -> Unit) {
+    /**
+     * 点击两次退出App, 保留这部分注释代码
+     */
+    /*fun execute(finish:() -> Unit) {
         when {
-            /**
+            *//**
              * 点击两次退出程序 有事件间隔，间隔内退出程序，否则提示
-             */
+             *//*
             (System.currentTimeMillis() - mExitTime) > 1500 -> {
                 val viewModelJob = Job()
                 val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
@@ -34,6 +37,24 @@ class TwoBackFinish() {
             }
             else -> {
                 finish()
+            }
+        }
+    }*/
+
+    /**
+     * 短时间内重复点击不执行
+     */
+    fun execute(finish:() -> Unit) {
+        when {
+            /**
+             * 点击两次退出程序 有事件间隔，间隔内退出程序，否则提示
+             */
+            (System.currentTimeMillis() - mExitTime) > 1500 -> {
+                finish()
+                mExitTime = System.currentTimeMillis()
+            }
+            else -> {
+
             }
         }
     }

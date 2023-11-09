@@ -85,6 +85,7 @@ class DryCleanViewModel @Inject constructor(
                         DryCleanType(
                             name = advert.title ?: "",
                             type = index,
+                            productId = advert.id
                         )
                     }
                     Log.d("DryClearViewModel: ", "data: ${productData}")
@@ -160,9 +161,10 @@ class DryCleanViewModel @Inject constructor(
     private fun getProductDetails(
         productId: Int
     ) {
-        if(viewStates.data.firstOrNull { it.id == productId }?.details != null) {
+        // 存在数据的情况下不重新加载
+        /*if(viewStates.data.firstOrNull { it.id == productId }?.details != null) {
             return
-        }
+        }*/
 
         viewModelScope.launch {
             requestFlowResponse(
@@ -180,16 +182,38 @@ class DryCleanViewModel @Inject constructor(
                 val data = this
                 Log.d("DryCleanData: ", data.toString())
 
+                val items = data?.attributes?.firstOrNull()?.attributes
+
+                val checkItem = mutableListOf<ProductAttributes>()
+                val checkItems = mutableListOf<List<ProductAttributes>>()
+
+                items?.forEach { attributes ->
+                    checkItem.add(attributes)
+                    if(checkItem.count() == 2) {
+                        checkItems.add(checkItem)
+                    }
+                }
+
+                var productPrice = BigDecimal.ZERO
+
                 viewStates = viewStates.copy(
                     data = viewStates.data.map { productData ->
+                        // 初次加载只获取第一个Id
                         if(productData.id == productId) {
+                            productPrice = productData.price?.let { BigDecimal(it) } ?: productPrice
+
                             productData.copy(
-                                details = data
+                                details = data,
+                                countProduct = 1
                             )
                         } else {
-                            productData
+                            productData.copy(
+                                countProduct = 1
+                            )
                         }
                     },
+                    checkItems = checkItems,
+                    totalPrice = productPrice
                 )
             }
         }
@@ -203,7 +227,21 @@ class DryCleanViewModel @Inject constructor(
         isCheck: Boolean,
     ) {
         var itemPrice = BigDecimal.ZERO
-        Log.d("ISSSSSCHECK: ", "$isCheck")
+
+        val aa = viewStates.checkItems.map {
+            it?.map { attributes ->
+                if(attributes.id == id) {
+                    itemPrice = attributes.value?.let { a ->
+                        BigDecimal(a)
+                    } ?: itemPrice
+                    attributes.copy(
+                        isCheckCheckBox = isCheck
+                    )
+                } else {
+                    attributes
+                }
+            }
+        }
 
         viewStates = viewStates.copy(
             checkItems = viewStates.checkItems.map {
@@ -285,6 +323,7 @@ data class DryCleanViewState(
  * @param title 标题
  */
 data class DryCleanType(
+    val productId: Int,
     val name: String,
     val type: Int,
 )

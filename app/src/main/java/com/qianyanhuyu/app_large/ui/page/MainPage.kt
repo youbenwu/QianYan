@@ -1,7 +1,6 @@
 package com.qianyanhuyu.app_large.ui.page
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -50,7 +49,7 @@ import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
 import kotlinx.coroutines.launch
 import java.util.Date
-import android.util.Log
+import com.qianyanhuyu.app_large.util.TwoBackFinish
 import com.qianyanhuyu.app_large.util.onClick
 
 /***
@@ -61,6 +60,9 @@ import com.qianyanhuyu.app_large.util.onClick
  */
 
 private const val HOME_ROUTE = Route.HOME_CONTENT
+
+// 点击时间间隔
+var mExitTime: Long = 0
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -86,11 +88,13 @@ fun MainPage(
             }
         } else {
             coroutineState.launch {
-                onBackPre(
-                    navController = navController,
-                    isShowBackButton = isShowBackButton,
-                    selectState = selectState
-                )
+                TwoBackFinish().execute {
+                    onBackPre(
+                        navController = navController,
+                        isShowBackButton = isShowBackButton,
+                        selectState = selectState
+                    )
+                }
             }
         }
     }
@@ -373,11 +377,13 @@ private fun HomeTopBar(
                             .height(34.cdp)
                             .onClick {
                                 ipCoroutineState.launch {
-                                    onBackPre(
-                                        navController = navController,
-                                        isShowBackButton = isShowBackButton,
-                                        selectState = selectState
-                                    )
+                                    TwoBackFinish().execute {
+                                        onBackPre(
+                                            navController = navController,
+                                            isShowBackButton = isShowBackButton,
+                                            selectState = selectState
+                                        )
+                                    }
                                 }
                             }
                     )

@@ -2,7 +2,6 @@ package com.qianyanhuyu.app_large.ui.page
 
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,15 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
@@ -31,9 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -52,7 +40,6 @@ import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
 import com.qianyanhuyu.app_large.ui.widgets.LoadingComponent
-import com.qianyanhuyu.app_large.ui.widgets.SimpleEditTextWidget
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
 import com.qianyanhuyu.app_large.util.onClick
@@ -67,7 +54,6 @@ import java.math.BigDecimal
  * @CreateDate : 2023/10/24 13:24
  * @Description : 干洗服务
  */
-
 @Composable
 fun DryClean(
     viewModel: DryCleanViewModel = hiltViewModel()
@@ -94,6 +80,9 @@ fun DryClean(
                     isCheck = isCheck
                 ))
             },
+            onTypeChange = { id ->
+                viewModel.dispatch(DryCleanViewAction.GetProductDetail(id))
+            },
             modifier = Modifier
                 .fillMaxSize()
         )
@@ -116,6 +105,7 @@ private fun DryCleanContent(
     onChecked: (
         Int,Boolean
     ) -> Unit,
+    onTypeChange: (Int) -> Unit,
     modifier: Modifier
 ) {
     val labelCoroutineScope = rememberCoroutineScope()
@@ -161,6 +151,7 @@ private fun DryCleanContent(
                     labelCoroutineScope.launch {
                         selectedIndex.value = it.type
                         pagerState.scrollToPage(it.type)
+                        onTypeChange.invoke(it.productId)
                     }
                 }
             }
@@ -407,7 +398,7 @@ private fun RightContentView(
                             productAttributes,
                             isCheck = productAttributes.isCheckCheckBox ?: false,
                             onCheck = {
-                                onChecked.invoke(data.id, !(productAttributes.isCheckCheckBox ?: false))
+                                onChecked.invoke((productAttributes.id ?: -1), !(productAttributes.isCheckCheckBox ?: false))
                             },
                             modifier = Modifier
                                 .weight(1f)
@@ -515,10 +506,4 @@ private fun AdditionalItem(
             onCheck.invoke()
         }
     }
-}
-
-@Preview
-@Composable
-fun PreView() {
-    DryClean()
 }
