@@ -13,8 +13,8 @@ android {
         applicationId = "com.qianyanhuyu.app_large"
         minSdk = 24
         targetSdk = 33
-        versionCode = 8
-        versionName = "1.0.06"
+        versionCode = 10
+        versionName = "1.0.07"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

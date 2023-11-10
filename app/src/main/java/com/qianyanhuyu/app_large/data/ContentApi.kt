@@ -1,8 +1,12 @@
 package com.qianyanhuyu.app_large.data
 
 import com.qianyanhuyu.app_large.data.model.Advert
+import com.qianyanhuyu.app_large.data.model.Device
 import com.qianyanhuyu.app_large.data.model.Product
 import com.qianyanhuyu.app_large.data.model.ProductDetails
+import com.qianyanhuyu.app_large.data.model.RegisterDevice
+import com.qianyanhuyu.app_large.data.model.SecurityUser
+import com.qianyanhuyu.app_large.data.model.User
 import com.qianyanhuyu.app_large.data.request.ProductListRequest
 import com.qianyanhuyu.app_large.data.response.BaseCommonPaging
 import com.qianyanhuyu.app_large.data.response.BasePaging
@@ -67,6 +71,71 @@ interface ContentApi {
         @Field("page") page: Int,
         @Field("size") size: Int,
     ): Response<BaseResponse<BaseCommonPaging<Advert>>>
+
+    /**
+     * /api/hotel/device/getByDeviceNo
+     * 获取设备
+     * 激活后可获取到设备信息
+     * */
+    @POST("/api/hotel/device/register")
+    suspend fun registerDevice(
+        @Body data: RegisterDevice
+    ): Response<BaseResponse<Device>>
+
+
+    /**
+     * /api/hotel/device/getByDeviceNo
+     * 获取设备
+     * 激活后可获取到设备信息
+     * */
+    @FormUrlEncoded
+    @GET("/api/hotel/device/getByDeviceNo")
+    suspend fun getDevice(
+        @Field("deviceNo") deviceNo: String
+    ): Response<BaseResponse<Device>>
+
+    /** ---------------  User -------------------- */
+
+    /**
+     * 获取用户信息
+     */
+    @FormUrlEncoded
+    @GET("/api/user/get")
+    suspend fun getUser(
+        @Field("id") id: String
+    ): Response<BaseResponse<User>>
+
+    /**
+     * 账号密码登陆
+     * */
+    @FormUrlEncoded
+    @POST("/api/user/login")
+    suspend fun login(
+        @Field("username") username: String,
+        @Field("password") password: String
+    ): Response<BaseResponse<SecurityUser>>
+
+
+    /**
+     * 手机验证码登陆
+     * */
+    @FormUrlEncoded
+    @POST("/api/user/login/phone")
+    suspend fun loginByPhone(
+        @Field("phone") phone: String,
+        @Field("verifyCode") verifyCode: String
+    ): Response<BaseResponse<SecurityUser>>
+
+    /**
+     *
+     * 获取手机验证码
+     * */
+    @FormUrlEncoded
+    @POST("/api/user/smsCode")
+    suspend fun smsCode(
+        @Field("phone") phone: String,
+        @Field("type") type: String
+    ): Response<BaseResponse<User>>
 
 
 }

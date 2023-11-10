@@ -18,7 +18,7 @@ fun PlayerSurface(
             PlayerView(context).apply {
                 useController = usePlayerController
                 onPlayerViewAvailable(this)
-                /*setKeepContentOnPlayerReset(true)*/
+                setKeepContentOnPlayerReset(true)
             }
         },
         modifier = modifier

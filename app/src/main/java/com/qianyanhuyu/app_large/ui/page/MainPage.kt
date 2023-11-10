@@ -193,10 +193,6 @@ private fun HomeTopBar(
     ) {
 
         val currentTime = TimeUtil.parse(Date().time, FormatterEnum.YYYY_DOT_MM_DOT_DD)
-        val ttt = remember {
-            mutableStateOf(TimeUtil.parse(Date().time, FormatterEnum.YYYY_MM_DD__HH_MM_SS))
-        }
-
 
         val (
             centerView,
