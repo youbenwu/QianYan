@@ -11,9 +11,12 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -23,13 +26,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Text
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,13 +46,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.media3.common.util.UnstableApi
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
@@ -56,14 +72,19 @@ import com.qianyanhuyu.app_large.constants.AppConfig.brush247
 import com.qianyanhuyu.app_large.data.model.Advert
 import com.qianyanhuyu.app_large.data.model.AdvertType
 import com.qianyanhuyu.app_large.model.MultiMenuItem
+import com.qianyanhuyu.app_large.model.Video
 import com.qianyanhuyu.app_large.ui.AppNavController
 import com.qianyanhuyu.app_large.ui.common.Route
 import com.qianyanhuyu.app_large.ui.page.common.CommonText
 import com.qianyanhuyu.app_large.ui.page.common.TextBackground
+import com.qianyanhuyu.app_large.ui.page.media.VideoPlayer
+import com.qianyanhuyu.app_large.ui.page.media.VideoPlayerSource
+import com.qianyanhuyu.app_large.ui.page.media.rememberVideoPlayerController
+import com.qianyanhuyu.app_large.ui.page.media.util.MinimizeLayoutValue
+import com.qianyanhuyu.app_large.ui.page.media.util.rememberMinimizeLayoutState
 import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
-import com.qianyanhuyu.app_large.ui.widgets.LoadingComponent
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
 import com.qianyanhuyu.app_large.util.onClick
@@ -72,12 +93,7 @@ import com.qianyanhuyu.app_large.viewmodel.HomePageViewAction
 import com.qianyanhuyu.app_large.viewmodel.HomePageViewEvent
 import com.qianyanhuyu.app_large.viewmodel.HomePageViewModel
 import com.qianyanhuyu.app_large.viewmodel.HomePageViewState
-import com.qianyanhuyu.app_large.viewmodel.ShopFriendsViewAction
 import kotlinx.coroutines.launch
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
-import java.util.Timer
-import java.util.TimerTask
 import kotlin.math.absoluteValue
 
 /***
@@ -126,6 +142,7 @@ val expandFbItemList: MutableList<MultiMenuItem> = mutableListOf(
     ),
 )
 
+@UnstableApi
 @OptIn(ExperimentalPagerApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun HomePageScreen(
@@ -177,7 +194,7 @@ fun HomePageScreen(
 
     // 轮播
     LaunchedEffect(Unit) {
-        Timer().schedule(
+        /*Timer().schedule(
             object : TimerTask() {
                 override fun run() {
                     coroutineState.launch() {
@@ -192,8 +209,8 @@ fun HomePageScreen(
                 }
             },
             10000,
-            8000
-        )
+            10000
+        )*/
     }
 
     Box(
@@ -260,6 +277,8 @@ fun HomePageScreen(
 /**
  * Home页面内容
  */
+@OptIn(ExperimentalMaterialApi::class)
+@UnstableApi
 @Composable
 fun HomePageContent(
     viewState: HomePageViewState,
@@ -267,11 +286,76 @@ fun HomePageContent(
     onViewClick: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    var selectedVideoState by rememberSaveable { mutableStateOf<Video?>(null) }
+
+    val videoPlayerController = rememberVideoPlayerController()
+    val videoPlayerUiState by videoPlayerController.state.collectAsState()
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(videoPlayerController, lifecycleOwner) {
+        val observer = object : DefaultLifecycleObserver {
+            override fun onPause(owner: LifecycleOwner) {
+                videoPlayerController.pause()
+            }
+
+            override fun onCreate(owner: LifecycleOwner) {
+                super.onCreate(owner)
+
+                selectedVideoState = Video(
+                    description = "test desc",
+                    title = "tt",
+                    subtitle = "subtt",
+                    sources = listOf(
+                        "http://tengdamy.cn/video/video2.mp4",
+                        "http://tengdamy.cn/video/video2.mp4"
+                    ),
+                    thumb = "https://dimg04.c-ctrip.com/images/0zg2912000chbi5si501F.jpg"
+                )
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    val minimizeLayoutState = rememberMinimizeLayoutState(MinimizeLayoutValue.Expanded)
+    LaunchedEffect(selectedVideoState) {
+        val selectedVideo = selectedVideoState
+        if (selectedVideo != null) {
+            videoPlayerController.setSource(VideoPlayerSource.Network(selectedVideo.sources.first()), true)
+            minimizeLayoutState.expand()
+        } else {
+            minimizeLayoutState.hide()
+            videoPlayerController.reset()
+        }
+    }
+
+    val isFullyMaximized = minimizeLayoutState.currentValue == MinimizeLayoutValue.Expanded
+
+
     when(pagePosition) {
         1 -> {
             RightLeftOneCenterTwo(
                 viewState = viewState,
                 onViewClick = onViewClick,
+                videoContent = {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
+                        VideoPlayer(
+                            videoPlayerController = videoPlayerController,
+                            backgroundColor = Color.Transparent,
+                            controlsEnabled = false,
+                            gesturesEnabled = false,
+                            modifier = Modifier
+                                .fillMaxSize()
+                        )
+                    }
+                },
                 modifier = modifier
             )
         }
@@ -279,6 +363,22 @@ fun HomePageContent(
             RightTwoLeftOne(
                 viewState = viewState,
                 onViewClick = onViewClick,
+                videoContent = {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
+
+                        VideoPlayer(
+                            videoPlayerController = videoPlayerController,
+                            backgroundColor = Color.Transparent,
+                            controlsEnabled = false,
+                            gesturesEnabled = false,
+                            modifier = Modifier
+                        )
+                    }
+                },
                 modifier = modifier
             )
         }
@@ -286,6 +386,49 @@ fun HomePageContent(
             RightOneLeftTwo(
                 viewState = viewState,
                 onViewClick = onViewClick,
+                videoContent = {
+                    BoxWithConstraints(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Green)
+                    ) {
+                        Log.d("HomePage>VideoPlayer: ", "w:$maxWidth, h:$maxHeight")
+
+                        /*VideoPlayer(
+                            videoPlayerController = videoPlayerController,
+                            backgroundColor = Color.Transparent,
+                            controlsEnabled = true,
+                            gesturesEnabled = false,
+                            modifier = Modifier
+                                .then(
+                                    Modifier
+                                        .width(maxWidth)
+                                        .height(maxHeight)
+                                )
+                        )*/
+                        VideoPlayerPage(
+                            videoPlayer = {
+                                VideoPlayer(
+                                    videoPlayerController = videoPlayerController,
+                                    backgroundColor = Color.Transparent,
+                                    modifier = Modifier.then(
+                                        Modifier
+                                            .width(maxWidth)
+                                            .height(maxHeight)
+                                    ),
+                                    controlsEnabled = isFullyMaximized
+                                )
+                            },
+                            content = {},
+                            minimizedContent = {
+                               Box{}
+                            },
+                            swipeProgress = minimizeLayoutState.swipeProgress,
+                            modifier = Modifier
+                        )
+                    }
+                },
                 modifier = modifier
             )
         }
@@ -299,6 +442,7 @@ private fun RightLeftOneCenterTwo(
     onViewClick: (
         String
     ) -> Unit = {},
+    videoContent: @Composable (() -> Unit)? = null,
     modifier: Modifier
 ) {
     ConstraintLayout(
@@ -382,6 +526,7 @@ private fun RightLeftOneCenterTwo(
             TagImageView(
                 advert = viewState.dataPage2.getOrNull(1),
                 typeOnClick = onViewClick,
+                videoContent = videoContent,
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(1f)
@@ -414,6 +559,7 @@ private fun RightTwoLeftOne(
     onViewClick: (
         String
     ) -> Unit = {},
+    videoContent: @Composable (() -> Unit)? = null,
     modifier: Modifier
 ) {
     // 主体内容
@@ -547,6 +693,7 @@ private fun RightTwoLeftOne(
                 TagImageView(
                     advert = viewState.dataPage3.getOrNull(1),
                     typeOnClick = onViewClick,
+                    videoContent = videoContent,
                     modifier = Modifier
                         .constrainAs(topView) {
                             top.linkTo(parent.top)
@@ -608,6 +755,7 @@ private fun RightOneLeftTwo(
     onViewClick: (
         String
     ) -> Unit = {},
+    videoContent: @Composable() (() -> Unit)? = null,
     modifier: Modifier
 ) {
     // 主体内容
@@ -658,6 +806,7 @@ private fun RightOneLeftTwo(
                 TagImageView(
                     advert = viewState.dataPage1.getOrNull(0),
                     typeOnClick = onViewClick,
+                    videoContent = videoContent,
                     modifier = Modifier
                         .border(
                             BorderStroke(contentRadius, leftColorsBrush),
@@ -790,19 +939,24 @@ private fun RightOneLeftTwo(
 private fun TagImageView(
     advert: Advert?,
     modifier: Modifier,
+    videoContent: (@Composable () -> Unit)? = null,
     typeOnClick: (String) -> Unit = {}
 ) {
     Box(
         modifier = modifier
     ) {
-        CommonNetworkImage(
-            url = advert?.image ?: "",
-            modifier = Modifier
-                .fillMaxSize()
-                .onClick {
-                    typeOnClick.invoke(advert?.video ?: (advert?.image ?: ""))
-                }
-        )
+        if(videoContent == null) {
+            CommonNetworkImage(
+                url = advert?.image ?: "",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .onClick {
+                        typeOnClick.invoke(advert?.video ?: (advert?.image ?: ""))
+                    }
+            )
+        } else {
+            videoContent()
+        }
 
         Column(
             verticalArrangement = Arrangement.spacedBy(10.cdp, Alignment.CenterVertically),

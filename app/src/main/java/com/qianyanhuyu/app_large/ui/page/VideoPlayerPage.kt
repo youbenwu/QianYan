@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.unit.Constraints
@@ -25,8 +26,8 @@ fun VideoPlayerPage(
         modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
         elevation = 16.cdp,
-        color = MaterialTheme.colors.surface,
-        contentColor = contentColorFor(MaterialTheme.colors.surface)
+        color = /*MaterialTheme.colors.surface*/ Color.Transparent,
+        contentColor = contentColorFor(/*MaterialTheme.colors.surface*/Color.Transparent)
     ) {
         Layout(
             content = {

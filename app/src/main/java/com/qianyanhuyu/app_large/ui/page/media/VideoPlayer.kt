@@ -2,9 +2,12 @@ package com.qianyanhuyu.app_large.ui.page.media
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.LocalContentColor
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
@@ -80,15 +83,21 @@ fun VideoPlayer(
     ) {
         val aspectRatio by videoPlayerController.collect { videoSize.first / videoSize.second }
 
-        Box(
+        BoxWithConstraints(
             modifier = Modifier
                 .background(color = backgroundColor)
-                .aspectRatio(if(aspectRatio.isNaN()) 1f else aspectRatio)
+                /*.aspectRatio(if(aspectRatio.isNaN()) 1f else aspectRatio)*/
                 .then(modifier)
         ) {
+            val width = maxWidth
+            val height = maxHeight
+
+            Log.d("VideoPlayer: ", "w:$width, h:$height")
+
             PlayerSurface(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .width(width)
+                    .height(height)
             ) {
                 videoPlayerController.playerViewAvailable(it)
             }

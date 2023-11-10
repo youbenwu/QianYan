@@ -13,12 +13,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
 
@@ -55,14 +57,17 @@ fun MinimizedTitleAndControls(
                 if (isPlaying) {
                     Icon(ImageVector.vectorResource(id = androidx.media3.ui.R.drawable.exo_icon_pause), contentDescription = null)
                 } else {
-                    Icon(Icons.Default.PlayArrow, contentDescription = null)
+                    Icon(
+                        ImageVector.vectorResource(id = com.google.android.gms.cast.framework.R.drawable.quantum_ic_play_arrow_white_24),
+                        contentDescription = null
+                    )
                 }
             }
 
             IconButton(onClick = {
                 onDismissState()
             }) {
-                Icon(Icons.Default.Close, contentDescription = null)
+                Icon(ImageVector.vectorResource(id = androidx.mediarouter.R.drawable.ic_dialog_close_light), tint = Color.White, contentDescription = null)
             }
         },
         modifier = modifier

@@ -8,9 +8,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.media3.common.C.VIDEO_SCALING_MODE_SCALE_TO_FIT
+import androidx.media3.common.C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
+import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util
 import androidx.media3.datasource.DataSource
@@ -79,7 +82,7 @@ internal class DefaultVideoPlayerController(
     private val playerEventListener = object : Player.Listener {
 
         override fun onPlaybackStateChanged(playbackState: Int) {
-            super.onPlaybackStateChanged(playbackState)
+            // super.onPlaybackStateChanged(playbackState)
 
             when(PlaybackState.of(playbackState)) {
                 PlaybackState.READY -> {
@@ -112,7 +115,7 @@ internal class DefaultVideoPlayerController(
         }
 
         override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
-            super.onPlayWhenReadyChanged(playWhenReady, reason)
+            // super.onPlayWhenReadyChanged(playWhenReady, reason)
             _state.set {
                 copy(
                     isPlaying = playWhenReady,
@@ -121,7 +124,9 @@ internal class DefaultVideoPlayerController(
         }
 
         override fun onVideoSizeChanged(videoSize: VideoSize) {
-            super.onVideoSizeChanged(videoSize)
+            // super.onVideoSizeChanged(videoSize)
+
+            Log.d("OnVideoSizeChanged: ", "w:${videoSize.width}, h:${videoSize.height}")
 
             _state.set {
                 copy(videoSize = videoSize.width.toFloat() to videoSize.height.toFloat())
