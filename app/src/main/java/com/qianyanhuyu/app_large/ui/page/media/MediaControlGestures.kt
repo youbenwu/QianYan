@@ -27,7 +27,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.media3.common.util.UnstableApi
-import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.ui.page.media.util.getDurationString
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope

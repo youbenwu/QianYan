@@ -10,10 +10,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.unit.Constraints
+import androidx.media3.common.util.Log
+import androidx.media3.common.util.UnstableApi
 import com.qianyanhuyu.app_large.ui.page.media.util.MinimizeLayoutValue
 import com.qianyanhuyu.app_large.util.cdp
 
 @ExperimentalMaterialApi
+@UnstableApi
 @Composable
 fun VideoPlayerPage(
     videoPlayer: @Composable () -> Unit,
@@ -40,8 +43,14 @@ fun VideoPlayerPage(
             measurePolicy = { measurables, constraints ->
                 val minimizableHeight = constraints.maxHeight
 
+                Log.d("VideoPlayerPage: ", "Infinity: ${Constraints.Infinity}, MaxWH: ${constraints.maxWidth}, ${constraints.maxHeight}")
+
                 val videoPlayerPlaceable =
-                    measurables[0].measure(constraints.copy(maxHeight = Constraints.Infinity))
+                    measurables[0].measure(
+                        constraints.copy(
+                            maxHeight = Constraints.Infinity,
+                        )
+                    )
                 val fullPagePlaceable = measurables[1].measure(constraints)
 
                 val videoPlayerScale =

@@ -94,6 +94,8 @@ import com.qianyanhuyu.app_large.viewmodel.HomePageViewEvent
 import com.qianyanhuyu.app_large.viewmodel.HomePageViewModel
 import com.qianyanhuyu.app_large.viewmodel.HomePageViewState
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import kotlin.math.absoluteValue
 
 /***
@@ -289,7 +291,6 @@ fun HomePageContent(
     var selectedVideoState by rememberSaveable { mutableStateOf<Video?>(null) }
 
     val videoPlayerController = rememberVideoPlayerController()
-    val videoPlayerUiState by videoPlayerController.state.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
 
     DisposableEffect(videoPlayerController, lifecycleOwner) {
@@ -301,6 +302,7 @@ fun HomePageContent(
             override fun onCreate(owner: LifecycleOwner) {
                 super.onCreate(owner)
 
+                // 视频测试数据
                 selectedVideoState = Video(
                     description = "test desc",
                     title = "tt",
@@ -391,22 +393,9 @@ fun HomePageContent(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Color.Green)
                     ) {
                         Log.d("HomePage>VideoPlayer: ", "w:$maxWidth, h:$maxHeight")
 
-                        /*VideoPlayer(
-                            videoPlayerController = videoPlayerController,
-                            backgroundColor = Color.Transparent,
-                            controlsEnabled = true,
-                            gesturesEnabled = false,
-                            modifier = Modifier
-                                .then(
-                                    Modifier
-                                        .width(maxWidth)
-                                        .height(maxHeight)
-                                )
-                        )*/
                         VideoPlayerPage(
                             videoPlayer = {
                                 VideoPlayer(
@@ -1002,10 +991,14 @@ private fun TagImageView(
                             bottom = 20.cdp
                         )
                 ) {
-                    // test url : https://baidu.com
-                    // val url = URLEncoder.encode(advert.url ?: "https://www.ctrip.com/?sid=155952&allianceid=4897&ouid=index", StandardCharsets.UTF_8.toString())
+                    // WebView不支持https中存在http的链接
+                    // TODO 测试使用固定地址，使用接口数据直接替换成url即可
+                    advert.url?.let { url ->
+                        val urlEncode = URLEncoder.encode( "https://www.baidu.com", StandardCharsets.UTF_8.toString())
 
-                    // AppNavController.instance.navigate("${Route.WEB_VIEW}/${advert.title}/${url}")
+                        AppNavController.instance.navigate("${Route.WEB_VIEW}/${advert.title}/${urlEncode}")
+                    }
+
                 }
             }
             AdvertType.PPA -> {
@@ -1030,54 +1023,4 @@ private fun TagImageView(
             else -> {}
         }
     }
-}
-
-@Composable
-private fun VideoOrImageView(
-    url: String,
-    contentScale: ContentScale = ContentScale.Crop,
-    modifier: Modifier
-) {
-    // 透明度是否逐步增大
-    val alphaIncrease = remember {
-        mutableStateOf(false)
-    }
-
-    val animatorDuration = 1000
-    // 透明度动画，当showBigImageStatus为true也便是由小变大时，targetValue应该是1，反之则为0
-    // animationSpec设置的是2s的时长
-    val alpha = animateFloatAsState(
-        targetValue = if (alphaIncrease.value) 1F else 0F,
-        label = "",
-        animationSpec = tween(animatorDuration)
-    )
-    // 大图x轴的偏移量
-    val bigImageOffsetX = remember {
-        mutableStateOf(0F)
-    }
-    // 大图y轴的偏移量
-    val bigImageOffsetY = remember {
-        mutableStateOf(0F)
-    }
-    // 大图宽度
-    val bigImageSizeWidth = remember {
-        mutableStateOf(0)
-    }
-    // 大图高度
-    val bigImageSizeHeight = remember {
-        mutableStateOf(0)
-    }
-
-
-    CommonNetworkImage(
-        url = url,
-        contentScale = ContentScale.Crop,
-        modifier = modifier
-            /*.onGloballyPositioned {
-                val rect = it.boundsInRoot()
-                val offset = Offset(rect.left, rect.top)
-                BigImageManager.cellOffsetMap[index] = offset
-                cellSize.value = it.size
-            }*/
-    )
 }

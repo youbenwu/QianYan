@@ -142,6 +142,7 @@ internal class DefaultVideoPlayerController(
         .apply {
             playWhenReady = initialState.isPlaying
             addListener(playerEventListener)
+            videoScalingMode = VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
         }
 
     /**

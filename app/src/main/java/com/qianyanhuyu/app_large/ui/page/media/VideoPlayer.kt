@@ -83,21 +83,16 @@ fun VideoPlayer(
     ) {
         val aspectRatio by videoPlayerController.collect { videoSize.first / videoSize.second }
 
-        BoxWithConstraints(
+        Box(
             modifier = Modifier
                 .background(color = backgroundColor)
                 /*.aspectRatio(if(aspectRatio.isNaN()) 1f else aspectRatio)*/
                 .then(modifier)
         ) {
-            val width = maxWidth
-            val height = maxHeight
-
-            Log.d("VideoPlayer: ", "w:$width, h:$height")
 
             PlayerSurface(
                 modifier = Modifier
-                    .width(width)
-                    .height(height)
+                    .fillMaxSize()
             ) {
                 videoPlayerController.playerViewAvailable(it)
             }

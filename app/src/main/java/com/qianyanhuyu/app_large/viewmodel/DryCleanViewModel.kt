@@ -161,11 +161,6 @@ class DryCleanViewModel @Inject constructor(
     private fun getProductDetails(
         productId: Int
     ) {
-        // 存在数据的情况下不重新加载
-        /*if(viewStates.data.firstOrNull { it.id == productId }?.details != null) {
-            return
-        }*/
-
         viewModelScope.launch {
             requestFlowResponse(
                 requestCall = {
