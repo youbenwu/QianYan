@@ -29,8 +29,8 @@ fun VideoPlayerPage(
         modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
         elevation = 16.cdp,
-        color = /*MaterialTheme.colors.surface*/ Color.Transparent,
-        contentColor = contentColorFor(/*MaterialTheme.colors.surface*/Color.Transparent)
+        color = Color.Transparent,
+        contentColor = contentColorFor(Color.Transparent)
     ) {
         Layout(
             content = {

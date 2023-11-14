@@ -68,11 +68,11 @@ class DryCleanViewModel @Inject constructor(
     @OptIn(FlowPreview::class)
     private fun initPageData() {
         viewModelScope.launch(exception) {
-            // 先获取产品,再获取产品详情
+            // 先获取产品,再获取产品详情, type固定
             flow {
                 val response = contentApi.getProduct(
                     request = ProductListRequest(
-                        // TODO 使用设备信息接口数据中的 shopId, 现在暂时未接入
+                        // TODO 使用设备信息接口数据中的 shopId, 获取到shopId后保存进DataStore中，这里从DataStore中获取
                         shopId = 749,
                         type = 30
                     )

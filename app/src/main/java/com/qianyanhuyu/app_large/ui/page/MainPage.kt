@@ -20,6 +20,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.media3.common.util.Log
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.qianyanhuyu.app_large.R
@@ -61,9 +63,6 @@ import com.qianyanhuyu.app_large.util.onClick
 
 private const val HOME_ROUTE = Route.HOME_CONTENT
 
-// 点击时间间隔
-var mExitTime: Long = 0
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainPage(
@@ -79,6 +78,17 @@ fun MainPage(
     val selectState = remember { mutableStateOf(-1)}
     val coroutineState = rememberCoroutineScope()
     val isShowBackButton = remember { mutableStateOf(false) }
+
+    LaunchedEffect(navBackStackEntry) {
+        val isWebView = currentRoute?.contains(Route.WEB_VIEW) ?: false
+        val isHome = currentRoute?.contains(Route.HOME_CONTENT) ?: false
+
+        if(isWebView) {
+            isShowBackButton.value = true
+        } else if(isHome) {
+            isShowBackButton.value = false
+        }
+    }
 
     BackHandler {
         // 抽屉打开的时候关闭抽屉
@@ -155,7 +165,7 @@ fun MainPage(
                             HomeNavHost(
                                 navController,
                                 drawerState = drawerState,
-                                snackHostState = snackHostState,
+                                snackHostState = snackHostState
                             ) {
                                 onFinish.invoke()
                             }
@@ -443,6 +453,7 @@ private fun onBackPre(
     // 当前路由
     val currentRoute = navController.currentBackStackEntry?.destination?.route
     val preRoute = navController.previousBackStackEntry?.destination?.route
+
     val homeIndex = -1
     when(currentRoute) {
         Route.CUSTOMER_SERVICE,
@@ -480,6 +491,12 @@ private fun onBackPre(
                     selectState.value = expandFbItemList.filter {
                         it.route == preRoute
                     }.getOrNull(0)?.index ?: homeIndex
+                }
+                Route.HOME_CONTENT -> {
+                    isShowBackButton.value = false
+                    // 返回上一页
+                    AppNavController.instance.popBackStack()
+                    return
                 }
                 else -> {
                     selectState.value = homeIndex

@@ -1,8 +1,5 @@
 package com.qianyanhuyu.app_large.util
 
-import com.qianyanhuyu.app_large.BuildConfig
-import java.net.URLEncoder.encode
-
 /***
  * @Author : Cheng
  * @CreateDate : 2023/10/21 16:44

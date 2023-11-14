@@ -2,11 +2,9 @@ package com.qianyanhuyu.app_large.ui.page.common
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
-import android.os.Build
 import android.util.Log
 import android.view.View
 import android.webkit.WebChromeClient
-import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
@@ -16,6 +14,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import com.qianyanhuyu.app_large.ui.AppNavController
+import com.qianyanhuyu.app_large.ui.common.Route
+import com.qianyanhuyu.app_large.util.datastore.DataKey
+import com.qianyanhuyu.app_large.util.datastore.DataStoreUtils
 
 /***
  * @Author : Cheng
@@ -29,9 +31,22 @@ fun WebViewPage(
     title: String? = "",
     url: String? = ""
 ) {
-    /*BackHandler() {
+    var mWebView: WebView? = null
 
-    }*/
+    BackHandler {
+        mWebView?.let { webView ->
+            if(webView.canGoBack()) {
+                webView.goBack()
+            } else {
+                // 返回首页
+                AppNavController.instance.navigate(
+                    Route.HOME_CONTENT
+                ) {
+                    popUpTo(0)
+                }
+            }
+        }
+    }
 
 
     Surface(
@@ -51,6 +66,8 @@ fun WebViewPage(
                 webView.webViewClient = mWebViewClient
                 webView.webChromeClient = mWebViewChromeClient
                 webView.loadUrl(url ?: "")
+                mWebView = webView
+
                 webView
             },
             modifier = Modifier
@@ -63,6 +80,7 @@ private val mWebViewClient = object : WebViewClient() {
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
         super.onPageStarted(view, url, favicon)
         Log.d("webView", "加载开始")
+
     }
 
     override fun onPageFinished(view: WebView?, url: String?) {

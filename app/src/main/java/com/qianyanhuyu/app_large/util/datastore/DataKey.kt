@@ -3,7 +3,7 @@ package com.qianyanhuyu.app_large.util.datastore
 object DataKey {
     const val LoginMethod = "login_method"
 
-    const val token = "token"
+    const val Token = "token"
 
     const val WidgetShowNum = "widget_show_num"
     const val WidgetFilterLabels = "widget_filter_labels"

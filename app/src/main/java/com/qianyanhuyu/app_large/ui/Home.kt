@@ -8,6 +8,8 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -64,7 +66,7 @@ fun HomeNavHost(
         homeGraph(
             route = Route.HOME_GRAPH,
             drawerState = drawerState,
-            snackHostState = snackHostState,
+            snackHostState = snackHostState
         )
     }
 

@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.qianyanhuyu.app_large.App.Companion.context
 import com.qianyanhuyu.app_large.data.ContentApi
 import com.qianyanhuyu.app_large.data.model.Advert
-import com.qianyanhuyu.app_large.data.model.AdvertContentType
 import com.qianyanhuyu.app_large.util.OtherAppUtil
 import com.qianyanhuyu.app_large.util.requestFlowResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
