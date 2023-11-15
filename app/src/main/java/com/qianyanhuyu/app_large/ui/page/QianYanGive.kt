@@ -1,6 +1,7 @@
 package com.qianyanhuyu.app_large.ui.page
 
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,8 +17,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.constraintlayout.compose.ChainStyle
@@ -25,17 +30,23 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.qianyanhuyu.app_large.R
+import com.qianyanhuyu.app_large.constants.AppConfig
 import com.qianyanhuyu.app_large.ui.page.common.CustomButton
 import com.qianyanhuyu.app_large.ui.page.common.CustomTopTrips
 import com.qianyanhuyu.app_large.constants.AppConfig.CustomBlue9
 import com.qianyanhuyu.app_large.ui.AppNavController
 import com.qianyanhuyu.app_large.ui.page.common.CommonText
+import com.qianyanhuyu.app_large.ui.page.common.TextBackground
 import com.qianyanhuyu.app_large.ui.theme.Shapes
+import com.qianyanhuyu.app_large.ui.theme.youSheFamily
 import com.qianyanhuyu.app_large.ui.widgets.CommonComposeImage
+import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
 import com.qianyanhuyu.app_large.ui.widgets.LoadingComponent
+import com.qianyanhuyu.app_large.ui.widgets.drawColoredShadow
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
+import com.qianyanhuyu.app_large.util.toPx
 import com.qianyanhuyu.app_large.viewmodel.QianYanGiveViewAction
 import com.qianyanhuyu.app_large.viewmodel.QianYanGiveViewEvent
 import com.qianyanhuyu.app_large.viewmodel.QianYanGiveViewModel
@@ -130,7 +141,7 @@ fun QianYanGiveContent(
 
             // 顶部提示栏布局
             CustomTopTrips(
-                text = "温馨提示: 请选择您需要的菜单功能",
+                text = "温馨提示：通过玩游戏获得生活积分可兑换提现",
                 modifier = Modifier
                     .constrainAs(tipsView) {
                         top.linkTo(parent.top)
@@ -152,8 +163,9 @@ fun QianYanGiveContent(
             FillHeightContent(
                 src = viewState.data.getOrNull(0)?.image ?: "",
                 title = "免费送餐",
-                subTitle = "免费领取酒店早餐",
                 buttonText = "去领取",
+                lineDotColor = AppConfig.CustomGreen,
+                tagResource = R.drawable.ic_play_tag_1,
                 modifier = Modifier
                     .constrainAs(leftContentView) {
                         start.linkTo(parent.start)
@@ -167,10 +179,11 @@ fun QianYanGiveContent(
 
             // 右边布局
             FillHeightContent(
-                src = viewState.data.getOrNull(1)?.image ?: "",
+                src = viewState.data.getOrNull(2)?.image ?: "",
                 title = "免费门票",
-                subTitle = "赠送附近酒店门票",
+                lineDotColor = AppConfig.CustomBlue,
                 buttonText = "去领取",
+                tagResource = R.drawable.ic_play_tag_3,
                 modifier = Modifier
                     .constrainAs(rightContentView) {
                         end.linkTo(parent.end)
@@ -184,10 +197,11 @@ fun QianYanGiveContent(
 
             // 中间布局
             FillHeightContent(
-                src = viewState.data.getOrNull(2)?.image ?: "",
+                src = viewState.data.getOrNull(1)?.image ?: "",
                 buttonText = "去领取",
                 title = "免费住房",
-                subTitle = "酒店免费提供住房",
+                lineDotColor = AppConfig.CustomYellowish,
+                tagResource = R.drawable.ic_play_tag_2,
                 modifier = Modifier
                     .constrainAs(centerContentView) {
                         start.linkTo(leftContentView.end)
@@ -208,9 +222,9 @@ fun QianYanGiveContent(
 fun FillHeightContent(
     src: String,
     title: String,
-    subTitle: String,
     buttonText: String,
-    buttonColor: Color = CustomBlue9,
+    lineDotColor: Color = Color.Transparent,
+    @DrawableRes tagResource: Int = R.drawable.ic_play_tag_1,
     modifier: Modifier
 ) {
     ConstraintLayout(
@@ -220,10 +234,9 @@ fun FillHeightContent(
 
         val (
             titleView,
-            subTitleView,
             lineDotView,
-            contentBgView,
-            buttonView
+            buttonView,
+            tagView,
         ) = createRefs()
 
         CommonNetworkImage(
@@ -233,104 +246,81 @@ fun FillHeightContent(
                 .fillMaxSize()
         )
 
-        Box(
+        CommonComposeImage(
+            resId = tagResource,
             modifier = Modifier
-                .constrainAs(contentBgView) {
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
+                .constrainAs(tagView) {
+                    top.linkTo(parent.top)
                     end.linkTo(parent.end)
-                    top.linkTo(titleView.top)
-
-                    width = Dimension.fillToConstraints
-                    height = Dimension.fillToConstraints
                 }
-                .background(Color.White)
+                .graphicsLayer {
+                    this.translationY = -50.cdp.toPx
+                }
         )
 
-        // Button
-        CustomButton(
+        TextBackground(
             text = buttonText,
-            containerColor = buttonColor,
-            shape = Shapes.small,
+            shapes = Shapes.extraLarge,
+            fontSize = 50.csp,
+            textVerticalPadding = 15.cdp,
+            textBackgroundBrush = Brush.horizontalGradient(
+                listOf(
+                    Color(255, 94, 59).copy(alpha = 0.3f),
+                    Color(255, 94, 59).copy(alpha = 0f),
+                    Color(0, 0, 0).copy(alpha = 0f)
+                )
+            ),
             modifier = Modifier
                 .constrainAs(buttonView) {
+                    start.linkTo(parent.start)
                     end.linkTo(parent.end)
-                    top.linkTo(contentBgView.top)
-                    bottom.linkTo(contentBgView.bottom)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
                 }
-                .padding(
-                    end = 35.cdp
-                )
-        ) {
-
-        }
+        )
 
         createVerticalChain(
             titleView,
             lineDotView,
-            subTitleView,
-            chainStyle = ChainStyle.Packed(0.96f)
+            chainStyle = ChainStyle.Packed(0f)
         )
 
         // title
         CommonText(
             text = title,
-            fontWeight = FontWeight.Bold,
-            fontSize = 50.csp,
+            fontSize = 79.csp,
             textAlign = TextAlign.Left,
-            letterSpacing = 1.csp,
-            color = CustomBlue9,
+            letterSpacing = 9.csp,
+            color = Color.White,
+            style = TextStyle(
+                fontFamily = youSheFamily
+            ),
             modifier = Modifier
                 .constrainAs(titleView) {
                     start.linkTo(parent.start)
-                    top.linkTo(contentBgView.top)
-                    end.linkTo(buttonView.start)
-
-                    width = Dimension.fillToConstraints
+                    top.linkTo(parent.top)
+                    end.linkTo(parent.end)
                 }
                 .padding(
-                    start = 40.cdp,
-                    top = 35.cdp,
+                    top = 50.cdp,
                 )
         )
 
         // line_dot
-        CommonComposeImage(
+        CommonIcon(
             resId = R.drawable.ic_line_dot,
+            tint = lineDotColor,
             modifier = Modifier
                 .constrainAs(lineDotView) {
-                    start.linkTo(parent.start)
+                    start.linkTo(titleView.start)
                     top.linkTo(titleView.bottom)
                 }
                 .padding(
-                    start = 40.cdp,
                     top = 30.cdp,
                     bottom = 30.cdp
                 )
                 .width(79.cdp)
                 .height(12.cdp)
-        )
-
-        // subtitle
-        CommonText(
-            text = subTitle,
-            fontSize = 30.csp,
-            textAlign = TextAlign.Left,
-            letterSpacing = 1.csp,
-            color = Color.Black,
-            modifier = Modifier
-                .constrainAs(subTitleView) {
-                    start.linkTo(parent.start)
-                    top.linkTo(lineDotView.bottom)
-                    bottom.linkTo(parent.bottom)
-                    end.linkTo(buttonView.start)
-
-                    width = Dimension.fillToConstraints
-
-                }
-                .padding(
-                    start = 40.cdp,
-                )
         )
     }
 }

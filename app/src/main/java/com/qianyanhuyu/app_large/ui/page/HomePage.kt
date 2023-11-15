@@ -382,32 +382,17 @@ fun HomePageContent(
                 viewState = viewState,
                 onViewClick = onViewClick,
                 videoContent = {
-                    BoxWithConstraints(
+                    Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .fillMaxSize()
                     ) {
-                        Log.d("HomePage>VideoPlayer: ", "w:$maxWidth, h:$maxHeight")
 
-                        VideoPlayerPage(
-                            videoPlayer = {
-                                VideoPlayer(
-                                    videoPlayerController = videoPlayerController,
-                                    backgroundColor = Color.Transparent,
-                                    controlsEnabled = false,
-                                    gesturesEnabled = false,
-                                    modifier = Modifier.then(
-                                        Modifier
-                                            .width(maxWidth)
-                                            .height(maxHeight)
-                                    )
-                                )
-                            },
-                            content = {},
-                            minimizedContent = {
-                               Box{}
-                            },
-                            swipeProgress = minimizeLayoutState.swipeProgress,
+                        VideoPlayer(
+                            videoPlayerController = videoPlayerController,
+                            backgroundColor = Color.Transparent,
+                            controlsEnabled = false,
+                            gesturesEnabled = false,
                             modifier = Modifier
                         )
                     }
