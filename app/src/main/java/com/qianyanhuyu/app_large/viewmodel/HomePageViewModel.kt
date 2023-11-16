@@ -51,7 +51,7 @@ class HomePageViewModel @Inject constructor(
 
     private fun initPageData() {
         viewModelScope.launch(exception) {
-            // 由于不是从接口获取页数,所以写死3页,异步加载
+            // TODO 由于不是从接口获取页数,所以写死3页,由于后台原因,页数从0开始,异步加载, 如需优化可使用类似zip去访问三个接口
             requestFlowResponse(
                 requestCall = {
                     contentApi.getAdvertPage(

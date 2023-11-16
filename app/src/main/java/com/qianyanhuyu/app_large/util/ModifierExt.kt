@@ -10,7 +10,8 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 
 /**
- * Created by ssk on 2022/3/2.
+ * Modifier 扩展函数
+ * 点击相关
  */
 
 /**

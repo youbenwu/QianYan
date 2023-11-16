@@ -7,7 +7,7 @@ import android.view.WindowManager
 import com.qianyanhuyu.app_large.App
 
 /**
- * Created by ssk on 2022/4/29.
+ * 全屏工具类
  */
 object ScreenUtil {
     /**

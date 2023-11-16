@@ -65,6 +65,9 @@ class DryCleanViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 初始化干洗服务页面,通过产品接口获取产品列表,再通过产品Id获取产品详情拿到详情数据
+     */
     @OptIn(FlowPreview::class)
     private fun initPageData() {
         viewModelScope.launch(exception) {

@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * Created by ssk on 2022/4/17.
+ * 点击两次处理
  */
 class TwoBackFinish() {
     companion object {

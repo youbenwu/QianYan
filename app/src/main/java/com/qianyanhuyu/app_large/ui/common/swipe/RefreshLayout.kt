@@ -21,6 +21,8 @@ import com.qianyanhuyu.app_large.ui.common.indicator.header.CommonRefreshHeader
 import com.qianyanhuyu.app_large.util.transformDp
 import kotlinx.coroutines.launch
 
+private const val PAGE_TAG = "RefreshLayout"
+
 /**
  * 自定义下拉刷新、加载更多组件，配合paging3使用实现分页
  */
@@ -67,13 +69,13 @@ fun RefreshLayout(
                 if (refreshState.type == RefreshType.REFRESH_SUCCESS
                     || refreshState.type == RefreshType.REFRESH_FAIL
                 ) {
-                    Log.e("ssk", "LaunchedEffect 刷新成功或者失败")
+                    Log.e(PAGE_TAG, "LE 刷新成功或者失败")
                     scrollConnection.animateToOffset(RefreshNestedScrollConnection.ACTION_REFRESH, 0f, headerHeight, 500L)
                 }
                 if (refreshState.type == RefreshType.LOAD_MORE_SUCCESS
                     || refreshState.type == RefreshType.LOAD_MORE_FAIL
                 ) {
-                    Log.e("ssk", "LaunchedEffect 加载更多成功或者失败")
+                    Log.e(PAGE_TAG, "LE 加载更多成功或者失败")
                     if (refreshState.type == RefreshType.LOAD_MORE_SUCCESS) {
                         scrollStateScope.launch {
                             scrollState?.animateScrollBy(footerHeight)

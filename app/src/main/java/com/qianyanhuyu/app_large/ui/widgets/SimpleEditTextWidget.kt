@@ -31,7 +31,6 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -46,6 +45,7 @@ import com.qianyanhuyu.app_large.util.csp
  * @Author : Cheng
  * @CreateDate : 2023/9/18 17:02
  * @Description : 通用输入框 基于BasicTextField 处理
+ * 参数属性可查看BasicTextField的说明
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

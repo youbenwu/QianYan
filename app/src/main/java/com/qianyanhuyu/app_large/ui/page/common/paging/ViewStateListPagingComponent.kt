@@ -36,9 +36,8 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 
-/**
- * Created by ssk on 2022/4/3.
- */
+private const val PAGE_TAG = "ViewStateListPagingComponent"
+
 /**
  * Description->通用列表组件，支持页面状态切换、下拉刷新、上拉加载更多
  * @param modifier：页面布局修饰
@@ -108,19 +107,19 @@ fun <T : Any> ViewStateListPagingComponent(
                 collectAsLazyPagingItems.apply {
                     when (loadState.refresh) {
                         is LoadState.Error -> {
-                            Log.e("ssk", "---------下拉刷新异常, state = $refreshState")
+                            Log.e(PAGE_TAG, "---------下拉刷新异常, state = $refreshState")
                             refreshState.finishRefresh(false)
                         }
                         is LoadState.NotLoading -> {
                             refreshState.finishRefresh(true)
-                            Log.e("ssk", "-----------下拉刷新成功, state = $refreshState")
+                            Log.e(PAGE_TAG, "-----------下拉刷新成功, state = $refreshState")
                         }
                         else -> {}
                     }
                 }
             } else {
                 if (collectAsLazyPagingItems.loadState.refresh is LoadState.Loading) {
-                    Log.e("ssk", "开始下拉刷新")
+                    Log.e(PAGE_TAG, "开始下拉刷新")
                     refreshState.type = RefreshType.REFRESHING
                 }
             }
@@ -154,7 +153,7 @@ private fun <T : Any> HandlerViewStateComponent(
     collectAsLazyPagingItems.apply {
         when (loadState.refresh) {
             is LoadState.Error -> {
-                Log.e("ssk", "首次加载异常,key=$key")
+                Log.e(PAGE_TAG, "首次加载异常,key=$key")
                 // 首次加载异常
                 val errorMessagePair = getErrorMessagePair((loadState.refresh as LoadState.Error).error)
                 Column(modifier = Modifier.fillMaxSize()) {
@@ -177,7 +176,7 @@ private fun <T : Any> HandlerViewStateComponent(
             }
             is LoadState.NotLoading -> {
                 if (collectAsLazyPagingItems.itemCount == 0 && pagingStateHolder.hasLoadingDone.value) {
-                    Log.e("ssk", "首次加载数据为null,key=$key")
+                    Log.e(PAGE_TAG, "首次加载数据为null,key=$key")
 
                     // 首次加载数据为null
                     Column(modifier = modifier) {
@@ -197,14 +196,14 @@ private fun <T : Any> HandlerViewStateComponent(
                         }
                     }
                 } else if (collectAsLazyPagingItems.itemCount > 0) {
-                    Log.e("ssk", "显示正常列表数据,key=$key")
+                    Log.e(PAGE_TAG, "显示正常列表数据,key=$key")
                     pagingStateHolder.showViewState.value = false
                 }
             }
             is LoadState.Loading -> {
 
                 if (collectAsLazyPagingItems.itemCount <= 0) {
-                    Log.e("ssk", "首次加载数据中,key=$key")
+                    Log.e(PAGE_TAG, "首次加载数据中,key=$key")
                     // 首次加载数据中
                     Column(modifier = modifier) {
                         Box(
@@ -229,21 +228,21 @@ private fun <T : Any> handleListFooter(
     collectAsLazyPagingItems.apply {
         when (loadState.append) {
             is LoadState.Loading -> {
-                Log.e("ssk", "加载更多，底部loading, state = ${state.type}, key=$key")
+                Log.e(PAGE_TAG, "加载更多，底部loading, state = ${state.type}, key=$key")
                 state.type = RefreshType.LOAD_MORE_ING
             }
             is LoadState.Error -> {
-                Log.e("ssk", "加载更多异常, state = ${state.type}, key=$key")
+                Log.e(PAGE_TAG, "加载更多异常, state = ${state.type}, key=$key")
                 state.finishLoadMore(false)
             }
             LoadState.NotLoading(endOfPaginationReached = true) -> {
                 if (collectAsLazyPagingItems.itemCount > 0) {
-                    Log.e("ssk", "加载更多---已经没有更多数据了, state = ${state.type}, key=$key")
+                    Log.e(PAGE_TAG, "加载更多---已经没有更多数据了, state = ${state.type}, key=$key")
                     state.noMoreData(true)
                 }
             }
             LoadState.NotLoading(endOfPaginationReached = false) -> {
-                Log.e("ssk", "加载更多---还有更多数据了, state = ${state.type}, key=$key")
+                Log.e(PAGE_TAG, "加载更多---还有更多数据了, state = ${state.type}, key=$key")
                 state.finishLoadMore(true)
             }
             else -> {}

@@ -137,6 +137,9 @@ private fun RingBackground(
     }
 }
 
+/**
+ * 店友圈图片Canvas绘制
+ */
 @OptIn(ExperimentalTextApi::class)
 @Composable
 fun ImageCircle(

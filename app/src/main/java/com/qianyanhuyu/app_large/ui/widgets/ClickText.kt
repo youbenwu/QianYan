@@ -19,6 +19,7 @@ import com.qianyanhuyu.app_large.util.csp
  * @Author : Cheng
  * @CreateDate : 2023/9/20 14:52
  * @Description : 可点击内容的Text,适用于隐私政策这一类
+ * TODO 点击跳转的功能需要自己处理
  */
 @Composable
 fun ActivationClickText(

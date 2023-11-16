@@ -35,7 +35,7 @@ class SmartTourismViewModel @Inject constructor(
     }
 
     private fun initPageData() {
-
+        // TODO 接口获取初始化旅游页内容,滑动更改数据类似实现可以参考干洗服务页面
     }
 
 }

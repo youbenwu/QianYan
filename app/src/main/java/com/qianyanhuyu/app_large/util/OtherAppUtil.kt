@@ -28,11 +28,12 @@ object OtherAppUtil {
         packageName: OtherPackage = OtherPackage.EMPTY
     ) {
         try {
-            val aa = context.packageManager
+            // 不建议删除  -->  查看包名的方法, 新设备或者应用商店无法确定包名可使用这个查找
+            /*val aa = context.packageManager
             aa?.getInstalledPackages(0)?.forEach {
                 Log.d("test: ", it.applicationInfo.packageName);
                 Log.d("appinfo", aa.getApplicationLabel(it.applicationInfo).toString());
-            }
+            }*/
 
             // 包名不是空的时候跳转
             if(packageName.value.isEmpty())
@@ -69,10 +70,13 @@ object OtherAppUtil {
         }
     }
 
+    /**
+     * 打开系统媒体的方法, 查看图片或者播放视频
+     * 模拟器测试可能会播放失败,建议实机测试
+     */
     fun openSystemVideo(
         url: String?,
         context: Context,
-        advertContentType: AdvertContentType = AdvertContentType.Image,
     ) {
         try {
             if (url != null && "" != url) {
@@ -82,11 +86,6 @@ object OtherAppUtil {
                 val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
 
                 val uri: Uri = Uri.parse(url)
-                /*if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", File(path))
-                } else {
-                    uri = Uri.parse(url)
-                }*/
 
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)

@@ -13,6 +13,8 @@ import retrofit2.Response
  * @Author : Cheng
  * @CreateDate : 2023/10/26 11:20
  * @Description : 网络请求Flow流
+ *
+ * TODO errorBlock 是错误处理的回调,看使用需求增加相应处理,现在暂无处理
  */
 suspend fun <T : Any> requestFlowResponse(
     errorBlock: ((Int?, String?) -> Unit)? = null,

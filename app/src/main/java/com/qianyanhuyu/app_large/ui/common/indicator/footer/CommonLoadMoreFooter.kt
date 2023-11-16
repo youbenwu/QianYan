@@ -16,8 +16,8 @@ import com.qianyanhuyu.app_large.util.csp
 import com.qianyanhuyu.app_large.util.onClick
 
 /**
- * Created by ssk on 2023/2/2.
- * Description-> 经典上拉加载更多footer
+ * 上拉加载更多
+ * footer
  */
 val secondTextColor = Color.White
 

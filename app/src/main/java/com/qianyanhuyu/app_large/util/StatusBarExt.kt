@@ -5,7 +5,7 @@ import android.view.View
 import androidx.core.view.WindowCompat
 
 /**
- * Created by ssk on 2022/4/17.
+ * TODO App上由于直接使用的全屏,所以沉浸式状态栏的处理可能存在问题,如果之后需要状态栏可能得做沉浸式处理
  */
 
 /**

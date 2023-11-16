@@ -7,7 +7,7 @@ import android.widget.Toast
 import java.lang.Exception
 
 /**
- * Created by ssk on 2022/4/17.
+ * 通用Toast处理
  */
 private var toast: Toast? = null
 private var application: Application? = null

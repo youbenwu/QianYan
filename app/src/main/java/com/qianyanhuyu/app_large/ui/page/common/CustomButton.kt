@@ -1,9 +1,6 @@
 package com.qianyanhuyu.app_large.ui.page.common
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
@@ -11,15 +8,11 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.TextUnit
 import com.qianyanhuyu.app_large.R
-import com.qianyanhuyu.app_large.ui.theme.AuthButtonTextColor
-import com.qianyanhuyu.app_large.ui.theme.ButtonColor
 import com.qianyanhuyu.app_large.constants.AppConfig.CustomPurple
-import com.qianyanhuyu.app_large.constants.AppConfig.originToBlueHorizontal
 import com.qianyanhuyu.app_large.ui.theme.Shapes
 import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
 import com.qianyanhuyu.app_large.util.cdp

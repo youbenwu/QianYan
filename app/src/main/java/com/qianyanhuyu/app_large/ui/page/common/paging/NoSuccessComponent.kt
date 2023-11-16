@@ -13,8 +13,11 @@ import com.qianyanhuyu.app_large.ui.widgets.CommonIcon
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
 
-/**
- * Created by ssk on 2022/4/17.
+
+private const val PAGE_TAG = "NoSuccessComponent"
+/***
+ * @Author : Cheng
+ * @Description : 未成功占位布局
  */
 @Composable
 fun NoSuccessComponent(
