@@ -7,7 +7,8 @@ package com.qianyanhuyu.app_large.constants
  */
 object Net {
     // https://mock.apifox.cn/m1/3437614-0-default/
-    const val BASE_URL = "http://192.168.7.59:9900/"
+    //const val BASE_URL = "http://192.168.7.59:9900/"
+    const val BASE_URL = "http://qy.outmao.cn:9900/"
 
     const val CONNECTION_TIME_OUT = 10L
     const val READ_TIME_OUT = 10L
