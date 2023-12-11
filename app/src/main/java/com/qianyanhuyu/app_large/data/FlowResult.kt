@@ -1,6 +1,6 @@
-package com.qianyanhuyu.app_large.util
+package com.qianyanhuyu.app_large.data
 
-import com.qianyanhuyu.app_large.data.response.BaseResponse
+import com.qianyanhuyu.app_large.data.response.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -16,10 +16,10 @@ import retrofit2.Response
  *
  * TODO errorBlock 是错误处理的回调,看使用需求增加相应处理,现在暂无处理
  */
-suspend fun <T : Any> requestFlowResponse(
+suspend fun <T : Any> FlowResult(
     errorBlock: ((Int?, String?) -> Unit)? = null,
-    requestCall: suspend () -> Response<BaseResponse<T>>?,
-    showLoading: ((Boolean) -> Unit)? = null
+    requestCall: suspend () -> Response<Result<T>>?,
+    loading: ((Boolean) -> Unit)? = null
 ): T? {
     var data: T? = null
 
@@ -28,21 +28,21 @@ suspend fun <T : Any> requestFlowResponse(
 
         // 错误处理
         if (response?.body()?.status!=0){
-
+            errorBlock?.invoke(response?.body()?.status,response?.body()?.message)
         }
 
         emit(response)
     }.flowOn(Dispatchers.IO)
         .onStart {
             // 开始请求
-            showLoading?.invoke(true)
+            loading?.invoke(true)
         }
         .catch { e ->
             e.printStackTrace()
 
         }
         .onCompletion {
-            showLoading?.invoke(false)
+            loading?.invoke(false)
         }
         .collect {
             data = it?.body()?.data

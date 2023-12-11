@@ -11,7 +11,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.constants.AppPagingConfig
-import com.qianyanhuyu.app_large.data.ContentApi
+import com.qianyanhuyu.app_large.data.api.ContentApi
 import com.qianyanhuyu.app_large.data.model.CommonPageDataSource
 import com.qianyanhuyu.app_large.model.GroupChatItem
 import com.qianyanhuyu.app_large.model.GroupChatEditTextType

@@ -1,6 +1,6 @@
-package com.qianyanhuyu.app_large.data.hotel.model
+package com.qianyanhuyu.app_large.data.response
 import com.google.gson.annotations.SerializedName
-import com.qianyanhuyu.app_large.data.model.Contact
+import com.qianyanhuyu.app_large.data.response.Contact
 
 
 data class Hotel(

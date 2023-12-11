@@ -38,6 +38,7 @@ class MainActivity : FragmentActivity() {
                 }
             }
         }*/
+
         setContent {
             App_largeTheme {
                 val navController = rememberAnimatedNavController()
@@ -61,4 +62,6 @@ class MainActivity : FragmentActivity() {
         super.onDestroy()
         exitProcess(0)
     }
+
+
 }

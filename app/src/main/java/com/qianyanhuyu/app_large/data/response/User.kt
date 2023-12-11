@@ -1,18 +1,12 @@
-package com.qianyanhuyu.app_large.data.model
-
+package com.qianyanhuyu.app_large.data.response
 import com.google.gson.annotations.SerializedName
 
-/***
- * @Author : Cheng
- * @CreateDate : 2023/11/10 9:41
- * @Description : 用户信息
- */
 
 data class User(
     @SerializedName("id")
     val id: Int,
     @SerializedName("username")
-    val username: String?,
+    val username: String,
     @SerializedName("nickname")
     val nickname: String?,
     @SerializedName("avatar")
@@ -20,18 +14,16 @@ data class User(
 
 )
 
-
-
 data class SecurityUser(
     @SerializedName("id")
     val id: Int,
     @SerializedName("username")
-    val username: String? = null,
+    val username: String,
     @SerializedName("session")
-    val session: SecurityUserSession? = null
+    val session: SecurityUserSession
 )
 
 data class SecurityUserSession(
     @SerializedName("token")
-    val token: String?
+    val token: String
 )

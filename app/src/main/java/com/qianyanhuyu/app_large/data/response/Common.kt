@@ -1,21 +1,16 @@
-package com.qianyanhuyu.app_large.data.model
+package com.qianyanhuyu.app_large.data.response
 
 import com.google.gson.annotations.SerializedName
 
-/***
- * @Author : Cheng
- * @CreateDate : 2023/9/19 18:18
- * @Description : description
- */
-data class ApiResult<T>(
+
+data class Result<T>(
     @SerializedName("status")
     val status: Int,
     @SerializedName("message")
-    val message: String,
+    val message: String?,
     @SerializedName("data")
-    val data: T,
+    val data: T?,
 )
-
 
 data class Contact(
     @SerializedName("name")

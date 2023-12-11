@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.qianyanhuyu.app_large.data.FlowResult
+import com.qianyanhuyu.app_large.data.api.HotelApi
 import com.qianyanhuyu.app_large.ui.common.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -20,7 +22,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-
+    private val hotelApi: HotelApi
 ) : ViewModel() {
 
 
@@ -47,17 +49,39 @@ class SplashViewModel @Inject constructor(
     }
 
     private fun initPageData() {
-        viewModelScope.launch {
-            _viewEvents.send(SplashViewEvent.NavTo(Route.AUTHENTICATION))
-        }
+//        viewModelScope.launch {
+//            _viewEvents.send(SplashViewEvent.NavTo(Route.AUTHENTICATION))
+//        }
+        checkLoginState()
     }
 
     private fun checkLoginState() {
-        viewModelScope.launch {
-            viewStates = viewStates.copy(isLoading = false)
-            _viewEvents.send(SplashViewEvent.NavTo(Route.HOME_PAGE))
+        
+        viewModelScope.launch(exception) {
+            FlowResult(
+                requestCall = {
+                    hotelApi.getDevice("123456")
+                },
+                loading ={
+                    viewStates = viewStates.copy(
+                        isLoading = it
+                    )
+                },
+                errorBlock = { status,message->
+                    viewModelScope.launch(exception) {
+                        _viewEvents.send(SplashViewEvent.ShowMessage(""+message))
+                    }
+                }
+            ).apply {
+                if(this==null){
+                    _viewEvents.send(SplashViewEvent.NavTo(Route.AUTHENTICATION))
+                }else{
+                    _viewEvents.send(SplashViewEvent.NavTo(Route.HOME_PAGE))
+                }
+            }
         }
     }
+
 
 }
 

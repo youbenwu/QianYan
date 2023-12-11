@@ -2,6 +2,9 @@ package com.qianyanhuyu.app_large.data
 
 import com.qianyanhuyu.app_large.BuildConfig
 import com.qianyanhuyu.app_large.constants.Net
+import com.qianyanhuyu.app_large.data.api.ContentApi
+import com.qianyanhuyu.app_large.data.api.HotelApi
+import com.qianyanhuyu.app_large.data.api.UserApi
 import com.qianyanhuyu.app_large.util.datastore.DataKey
 import com.qianyanhuyu.app_large.util.datastore.DataStoreUtils
 import dagger.Module
@@ -59,6 +62,16 @@ object NetworkModule {
         .baseUrl(Net.BASE_URL)
         .client(okHttpClient)
         .build()
+
+
+    @Singleton
+    @Provides
+    fun provideUserApiService(retrofit: Retrofit): UserApi = retrofit.create(UserApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideHotelApiService(retrofit: Retrofit): HotelApi = retrofit.create(HotelApi::class.java)
+
 
     @Singleton
     @Provides

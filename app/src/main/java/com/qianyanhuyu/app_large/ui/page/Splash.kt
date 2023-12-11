@@ -4,18 +4,23 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.ui.AppNavController
+import com.qianyanhuyu.app_large.viewmodel.ActivationViewEvent
 import com.qianyanhuyu.app_large.viewmodel.SplashViewAction
 import com.qianyanhuyu.app_large.viewmodel.SplashViewEvent
 import com.qianyanhuyu.app_large.viewmodel.SplashViewModel
+import kotlinx.coroutines.launch
 
 /***
  * @Author : Cheng
@@ -26,6 +31,9 @@ import com.qianyanhuyu.app_large.viewmodel.SplashViewModel
 fun SplashScreen(
     viewModel: SplashViewModel = hiltViewModel()
 ) {
+
+    val snackHostState = remember { SnackbarHostState() }
+    val coroutineState = rememberCoroutineScope()
 
     DisposableEffect(Unit) {
         // 初始化需要执行的内容
@@ -43,8 +51,12 @@ fun SplashScreen(
             }
             else if (it is SplashViewEvent.ShowMessage) {
                 println("收到错误消息：${it.message}")
+                coroutineState.launch {
+                    snackHostState.showSnackbar(message = it.message)
+                }
             }
         }
+
     }
 
     Box(

@@ -1,7 +1,6 @@
-package com.qianyanhuyu.app_large.data.advert.model
+package com.qianyanhuyu.app_large.data.response
 
 import com.google.gson.annotations.SerializedName
-import com.qianyanhuyu.app_large.data.model.Address
 
 data class Advert(
     @SerializedName("id")

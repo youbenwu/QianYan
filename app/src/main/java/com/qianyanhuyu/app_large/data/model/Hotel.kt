@@ -6,6 +6,7 @@ package com.qianyanhuyu.app_large.data.model
  * @Description : 酒店
  */
 import com.google.gson.annotations.SerializedName
+import com.qianyanhuyu.app_large.data.response.Contact
 
 data class Hotel(
     @SerializedName("id")

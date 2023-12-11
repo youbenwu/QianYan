@@ -1,14 +1,10 @@
-package com.qianyanhuyu.app_large.data.advert
+package com.qianyanhuyu.app_large.data.api
 
-import com.qianyanhuyu.app_large.data.advert.model.Advert
-import com.qianyanhuyu.app_large.data.hotel.model.Device
-import com.qianyanhuyu.app_large.data.hotel.model.RegisterDeviceDTO
-import com.qianyanhuyu.app_large.data.model.ApiResult
+import com.qianyanhuyu.app_large.data.response.Advert
+import com.qianyanhuyu.app_large.data.response.Result
 import retrofit2.Response
-import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface AdvertApi {
@@ -28,7 +24,7 @@ interface AdvertApi {
     suspend fun getAdvertList(
         @Field("channelCode") channelCode: String,
         @Field("size") size: Int,
-    ): Response<ApiResult<List<Advert>>>
+    ): Response<Result<List<Advert>>>
 
 
 

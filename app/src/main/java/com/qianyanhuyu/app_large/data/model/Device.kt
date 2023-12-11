@@ -7,6 +7,7 @@ package com.qianyanhuyu.app_large.data.model
  */
 
 import com.google.gson.annotations.SerializedName
+import com.qianyanhuyu.app_large.data.response.Address
 
 data class RegisterDevice(
     @SerializedName("userId")

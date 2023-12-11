@@ -7,7 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.qianyanhuyu.app_large.constants.AppConfig
-import com.qianyanhuyu.app_large.data.ContentApi
+import com.qianyanhuyu.app_large.data.api.ContentApi
 import com.qianyanhuyu.app_large.data.model.Product
 import com.qianyanhuyu.app_large.data.model.ProductAttributes
 import com.qianyanhuyu.app_large.data.request.ProductListRequest
