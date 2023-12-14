@@ -99,6 +99,26 @@ object OtherAppUtil {
         }
     }
 
+    public fun openUrl(
+        url: String?,
+        context: Context,
+    ){
+        val urlIntent = Intent(
+
+            Intent.ACTION_VIEW,
+
+
+            Uri.parse(url)
+
+        )
+
+        urlIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        urlIntent.addFlags(Intent.URI_INTENT_SCHEME)
+
+        context.startActivity(urlIntent)
+
+    }
+
     /**
      * 第三方包名
      * 来源: 应用宝

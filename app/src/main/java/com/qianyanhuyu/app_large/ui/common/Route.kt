@@ -26,6 +26,12 @@ object Route {
     // 干洗服务
     const val DRY_CLEAN = "dry_clean"
 
+    // 酒店商超
+    const val HOTEL_MALL = "hotel_mall"
+
+    // 酒店餐饮
+    const val HOTEL_CATER = "hotel_cater"
+
     // WebView
     const val WEB_VIEW = "web_view"
     const val WEB_VIEW_TITLE = "title"

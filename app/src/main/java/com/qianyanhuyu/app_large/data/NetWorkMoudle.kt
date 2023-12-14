@@ -4,6 +4,8 @@ import com.qianyanhuyu.app_large.BuildConfig
 import com.qianyanhuyu.app_large.constants.Net
 import com.qianyanhuyu.app_large.data.api.ContentApi
 import com.qianyanhuyu.app_large.data.api.HotelApi
+import com.qianyanhuyu.app_large.data.api.ProductApi
+import com.qianyanhuyu.app_large.data.api.ShopApi
 import com.qianyanhuyu.app_large.data.api.UserApi
 import com.qianyanhuyu.app_large.util.datastore.DataKey
 import com.qianyanhuyu.app_large.util.datastore.DataStoreUtils
@@ -71,6 +73,14 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideHotelApiService(retrofit: Retrofit): HotelApi = retrofit.create(HotelApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideProductApiService(retrofit: Retrofit): ProductApi = retrofit.create(ProductApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideShopApiService(retrofit: Retrofit): ShopApi = retrofit.create(ShopApi::class.java)
 
 
     @Singleton

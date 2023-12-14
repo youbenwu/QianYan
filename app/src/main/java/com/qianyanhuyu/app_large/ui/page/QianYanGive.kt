@@ -35,6 +35,7 @@ import com.qianyanhuyu.app_large.ui.page.common.CustomButton
 import com.qianyanhuyu.app_large.ui.page.common.CustomTopTrips
 import com.qianyanhuyu.app_large.constants.AppConfig.CustomBlue9
 import com.qianyanhuyu.app_large.ui.AppNavController
+import com.qianyanhuyu.app_large.ui.common.Route
 import com.qianyanhuyu.app_large.ui.page.common.CommonText
 import com.qianyanhuyu.app_large.ui.page.common.TextBackground
 import com.qianyanhuyu.app_large.ui.theme.Shapes
@@ -46,12 +47,15 @@ import com.qianyanhuyu.app_large.ui.widgets.LoadingComponent
 import com.qianyanhuyu.app_large.ui.widgets.drawColoredShadow
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
+import com.qianyanhuyu.app_large.util.onClick
 import com.qianyanhuyu.app_large.util.toPx
 import com.qianyanhuyu.app_large.viewmodel.QianYanGiveViewAction
 import com.qianyanhuyu.app_large.viewmodel.QianYanGiveViewEvent
 import com.qianyanhuyu.app_large.viewmodel.QianYanGiveViewModel
 import com.qianyanhuyu.app_large.viewmodel.QianYanGiveViewState
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 /***
  * @Author : Cheng
@@ -276,7 +280,13 @@ fun FillHeightContent(
                     end.linkTo(parent.end)
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
-                }
+                },
+            onClick = {
+                val title="game";
+                val url="http://www.hunluo.com/game/3729_1.html";
+                val urlEncode = URLEncoder.encode( url, StandardCharsets.UTF_8.toString())
+                AppNavController.instance.navigate("${Route.WEB_VIEW}/${title}/${urlEncode}")
+            }
         )
 
         createVerticalChain(

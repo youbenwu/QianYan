@@ -64,6 +64,7 @@ import com.qianyanhuyu.app_large.model.MultiMenuItem
 import com.qianyanhuyu.app_large.model.Video
 import com.qianyanhuyu.app_large.ui.AppNavController
 import com.qianyanhuyu.app_large.ui.common.Route
+import com.qianyanhuyu.app_large.ui.compose.HomeAdvertGridView
 import com.qianyanhuyu.app_large.ui.page.common.CommonText
 import com.qianyanhuyu.app_large.ui.page.common.TextBackground
 import com.qianyanhuyu.app_large.ui.page.media.VideoPlayer
@@ -231,28 +232,33 @@ fun HomePageScreen(
                         animationSpec = tween(1500, easing = LinearEasing)
                     )
                 ) {
-                    HomePageContent(
-                        viewState = viewModel.viewStates,
-                        pagePosition = pagePosition,
-                        onViewClick = {
-                            viewModel.dispatch(HomePageViewAction.OpenViewContent(it))
-                        },
-                        modifier = Modifier
+                    HomeAdvertGridView(
+                        data = viewModel.viewStates.dataPage1,
+                        modifier =Modifier
                             .fillMaxSize()
-                            .graphicsLayer {
-                                val pageOffset =
-                                    ((pagerState.currentPage - pagePosition) + pagerState.currentPageOffset).absoluteValue
-
-                                val transformation =
-                                    lerp(
-                                        start = 0.7f,
-                                        stop = 1f,
-                                        fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                                    )
-                                alpha = transformation
-                                scaleY = transformation
-                            }
                     )
+//                    HomePageContent(
+//                        viewState = viewModel.viewStates,
+//                        pagePosition = pagePosition,
+//                        onViewClick = {
+//                            viewModel.dispatch(HomePageViewAction.OpenViewContent(it))
+//                        },
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .graphicsLayer {
+//                                val pageOffset =
+//                                    ((pagerState.currentPage - pagePosition) + pagerState.currentPageOffset).absoluteValue
+//
+//                                val transformation =
+//                                    lerp(
+//                                        start = 0.7f,
+//                                        stop = 1f,
+//                                        fraction = 1f - pageOffset.coerceIn(0f, 1f)
+//                                    )
+//                                alpha = transformation
+//                                scaleY = transformation
+//                            }
+//                    )
                 }
             }
 

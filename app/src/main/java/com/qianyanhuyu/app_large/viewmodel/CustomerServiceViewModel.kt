@@ -52,7 +52,7 @@ class CustomerServiceViewModel @Inject constructor(
             requestFlowResponse(
                 requestCall = {
                     contentApi.getAdvertList(
-                        AdvertTypeRequest.PadServices.value,
+                        AdvertTypeRequest.PadSub.value,
                         4
                     )
                 },

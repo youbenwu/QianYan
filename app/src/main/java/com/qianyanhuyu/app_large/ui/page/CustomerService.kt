@@ -292,7 +292,9 @@ fun CustomerServiceContent(
                             width = Dimension.fillToConstraints
                             height = Dimension.preferredWrapContent
                         }
-                )
+                ){
+                    AppNavController.instance.navigate(Route.HOTEL_MALL)
+                }
 
                 CommonNetworkImage(
                     url = viewState.data.getOrNull(2)?.image?: "",
@@ -403,7 +405,9 @@ fun CustomerServiceContent(
 
                             width = Dimension.fillToConstraints
                         }
-                )
+                ){
+                    AppNavController.instance.navigate(Route.HOTEL_CATER)
+                }
 
             }
         }

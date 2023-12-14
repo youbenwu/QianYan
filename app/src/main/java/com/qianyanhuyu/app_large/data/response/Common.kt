@@ -12,6 +12,24 @@ data class Result<T>(
     val data: T?,
 )
 
+data class Page<T>(
+    @SerializedName("content")
+    val content:List<T>?,
+    @SerializedName("totalElements")
+    val totalElements:Int?,
+    @SerializedName("totalPages")
+    val totalPages:Int?,
+    @SerializedName("pageable")
+    val pageable:Pageable?
+)
+
+data class Pageable(
+    @SerializedName("pageNumber")
+    val pageNumber:Int?,
+    @SerializedName("pageSize")
+    val pageSize:Int?
+)
+
 data class Contact(
     @SerializedName("name")
     val name: Int?,
@@ -40,4 +58,13 @@ data class Address(
     //完整地址
     @SerializedName("fullAddress")
     val fullAddress: String?,
+)
+
+data class 	Media(
+    @SerializedName("id")
+    val id: Int?,
+    @SerializedName("url")
+    val url: String?,
+    @SerializedName("type")
+    val type: Int?,
 )

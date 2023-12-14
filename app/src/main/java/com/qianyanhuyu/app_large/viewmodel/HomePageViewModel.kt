@@ -56,7 +56,7 @@ class HomePageViewModel @Inject constructor(
                 requestCall = {
                     contentApi.getAdvertPage(
                         0,
-                        3
+                        4
                     )
                 },
                 showLoading = {
@@ -94,7 +94,7 @@ class HomePageViewModel @Inject constructor(
                 requestCall = {
                     contentApi.getAdvertPage(
                         2,
-                        3
+                        4
                     )
                 },
                 showLoading = {

@@ -123,7 +123,15 @@ private fun NavGraphBuilder.homeGraph(
         }
 
         composable(Route.DRY_CLEAN) {
-            DryClean()
+            HotelMall(productType = 30)
+        }
+
+        composable(Route.HOTEL_MALL) {
+            HotelMall(productType = 32)
+        }
+
+        composable(Route.HOTEL_CATER) {
+            HotelMall(productType = 31)
         }
 
         /**

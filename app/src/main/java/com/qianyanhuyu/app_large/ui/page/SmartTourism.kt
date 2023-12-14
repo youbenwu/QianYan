@@ -40,6 +40,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.qianyanhuyu.app_large.R
 import com.qianyanhuyu.app_large.constants.AppConfig
 import com.qianyanhuyu.app_large.ui.AppNavController
+import com.qianyanhuyu.app_large.ui.common.Route
 import com.qianyanhuyu.app_large.ui.page.common.CommonText
 import com.qianyanhuyu.app_large.ui.page.common.CustomTopTrips
 import com.qianyanhuyu.app_large.ui.page.common.SimpleLazyGrid
@@ -49,9 +50,12 @@ import com.qianyanhuyu.app_large.ui.widgets.CommonLocalImage
 import com.qianyanhuyu.app_large.ui.widgets.CommonNetworkImage
 import com.qianyanhuyu.app_large.util.cdp
 import com.qianyanhuyu.app_large.util.csp
+import com.qianyanhuyu.app_large.util.onClick
 import com.qianyanhuyu.app_large.viewmodel.SmartTourismViewEvent
 import com.qianyanhuyu.app_large.viewmodel.SmartTourismViewModel
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 /***
  * @Author : Cheng
@@ -240,7 +244,9 @@ fun ContentList(
                 .padding(
                     end = 30.cdp
                 )
-                .clip(RoundedCornerShape(imageRadius))
+                .clip(RoundedCornerShape(imageRadius)),
+
+
         )
 
         Box(
@@ -273,7 +279,12 @@ fun ContentList(
                 }
                 .padding(
                     end = 30.cdp
-                )
+                ).onClick {
+                    val title="ctrip";
+                    val url="http://s.fliggy.com/scenic/detail.htm?spm=181.61408.a1z7f.7.2cd75e9eHzb7vO&sid=1228&ttid=seo.000000574";
+                    val urlEncode = URLEncoder.encode( url, StandardCharsets.UTF_8.toString())
+                    AppNavController.instance.navigate("${Route.WEB_VIEW}/${title}/${urlEncode}")
+                }
         )
 
         createVerticalChain(
@@ -461,7 +472,12 @@ fun ContentListRight(
             ContentListRightItem(
                 src = src,
                 modifier = Modifier
-                    .height(maxHeight / 2 - 15.cdp)
+                    .height(maxHeight / 2 - 15.cdp).onClick {
+                        val title="ctrip";
+                        val url="http://s.fliggy.com/scenic/detail.htm?spm=181.7395985.1.12.747240fbhapAhG&sid=1111&ttid=seo.000000574";
+                        val urlEncode = URLEncoder.encode( url, StandardCharsets.UTF_8.toString())
+                        AppNavController.instance.navigate("${Route.WEB_VIEW}/${title}/${urlEncode}")
+                    }
             )
         }
     }

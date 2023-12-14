@@ -56,7 +56,7 @@ class SplashViewModel @Inject constructor(
     }
 
     private fun checkLoginState() {
-        
+
         viewModelScope.launch(exception) {
             FlowResult(
                 requestCall = {
@@ -71,14 +71,17 @@ class SplashViewModel @Inject constructor(
                     viewModelScope.launch(exception) {
                         _viewEvents.send(SplashViewEvent.ShowMessage(""+message))
                     }
+                },
+                dataBlock = {
+                    viewModelScope.launch(exception) {
+                        if(it==null){
+                            _viewEvents.send(SplashViewEvent.NavTo(Route.AUTHENTICATION))
+                        }else{
+                            _viewEvents.send(SplashViewEvent.NavTo(Route.HOME_PAGE))
+                        }
+                    }
                 }
-            ).apply {
-                if(this==null){
-                    _viewEvents.send(SplashViewEvent.NavTo(Route.AUTHENTICATION))
-                }else{
-                    _viewEvents.send(SplashViewEvent.NavTo(Route.HOME_PAGE))
-                }
-            }
+            );
         }
     }
 

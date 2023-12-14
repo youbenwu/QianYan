@@ -18,6 +18,7 @@ import retrofit2.Response
  */
 suspend fun <T : Any> FlowResult(
     errorBlock: ((Int?, String?) -> Unit)? = null,
+    dataBlock: ((T?) -> Unit)? = null,
     requestCall: suspend () -> Response<Result<T>>?,
     loading: ((Boolean) -> Unit)? = null
 ): T? {
@@ -27,10 +28,13 @@ suspend fun <T : Any> FlowResult(
         val response = requestCall()
 
         // 错误处理
-        if (response?.body()?.status!=0){
+        if (response?.isSuccessful==false){
+            errorBlock?.invoke(response?.code(),response?.message())
+        }else if(response?.body()?.status!=0){
             errorBlock?.invoke(response?.body()?.status,response?.body()?.message)
+        }else{
+            dataBlock?.invoke(response?.body()?.data)
         }
-
         emit(response)
     }.flowOn(Dispatchers.IO)
         .onStart {

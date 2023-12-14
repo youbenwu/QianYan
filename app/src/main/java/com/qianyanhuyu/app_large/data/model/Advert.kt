@@ -88,6 +88,11 @@ enum class AdvertTypeRequest(
     PadHome("pad-home"),
 
     /**
+     * 副页广告
+     */
+    PadSub("pad-sub"),
+
+    /**
      * 客服服务页广告
      */
     PadServices("pad-services"),

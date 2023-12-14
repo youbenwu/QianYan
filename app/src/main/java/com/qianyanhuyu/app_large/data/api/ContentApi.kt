@@ -54,7 +54,7 @@ interface ContentApi {
      * 智慧旅游页:pad-tours
      * */
     @FormUrlEncoded
-    @POST("api/portal/advert/list")
+    @POST("api/portal/advert/listForHotelPad")
     suspend fun getAdvertList(
         @Field("channelCode") channelCode: String,
         @Field("size") size: Int,
@@ -64,7 +64,7 @@ interface ContentApi {
      * 获取广告内容分页接口
      */
     @FormUrlEncoded
-    @POST("api/portal/advert/page")
+    @POST("api/portal/advert/pageForHotelPad")
     suspend fun getAdvertPage(
         @Field("page") page: Int,
         @Field("size") size: Int,

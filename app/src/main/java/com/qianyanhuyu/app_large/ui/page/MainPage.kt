@@ -528,6 +528,8 @@ private fun isShowFloatButton(
     route: String
 ): Boolean = when(route) {
     Route.DRY_CLEAN,
+    Route.HOTEL_MALL,
+    Route.HOTEL_CATER,
     Route.SMART_TOURISM_DETAIL -> false
     else -> {
         !route.contains(Route.WEB_VIEW)
